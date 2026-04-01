@@ -1,0 +1,2372 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSD2 — Il Motore Tecnologico dei Pagamenti</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #03060F;
+            --bg2: #080D1C;
+            --bg3: #0D1427;
+            --panel: #0F1830;
+            --border: rgba(255, 255, 255, 0.07);
+            --blue: #00B4FF;
+            --blue-glow: rgba(0, 180, 255, 0.15);
+            --cyan: #00FFCC;
+            --cyan-glow: rgba(0, 255, 204, 0.12);
+            --red: #FF3355;
+            --red-glow: rgba(255, 51, 85, 0.15);
+            --amber: #FFB547;
+            --text: #E8EDF8;
+            --text-dim: #7A8BA8;
+            --text-muted: #3D4F6B;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ─── GRID BACKGROUND ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 180, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 180, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ─── NAVBAR ─── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(3, 6, 15, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            gap: 2rem;
+        }
+
+        .nav-logo {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--blue);
+            letter-spacing: -0.02em;
+            white-space: nowrap;
+        }
+
+        .nav-logo span {
+            color: var(--text-dim);
+            font-weight: 400;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            padding: 0.3rem 0.7rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .nav-links a:hover {
+            color: var(--blue);
+            background: var(--blue-glow);
+        }
+
+        .nav-links a.active {
+            color: var(--blue);
+            background: var(--blue-glow);
+        }
+
+        /* ─── SECTIONS ─── */
+        section {
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+        }
+
+        /* ─── HERO ─── */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-glow {
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 180, 255, 0.08) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--blue-glow);
+            border: 1px solid rgba(0, 180, 255, 0.3);
+            border-radius: 999px;
+            padding: 0.35rem 1rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--blue);
+            letter-spacing: 0.08em;
+            margin-bottom: 2rem;
+            animation: fadeUp 0.8s ease both;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--blue);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .hero h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+            animation: fadeUp 0.8s 0.1s ease both;
+        }
+
+        .hero h1 .line2 {
+            background: linear-gradient(90deg, var(--blue), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            max-width: 620px;
+            margin: 0 auto 3rem;
+            font-weight: 300;
+            line-height: 1.7;
+            animation: fadeUp 0.8s 0.2s ease both;
+        }
+
+        .hero-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            justify-content: center;
+            animation: fadeUp 0.8s 0.3s ease both;
+        }
+
+        .hero-pill {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.85rem;
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--text-dim);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .hero-pill:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            transform: translateY(-2px);
+        }
+
+        /* ─── SECTION HEADER ─── */
+        .sec-tag {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            color: var(--blue);
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .sec-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        .sec-subtitle {
+            color: var(--text-dim);
+            font-size: 1rem;
+            max-width: 620px;
+            line-height: 1.7;
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        /* ─── SCA SECTION ─── */
+        #sca {
+            background: var(--bg);
+        }
+
+        .sca-factors {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .factor-card {
+            background: var(--panel);
+            padding: 2rem 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .factor-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--blue), var(--cyan));
+            transform: scaleX(0);
+            transition: transform 0.3s;
+            transform-origin: left;
+        }
+
+        .factor-card:hover::before,
+        .factor-card.open::before {
+            transform: scaleX(1);
+        }
+
+        .factor-card:hover {
+            background: var(--bg3);
+        }
+
+        .factor-card.open {
+            background: var(--bg3);
+        }
+
+        .factor-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .factor-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: var(--blue);
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+
+        .factor-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .factor-hint {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .factor-detail {
+            display: none;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .factor-detail.show {
+            display: block;
+            animation: fadeUp 0.3s ease;
+        }
+
+        .factor-detail p {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .factor-detail strong {
+            color: var(--text);
+        }
+
+        .chip {
+            display: inline-block;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0.15rem 0.5rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--blue);
+            margin: 0.25rem 0.2rem 0 0;
+        }
+
+        /* 3DS2 box */
+        .info-box {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-box h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .compare-table th {
+            padding: 0.7rem 1rem;
+            text-align: left;
+            background: var(--bg2);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .compare-table td {
+            padding: 0.7rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-dim);
+        }
+
+        .compare-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .compare-table .good {
+            color: var(--cyan);
+        }
+
+        .compare-table .bad {
+            color: var(--red);
+        }
+
+        .compare-table .col-label {
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .exceptions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .exception-item {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+        }
+
+        .exception-item .exc-icon {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        .exception-item p {
+            color: var(--text-dim);
+            line-height: 1.4;
+        }
+
+        .exception-item strong {
+            color: var(--text);
+            display: block;
+            font-size: 0.8rem;
+        }
+
+        /* ─── API SECTION ─── */
+        #api {
+            background: var(--bg2);
+        }
+
+        .api-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .api-tab {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.6rem 1.4rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .api-tab:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+        }
+
+        .api-tab.active {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: #000;
+            font-weight: 600;
+        }
+
+        .api-content {
+            display: none;
+        }
+
+        .api-content.active {
+            display: block;
+            animation: fadeUp 0.3s ease;
+        }
+
+        /* OAuth Flow Diagram */
+        .oauth-diagram {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            overflow-x: auto;
+        }
+
+        .oauth-steps {
+            display: flex;
+            align-items: stretch;
+            min-width: 700px;
+            gap: 0;
+        }
+
+        .oauth-node {
+            flex: 1;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .oauth-node .node-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .oauth-node .node-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .oauth-node .node-desc {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .oauth-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0 0.5rem;
+            min-width: 80px;
+            gap: 0.3rem;
+        }
+
+        .arrow-line {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--blue), var(--cyan));
+            position: relative;
+        }
+
+        .arrow-line::after {
+            content: '▶';
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--cyan);
+            font-size: 0.6rem;
+        }
+
+        .arrow-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.62rem;
+            color: var(--blue);
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .token-table-wrap {
+            margin-top: 2rem;
+        }
+
+        .token-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .token-table th {
+            padding: 0.6rem 1rem;
+            text-align: left;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .token-table td {
+            padding: 0.7rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-dim);
+            font-size: 0.82rem;
+        }
+
+        .token-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .token-table .mono {
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--blue);
+        }
+
+        /* AISP / PISP Diagram */
+        .tpp-diagram {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .tpp-flow {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 600px;
+            overflow-x: auto;
+            margin-bottom: 2rem;
+        }
+
+        .tpp-node {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .tpp-node.highlight-aisp {
+            border-color: var(--blue);
+            box-shadow: 0 0 20px var(--blue-glow);
+        }
+
+        .tpp-node.highlight-pisp {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px var(--cyan-glow);
+        }
+
+        .tpp-node .n-icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .tpp-node .n-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .tpp-node .n-role {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .tpp-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .conn-line {
+            width: 100%;
+            height: 2px;
+            border-radius: 2px;
+        }
+
+        .conn-line.aisp {
+            background: var(--blue);
+        }
+
+        .conn-line.pisp {
+            background: var(--cyan);
+        }
+
+        .conn-tag {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.62rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .conn-tag.aisp {
+            background: var(--blue-glow);
+            color: var(--blue);
+        }
+
+        .conn-tag.pisp {
+            background: var(--cyan-glow);
+            color: var(--cyan);
+        }
+
+        .tpp-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .tpp-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .tpp-card.aisp-card {
+            border-color: rgba(0, 180, 255, 0.3);
+        }
+
+        .tpp-card.pisp-card {
+            border-color: rgba(0, 255, 204, 0.3);
+        }
+
+        .tpp-card h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .tpp-card.aisp-card h4 {
+            color: var(--blue);
+        }
+
+        .tpp-card.pisp-card h4 {
+            color: var(--cyan);
+        }
+
+        .tpp-card p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        .tpp-card ul {
+            margin-top: 0.5rem;
+            padding-left: 1rem;
+        }
+
+        .tpp-card ul li {
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            margin-bottom: 0.2rem;
+        }
+
+        /* ─── PAYMENT FLOW ─── */
+        #flusso {
+            background: var(--bg);
+        }
+
+        .flow-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 1.5rem;
+        }
+
+        .flow-steps-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .flow-step-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.9rem 1.1rem;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flow-step-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--blue);
+            transform: scaleY(0);
+            transition: transform 0.2s;
+            transform-origin: center;
+        }
+
+        .flow-step-btn:hover::before,
+        .flow-step-btn.active::before {
+            transform: scaleY(1);
+        }
+
+        .flow-step-btn:hover,
+        .flow-step-btn.active {
+            background: var(--bg3);
+            border-color: rgba(0, 180, 255, 0.3);
+            color: var(--text);
+        }
+
+        .flow-step-btn.active {
+            color: var(--blue);
+        }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .flow-step-btn.active .step-num {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: #000;
+            font-weight: 700;
+        }
+
+        .step-btn-text {
+            font-size: 0.85rem;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .step-btn-sub {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-family: 'IBM Plex Mono', monospace;
+            display: block;
+            margin-top: 0.15rem;
+        }
+
+        .flow-panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            min-height: 380px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .flow-content {
+            display: none;
+        }
+
+        .flow-content.active {
+            display: block;
+            animation: fadeUp 0.4s ease;
+        }
+
+        .flow-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .flow-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+        }
+
+        .flow-body {
+            color: var(--text-dim);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .flow-tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .flow-tag {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0.25rem 0.65rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+        }
+
+        .flow-tag.blue {
+            border-color: rgba(0, 180, 255, 0.4);
+            color: var(--blue);
+        }
+
+        .flow-tag.cyan {
+            border-color: rgba(0, 255, 204, 0.4);
+            color: var(--cyan);
+        }
+
+        .flow-tag.red {
+            border-color: rgba(255, 51, 85, 0.4);
+            color: var(--red);
+        }
+
+        .psd2-highlight {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 180, 255, 0.08);
+            border: 1px solid rgba(0, 180, 255, 0.3);
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.82rem;
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--blue);
+        }
+
+        /* ─── EMBEDDED FINANCE ─── */
+        #embedded {
+            background: var(--bg2);
+        }
+
+        .ef-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .ef-card {
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .ef-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .ef-card-bg {
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            font-size: 8rem;
+            opacity: 0.05;
+            pointer-events: none;
+            transition: transform 0.3s;
+        }
+
+        .ef-card:hover .ef-card-bg {
+            transform: scale(1.1);
+        }
+
+        .ef-card.payments {
+            background: linear-gradient(135deg, #0D1827 0%, #0A1F30 100%);
+            border-color: rgba(0, 180, 255, 0.2);
+        }
+
+        .ef-card.bnpl {
+            background: linear-gradient(135deg, #0D1427 0%, #150F28 100%);
+            border-color: rgba(120, 60, 220, 0.3);
+        }
+
+        .ef-card.baas {
+            background: linear-gradient(135deg, #0D1E20 0%, #091C1A 100%);
+            border-color: rgba(0, 255, 204, 0.2);
+        }
+
+        .ef-card.insurance {
+            background: linear-gradient(135deg, #1A130D 0%, #1C1508 100%);
+            border-color: rgba(255, 181, 71, 0.2);
+        }
+
+        .ef-type {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .ef-card.payments .ef-type {
+            color: var(--blue);
+        }
+
+        .ef-card.bnpl .ef-type {
+            color: #A070FF;
+        }
+
+        .ef-card.baas .ef-type {
+            color: var(--cyan);
+        }
+
+        .ef-card.insurance .ef-type {
+            color: var(--amber);
+        }
+
+        .ef-card h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .ef-example {
+            font-size: 0.78rem;
+            font-family: 'IBM Plex Mono', monospace;
+            margin-bottom: 0.8rem;
+            opacity: 0.6;
+        }
+
+        .ef-card p {
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .ef-tech-note {
+            margin-top: 2rem;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .ef-tech-note .tn-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .ef-tech-note h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .ef-tech-note p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        /* ─── RISKS ─── */
+        #rischi {
+            background: var(--bg);
+        }
+
+        .risk-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .risk-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .risk-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--red);
+            border-radius: 0 12px 12px 0;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .risk-card:hover {
+            background: var(--bg3);
+        }
+
+        .risk-card.open {
+            background: var(--bg3);
+        }
+
+        .risk-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .risk-title-row {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .risk-icon {
+            font-size: 1.4rem;
+        }
+
+        .risk-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .risk-toggle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            transition: transform 0.3s;
+        }
+
+        .risk-card.open .risk-toggle {
+            transform: rotate(180deg);
+        }
+
+        .risk-body {
+            display: none;
+            padding-top: 1rem;
+            margin-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .risk-body.show {
+            display: block;
+            animation: fadeUp 0.3s ease;
+        }
+
+        .risk-body p {
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            line-height: 1.7;
+            margin-bottom: 0.8rem;
+        }
+
+        .attack-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+        }
+
+        .attack-step {
+            display: flex;
+            gap: 0.6rem;
+            align-items: flex-start;
+            font-size: 0.82rem;
+        }
+
+        .as-num {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 51, 85, 0.15);
+            border: 1px solid rgba(255, 51, 85, 0.3);
+            color: var(--red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            flex-shrink: 0;
+            margin-top: 0.15rem;
+        }
+
+        .as-text {
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        .chart-wrap {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            position: sticky;
+            top: 80px;
+        }
+
+        .chart-wrap h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .chart-wrap p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 260px;
+        }
+
+        .key-message {
+            margin-top: 2rem;
+            background: rgba(255, 51, 85, 0.08);
+            border: 1px solid rgba(255, 51, 85, 0.25);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .key-message h4 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            color: var(--red);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .key-message p {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .key-message span {
+            color: var(--blue);
+        }
+
+        /* ─── ATTACK TABLE ─── */
+        .attack-table-wrap {
+            margin-top: 3rem;
+        }
+
+        .attack-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.83rem;
+        }
+
+        .attack-table th {
+            padding: 0.7rem 1rem;
+            background: var(--panel);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .attack-table td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-dim);
+            vertical-align: top;
+        }
+
+        .attack-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .attack-table .at-name {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .attack-table .at-mech {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--red);
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border);
+            background: var(--bg2);
+        }
+
+        footer p {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            letter-spacing: 0.06em;
+        }
+
+        footer strong {
+            color: var(--text-dim);
+        }
+
+        /* ─── DIVIDER ─── */
+        .section-divider {
+            position: relative;
+            z-index: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--blue-glow), var(--border), transparent);
+        }
+
+        /* ─── UTILS ─── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeUp 0.7s ease both;
+        }
+
+        .fade-in-2 {
+            animation: fadeUp 0.7s 0.15s ease both;
+        }
+
+        .fade-in-3 {
+            animation: fadeUp 0.7s 0.3s ease both;
+        }
+
+        @media (max-width: 768px) {
+            .sca-factors {
+                grid-template-columns: 1fr;
+            }
+
+            .flow-container {
+                grid-template-columns: 1fr;
+            }
+
+            .risk-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ef-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tpp-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .exceptions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                gap: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="nav-logo">PSD2 <span>| Tech</span></div>
+        <div class="nav-links">
+            <a href="#sca" class="nav-link">01 SCA</a>
+            <a href="#api" class="nav-link">02 API & Open Banking</a>
+            <a href="#flusso" class="nav-link">03 Flusso Pagamento</a>
+            <a href="#embedded" class="nav-link">04 Embedded Finance</a>
+            <a href="#rischi" class="nav-link">05 Rischi</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section id="hero">
+        <div class="hero-glow"></div>
+        <div class="section-inner" style="padding-top: 7rem; position:relative;">
+            <div class="hero-badge">STUDENTE 2 — PARTE TECNICA E TECNOLOGICA</div>
+            <h1 class="hero h1">
+                Il Motore Invisibile<br>
+                <span class="line2">dei Pagamenti Digitali</span>
+            </h1>
+            <p class="hero-desc">
+                La PSD2 non è solo una legge. È un'infrastruttura tecnologica che ha ridisegnato il modo in cui i soldi
+                si muovono su internet, aprendo i sistemi bancari e introducendo nuovi standard di sicurezza.
+            </p>
+            <div class="hero-pills">
+                <a href="#sca" class="hero-pill">🔐 SCA & 3DS2</a>
+                <a href="#api" class="hero-pill">🔌 API & OAuth 2.0</a>
+                <a href="#flusso" class="hero-pill">💳 Flusso Pagamento</a>
+                <a href="#embedded" class="hero-pill">🧩 Embedded Finance</a>
+                <a href="#rischi" class="hero-pill">⚠️ Rischi & Attacchi</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── SECTION 1: SCA ─── -->
+    <section id="sca">
+        <div class="section-inner">
+            <p class="sec-tag">01 / Strong Customer Authentication</p>
+            <h2 class="sec-title">L'Autenticazione Forte<br>del Cliente (SCA)</h2>
+            <p class="sec-subtitle">La SCA è il fondamento tecnico della sicurezza PSD2. Impone che ogni pagamento venga
+                validato con almeno <strong>due fattori indipendenti tra loro</strong> — la compromissione di uno non
+                deve facilitare la violazione dell'altro.</p>
+
+            <!-- 3 FACTORS -->
+            <div class="sca-factors">
+                <div class="factor-card" onclick="toggleFactor('f-knowledge')">
+                    <span class="factor-icon">🧠</span>
+                    <div class="factor-label">Fattore 1</div>
+                    <div class="factor-name">Conoscenza</div>
+                    <div class="factor-hint">"qualcosa che sai"</div>
+                    <div class="factor-detail" id="f-knowledge">
+                        <p><strong>Implementazioni:</strong> password, PIN, sequenze di sblocco.</p><br>
+                        <span class="chip">password</span><span class="chip">PIN</span><span
+                            class="chip">pattern</span><br><br>
+                        <p>⚠️ Il fattore più debole: è vulnerabile ad attacchi di forza bruta, phishing e furto di
+                            credenziali. Da solo non è più sufficiente.</p>
+                    </div>
+                </div>
+                <div class="factor-card" onclick="toggleFactor('f-possession')">
+                    <span class="factor-icon">📱</span>
+                    <div class="factor-label">Fattore 2</div>
+                    <div class="factor-name">Possesso</div>
+                    <div class="factor-hint">"qualcosa che hai"</div>
+                    <div class="factor-detail" id="f-possession">
+                        <p><strong>Implementazioni:</strong> smartphone (notifica push firmata digitalmente), token
+                            hardware, SIM card, chiave crittografica.</p><br>
+                        <span class="chip">OTP via SMS</span><span class="chip">notifica in-app</span><span
+                            class="chip">token hardware</span><br><br>
+                        <p>⚠️ L'OTP via SMS è il più diffuso ma anche il più attaccabile (SIM Swap). Le notifiche push
+                            in-app sono molto più sicure.</p>
+                    </div>
+                </div>
+                <div class="factor-card" onclick="toggleFactor('f-inherence')">
+                    <span class="factor-icon">👁️</span>
+                    <div class="factor-label">Fattore 3</div>
+                    <div class="factor-name">Inerenza</div>
+                    <div class="factor-hint">"qualcosa che sei"</div>
+                    <div class="factor-detail" id="f-inherence">
+                        <p><strong>Implementazioni:</strong> impronta digitale (Touch ID), riconoscimento facciale (Face
+                            ID), scansione iride, biometria comportamentale.</p><br>
+                        <span class="chip">Face ID</span><span class="chip">Touch ID</span><span
+                            class="chip">biometria</span><br><br>
+                        <p>✅ Il fattore più sicuro e con la migliore UX. Difficilissimo da falsificare con le tecnologie
+                            attuali.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DYNAMIC LINKING NOTE -->
+            <div class="info-box" style="border-left: 4px solid var(--cyan); margin-bottom: 1.5rem;">
+                <h4><span>🔗</span> Dynamic Linking (Art. 5 RTS)</h4>
+                <p style="font-size: 0.9rem; color: var(--text-dim); line-height: 1.7;">Un concetto spesso ignorato ma
+                    fondamentale: il codice di autenticazione non è generico, ma è <strong
+                        style="color: var(--cyan)">crittograficamente legato all'importo e al beneficiario
+                        specifico</strong> della transazione. Se un hacker intercetta il codice, non può usarlo per
+                    pagare un importo diverso o verso un altro destinatario — viene automaticamente invalidato.</p>
+            </div>
+
+            <!-- 3DS2 COMPARISON -->
+            <div class="info-box">
+                <h4><span>⚡</span> 3D Secure 2.0 — Il Protocollo Tecnico della SCA</h4>
+                <p style="font-size: 0.88rem; color: var(--text-dim); margin-bottom: 1.5rem; line-height: 1.6;">
+                    Sviluppato da EMVCo (il consorzio di Visa e Mastercard), il 3DS 2.0 è lo standard che applica la SCA
+                    sui pagamenti con carta. La versione 2.0 è un salto qualitativo radicale rispetto alla 1.0.</p>
+                <div style="overflow-x:auto;">
+                    <table class="compare-table">
+                        <thead>
+                            <tr>
+                                <th>Parametro</th>
+                                <th>3D Secure 1.0</th>
+                                <th>3D Secure 2.0</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="col-label">Integrazione</td>
+                                <td class="bad">Browser-only (redirect)</td>
+                                <td class="good">SDK nativo per mobile e browser</td>
+                            </tr>
+                            <tr>
+                                <td class="col-label">Dati analizzati</td>
+                                <td class="bad">~15 elementi</td>
+                                <td class="good">Oltre 150 elementi (dispositivo, IP, abitudini...)</td>
+                            </tr>
+                            <tr>
+                                <td class="col-label">Autenticazione</td>
+                                <td class="bad">Password statica o OTP SMS</td>
+                                <td class="good">Biometria + autenticazione out-of-band</td>
+                            </tr>
+                            <tr>
+                                <td class="col-label">User Experience</td>
+                                <td class="bad">Interruzioni frequenti (friction)</td>
+                                <td class="good">Flussi fluidi (frictionless) via AI</td>
+                            </tr>
+                            <tr>
+                                <td class="col-label">Analisi rischio</td>
+                                <td class="bad">Statica e limitata</td>
+                                <td class="good">Dinamica con Machine Learning</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- EXCEPTIONS -->
+            <div class="info-box">
+                <h4><span>⚖️</span> Esenzioni dalla SCA — Bilanciare Sicurezza e Usabilità</h4>
+                <p style="font-size: 0.88rem; color: var(--text-dim); margin-bottom: 1rem; line-height: 1.6;">Gli RTS
+                    definiscono esenzioni per evitare che l'eccessiva sicurezza ostacoli i pagamenti quotidiani. Non
+                    sono opzionali: richiedono sistemi di monitoraggio frodi avanzati.</p>
+                <div class="exceptions-grid">
+                    <div class="exception-item">
+                        <span class="exc-icon">💸</span>
+                        <div><strong>Basso importo online</strong>
+                            <p>Transazioni e-commerce sotto 30€ (max cumulativo 100€ o 5 op. consecutive)</p>
+                        </div>
+                    </div>
+                    <div class="exception-item">
+                        <span class="exc-icon">📡</span>
+                        <div><strong>Contactless fisico</strong>
+                            <p>Pagamenti fino a 50€ (max cumulativo 150€ o 5 operazioni)</p>
+                        </div>
+                    </div>
+                    <div class="exception-item">
+                        <span class="exc-icon">🔄</span>
+                        <div><strong>Pagamenti ricorrenti</strong>
+                            <p>La SCA si esegue solo alla prima transazione di una serie con stesso importo e
+                                beneficiario</p>
+                        </div>
+                    </div>
+                    <div class="exception-item">
+                        <span class="exc-icon">⭐</span>
+                        <div><strong>Beneficiari attendibili (Whitelist)</strong>
+                            <p>L'utente può inserire commercianti fidati nella propria banca, eliminando la SCA per gli
+                                acquisti futuri</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── SECTION 2: API ─── -->
+    <section id="api">
+        <div class="section-inner">
+            <p class="sec-tag">02 / API & Open Banking</p>
+            <h2 class="sec-title">La Rivoluzione<br>dell'Open Banking</h2>
+            <p class="sec-subtitle">Le banche sono state <strong>obbligate dalla PSD2</strong> ad aprire i propri
+                sistemi tramite API, permettendo a Fintech e servizi terzi di accedere ai conti dei clienti in modo
+                sicuro e standardizzato — senza mai condividere le credenziali.</p>
+
+            <div class="api-tabs">
+                <button class="api-tab active" onclick="setApiTab('oauth')">OAuth 2.0</button>
+                <button class="api-tab" onclick="setApiTab('aisp-pisp')">AISP vs PISP</button>
+                <button class="api-tab" onclick="setApiTab('security')">Sicurezza API</button>
+            </div>
+
+            <!-- TAB: OAuth 2.0 -->
+            <div class="api-content active" id="tab-oauth">
+                <div class="oauth-diagram">
+                    <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 2rem; line-height: 1.6;">OAuth
+                        2.0 è il protocollo che permette tutto. Il concetto chiave: l'utente non dà MAI la propria
+                        password bancaria all'app terza. La banca emette un <strong>Token</strong> — una chiave digitale
+                        a tempo — che autorizza solo le operazioni consentite.</p>
+                    <div class="oauth-steps">
+                        <div class="oauth-node">
+                            <span class="node-icon">🧑</span>
+                            <div class="node-name">Utente</div>
+                            <div class="node-desc">Vuole usare un'app Fintech</div>
+                        </div>
+                        <div class="oauth-arrow">
+                            <div class="arrow-line"></div>
+                            <div class="arrow-label">1. Redirect alla banca</div>
+                        </div>
+                        <div class="oauth-node" style="border-color: rgba(0,180,255,0.3);">
+                            <span class="node-icon">🏦</span>
+                            <div class="node-name">Banca (ASPSP)</div>
+                            <div class="node-desc">Login con SCA + consenso</div>
+                        </div>
+                        <div class="oauth-arrow">
+                            <div class="arrow-line"></div>
+                            <div class="arrow-label">2. Authorization Code</div>
+                        </div>
+                        <div class="oauth-node" style="border-color: rgba(0,255,204,0.3);">
+                            <span class="node-icon">📊</span>
+                            <div class="node-name">App Fintech (TPP)</div>
+                            <div class="node-desc">Riceve Access Token</div>
+                        </div>
+                    </div>
+
+                    <div class="token-table-wrap">
+                        <p
+                            style="font-size: 0.8rem; color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; margin-bottom: 1rem;">
+                            Tipi di token nel flusso OAuth 2.0</p>
+                        <table class="token-table">
+                            <thead>
+                                <tr>
+                                    <th>Token</th>
+                                    <th>Scopo Tecnico</th>
+                                    <th>Durata</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="mono">Authorization Code</td>
+                                    <td>Codice temporaneo per ottenere i token finali</td>
+                                    <td style="color: var(--red); font-family: 'IBM Plex Mono', monospace;">
+                                        < 10 minuti</td>
+                                </tr>
+                                <tr>
+                                    <td class="mono">Access Token</td>
+                                    <td>Autentica ogni singola chiamata API</td>
+                                    <td style="color: var(--amber); font-family: 'IBM Plex Mono', monospace;">30–60
+                                        minuti</td>
+                                </tr>
+                                <tr>
+                                    <td class="mono">Refresh Token</td>
+                                    <td>Ottiene un nuovo Access Token senza coinvolgere l'utente</td>
+                                    <td style="color: var(--cyan); font-family: 'IBM Plex Mono', monospace;">Giorni/Mesi
+                                        (SCA ogni 90gg)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: AISP vs PISP -->
+            <div class="api-content" id="tab-aisp-pisp">
+                <div class="tpp-diagram">
+                    <div style="overflow-x:auto;">
+                        <div class="tpp-flow" id="tpp-flow-diagram">
+                            <div class="tpp-node" id="node-user">
+                                <span class="n-icon">🧑</span>
+                                <div class="n-name">Utente</div>
+                                <div class="n-role">dà il consenso</div>
+                            </div>
+                            <div class="tpp-connector">
+                                <div class="conn-line aisp"></div>
+                                <div class="conn-tag aisp">OAuth 2.0</div>
+                            </div>
+                            <div class="tpp-node highlight-aisp" id="node-tpp">
+                                <span class="n-icon" id="tpp-icon">📊</span>
+                                <div class="n-name" id="tpp-name">App Aggregatore</div>
+                                <div class="n-role" id="tpp-role">AISP — solo lettura</div>
+                            </div>
+                            <div class="tpp-connector">
+                                <div class="conn-line aisp" id="conn2"></div>
+                                <div class="conn-tag aisp" id="conn2-tag">API Read</div>
+                            </div>
+                            <div class="tpp-node">
+                                <span class="n-icon">🏦</span>
+                                <div class="n-name">Banca</div>
+                                <div class="n-role">fornisce dati/pagamenti</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tpp-cards">
+                        <div class="tpp-card aisp-card">
+                            <h4>📊 AISP — Account Information Service Provider</h4>
+                            <p>Accede in <strong>sola lettura</strong> ai dati del conto. Può aggiornare i dati in
+                                background fino a <strong>4 volte al giorno</strong> senza che l'utente ripeta la SCA,
+                                grazie al consenso già concesso.</p>
+                            <ul>
+                                <li>Saldo e lista movimenti</li>
+                                <li>Aggregatori multi-banca (es. Bankin, Plum)</li>
+                                <li>Analisi delle spese personali</li>
+                            </ul>
+                        </div>
+                        <div class="tpp-card pisp-card">
+                            <h4>💸 PISP — Payment Initiation Service Provider</h4>
+                            <p>Avvia pagamenti direttamente dal conto dell'utente. Richiede Dynamic Linking: l'API deve
+                                ricevere l'IBAN del beneficiario e l'importo, mostrati all'utente durante la SCA.</p>
+                            <ul>
+                                <li>Bonifici diretti senza carta</li>
+                                <li>Checkout veloce su e-commerce</li>
+                                <li>Es. Klarna Pay Now, iDeal</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div
+                        style="margin-top: 1.5rem; display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap;">
+                        <button onclick="setTppMode('aisp')"
+                            style="background: var(--blue-glow); border: 1px solid var(--blue); color: var(--blue); padding: 0.5rem 1.2rem; border-radius: 8px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;">Visualizza
+                            AISP</button>
+                        <button onclick="setTppMode('pisp')"
+                            style="background: var(--cyan-glow); border: 1px solid var(--cyan); color: var(--cyan); padding: 0.5rem 1.2rem; border-radius: 8px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;">Visualizza
+                            PISP</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Security -->
+            <div class="api-content" id="tab-security">
+                <div class="info-box">
+                    <h4><span>🛡️</span> Stack di Sicurezza delle API PSD2</h4>
+                    <p style="font-size: 0.88rem; color: var(--text-dim); margin-bottom: 1.5rem; line-height: 1.6;">Le
+                        API non girano "nude" su internet. Ogni comunicazione tra una Fintech e una banca passa
+                        attraverso più livelli di sicurezza sovrapposti.</p>
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                        <div
+                            style="background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.2rem; display: flex; gap: 1rem; align-items: flex-start;">
+                            <span
+                                style="background: rgba(0,180,255,0.1); border: 1px solid rgba(0,180,255,0.3); color: var(--blue); padding: 0.25rem 0.6rem; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; flex-shrink:0; margin-top:0.1rem;">Livello
+                                1</span>
+                            <div>
+                                <strong style="display:block; margin-bottom: 0.3rem;">Certificati eIDAS (QWAC e
+                                    QSealC)</strong>
+                                <p style="font-size: 0.83rem; color: var(--text-dim); line-height: 1.5;">Ogni Fintech
+                                    deve presentare certificati digitali qualificati emessi da autorità certificate a
+                                    livello europeo. Il QWAC autentica il sito web, il QSealC firma i dati trasmessi.
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            style="background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.2rem; display: flex; gap: 1rem; align-items: flex-start;">
+                            <span
+                                style="background: rgba(0,255,204,0.1); border: 1px solid rgba(0,255,204,0.3); color: var(--cyan); padding: 0.25rem 0.6rem; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; flex-shrink:0; margin-top:0.1rem;">Livello
+                                2</span>
+                            <div>
+                                <strong style="display:block; margin-bottom: 0.3rem;">Canale mTLS (Mutual TLS)</strong>
+                                <p style="font-size: 0.83rem; color: var(--text-dim); line-height: 1.5;">La connessione
+                                    tra i server della Fintech e quelli della banca usa Mutual TLS: <em>entrambe</em> le
+                                    parti si autenticano reciprocamente, non solo una direzione come nel normale HTTPS.
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            style="background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.2rem; display: flex; gap: 1rem; align-items: flex-start;">
+                            <span
+                                style="background: rgba(255,181,71,0.1); border: 1px solid rgba(255,181,71,0.3); color: var(--amber); padding: 0.25rem 0.6rem; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; flex-shrink:0; margin-top:0.1rem;">Livello
+                                3</span>
+                            <div>
+                                <strong style="display:block; margin-bottom: 0.3rem;">Profilo FAPI (Financial-grade
+                                    API)</strong>
+                                <p style="font-size: 0.83rem; color: var(--text-dim); line-height: 1.5;">Un profilo
+                                    OAuth 2.0 con restrizioni crittografiche più severe, specifico per il settore
+                                    finanziario. Protegge contro attacchi di injection e session hijacking che il
+                                    normale OAuth non copre.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── SECTION 3: PAYMENT FLOW ─── -->
+    <section id="flusso">
+        <div class="section-inner">
+            <p class="sec-tag">03 / Flusso di un Pagamento Online</p>
+            <h2 class="sec-title">Cosa succede in<br>quei 5 secondi?</h2>
+            <p class="sec-subtitle">Un pagamento online non è un'operazione semplice. È un'orchestrazione complessa di
+                protocolli e sistemi — tutto invisibile all'utente, tutto governato dalle regole PSD2.</p>
+
+            <div class="flow-container">
+                <div class="flow-steps-nav">
+                    <button class="flow-step-btn active" onclick="setFlowStep(1)">
+                        <div class="step-num">1</div>
+                        <div>
+                            <div class="step-btn-text">Checkout</div>
+                            <span class="step-btn-sub">tokenizzazione dati</span>
+                        </div>
+                    </button>
+                    <button class="flow-step-btn" onclick="setFlowStep(2)">
+                        <div class="step-num">2</div>
+                        <div>
+                            <div class="step-btn-text">Gateway & Acquirer</div>
+                            <span class="step-btn-sub">banca del commerciante</span>
+                        </div>
+                    </button>
+                    <button class="flow-step-btn" onclick="setFlowStep(3)">
+                        <div class="step-num">3</div>
+                        <div>
+                            <div class="step-btn-text">Circuito & ACS</div>
+                            <span class="step-btn-sub">Visa / Mastercard</span>
+                        </div>
+                    </button>
+                    <button class="flow-step-btn" onclick="setFlowStep(4)">
+                        <div class="step-num">4</div>
+                        <div>
+                            <div class="step-btn-text">SCA (3DS2)</div>
+                            <span class="step-btn-sub">il momento PSD2</span>
+                        </div>
+                    </button>
+                    <button class="flow-step-btn" onclick="setFlowStep(5)">
+                        <div class="step-num">5</div>
+                        <div>
+                            <div class="step-btn-text">Autorizzazione</div>
+                            <span class="step-btn-sub">conferma finale</span>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="flow-panel">
+                    <!-- Step 1 -->
+                    <div class="flow-content active" id="flow-1">
+                        <span class="flow-icon">💳</span>
+                        <h3 class="flow-title">1. Checkout & Tokenizzazione</h3>
+                        <p class="flow-body">Inserisci i dati della carta sul sito e-commerce. Ma quei dati <strong>non
+                                toccano mai i server del negozio</strong>. Il campo di input è un elemento protetto
+                            (iframe) fornito dal gateway: il browser invia i dati direttamente al gateway, che
+                            restituisce al merchant un <strong>token</strong> univoco e inutilizzabile da soli.</p>
+                        <div class="flow-tag-row">
+                            <span class="flow-tag blue">Tokenizzazione</span>
+                            <span class="flow-tag">PCI-DSS</span>
+                            <span class="flow-tag">Stripe / PayPal</span>
+                            <span class="flow-tag">iframe protetto</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="flow-content" id="flow-2">
+                        <span class="flow-icon">🏢</span>
+                        <h3 class="flow-title">2. Payment Gateway & Acquirer</h3>
+                        <p class="flow-body">Il <strong>Gateway</strong> (es. Stripe, Adyen) è il POS virtuale:
+                            controlla che i dati siano corretti e li passa all'<strong>Acquirer</strong>, cioè la banca
+                            del commerciante. L'Acquirer costruisce la richiesta di addebito e la inoltra alla rete del
+                            circuito.</p>
+                        <div class="flow-tag-row">
+                            <span class="flow-tag blue">Gateway</span>
+                            <span class="flow-tag blue">Acquirer</span>
+                            <span class="flow-tag">Banca del commerciante</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="flow-content" id="flow-3">
+                        <span class="flow-icon">🌐</span>
+                        <h3 class="flow-title">3. Circuito, AReq e ACS</h3>
+                        <p class="flow-body">La richiesta viaggia sui circuiti internazionali (Visa, Mastercard) fino
+                            all'<strong>ACS (Access Control Server)</strong> della banca che ha emesso la carta. Qui, il
+                            3DS 2.0 trasmette oltre <strong>150 dati</strong> (browser, IP, fuso orario, storico) per
+                            l'analisi del rischio. La banca controlla saldo e limiti.</p>
+                        <div class="flow-tag-row">
+                            <span class="flow-tag blue">Visa / Mastercard</span>
+                            <span class="flow-tag blue">ACS (Issuer)</span>
+                            <span class="flow-tag">AReq — Authentication Request</span>
+                            <span class="flow-tag cyan">Risk-Based Authentication</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="flow-content" id="flow-4">
+                        <div class="psd2-highlight">⚡ Questo è il momento PSD2 — la SCA entra in azione</div>
+                        <span class="flow-icon">🔐</span>
+                        <h3 class="flow-title" style="color: var(--blue);">4. La Sfida SCA (3D Secure)</h3>
+                        <p class="flow-body">Se l'ACS valuta il rischio come elevato, <strong>blocca il
+                                pagamento</strong> e invia una notifica push sullo smartphone. L'utente apre l'app
+                            bancaria e autentica con biometria (Face ID / impronta). Il dispositivo <strong>firma
+                                digitalmente</strong> la sfida, incorporando importo e destinatario (Dynamic Linking).
+                            <br><br>Se il rischio è basso → <strong>Frictionless Flow</strong>: il pagamento passa senza
+                            che l'utente faccia nulla.</p>
+                        <div class="flow-tag-row">
+                            <span class="flow-tag blue">Challenge Flow</span>
+                            <span class="flow-tag cyan">Frictionless Flow</span>
+                            <span class="flow-tag blue">Dynamic Linking</span>
+                            <span class="flow-tag">Face ID / impronta</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="flow-content" id="flow-5">
+                        <span class="flow-icon">✅</span>
+                        <h3 class="flow-title" style="color: var(--cyan);">5. Autorizzazione & Clearing</h3>
+                        <p class="flow-body">Autenticazione riuscita: la banca invia un codice di approvazione che
+                            viaggia a ritroso — circuito → acquirer → gateway → sito e-commerce. Solo ora viene
+                            <strong>bloccato l'importo</strong> sul conto dell'utente. Il sito mostra "Ordine
+                            completato".<br><br>L'intero processo, nonostante coinvolga decine di server in tutto il
+                            mondo, si conclude in <strong>meno di 5 secondi</strong>.</p>
+                        <div class="flow-tag-row">
+                            <span class="flow-tag cyan">Autorizzazione</span>
+                            <span class="flow-tag">Clearing</span>
+                            <span class="flow-tag">
+                                < 5 secondi</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── SECTION 4: EMBEDDED FINANCE ─── -->
+    <section id="embedded">
+        <div class="section-inner">
+            <p class="sec-tag">04 / Embedded Finance & Aggregatori</p>
+            <h2 class="sec-title">Quando il Banking<br>scompare nell'App</h2>
+            <p class="sec-subtitle">Grazie alle API PSD2, i servizi bancari non vivono più solo nelle app della banca.
+                Vengono "incorporati" direttamente nelle app che usiamo ogni giorno — spesso senza che ce ne accorgiamo.
+            </p>
+
+            <div class="ef-grid">
+                <div class="ef-card payments">
+                    <div class="ef-card-bg">🚗</div>
+                    <div class="ef-type">Embedded Payments</div>
+                    <h3>Pagamenti Invisibili</h3>
+                    <div class="ef-example">Esempio: Uber, Deliveroo, Amazon Go</div>
+                    <p>Arrivi a destinazione e scendi. Il pagamento avviene in background tramite token memorizzato e
+                        API PISP. Non estrai mai la carta — l'azione del pagamento è unita all'azione del servizio.</p>
+                </div>
+                <div class="ef-card bnpl">
+                    <div class="ef-card-bg">🛍️</div>
+                    <div class="ef-type">Embedded Lending (BNPL)</div>
+                    <h3>Buy Now, Pay Later</h3>
+                    <div class="ef-example">Esempio: Klarna, Scalapay sui siti e-commerce</div>
+                    <p>Al checkout ti viene offerto un mini-finanziamento immediato (paga in 3 rate). La Fintech usa le
+                        API AISP per analizzare in tempo reale la tua situazione finanziaria e decidere se concedere il
+                        credito.</p>
+                </div>
+                <div class="ef-card baas">
+                    <div class="ef-card-bg">🏦</div>
+                    <div class="ef-type">Banking-as-a-Service (BaaS)</div>
+                    <h3>Banca come Ingrediente</h3>
+                    <div class="ef-example">Esempio: Apple Card (infrastruttura Goldman Sachs)</div>
+                    <p>Un brand non bancario offre servizi finanziari completi usando l'infrastruttura di una banca via
+                        API. Gli SDK BaaS gestiscono internamente la complessità della conformità PSD2 e della
+                        crittografia.</p>
+                </div>
+                <div class="ef-card insurance">
+                    <div class="ef-card-bg">🛡️</div>
+                    <div class="ef-type">Aggregatori di Conti (AISP)</div>
+                    <h3>Tutti i Conti in Un'App</h3>
+                    <div class="ef-example">Esempio: Bankin, Plum, Oval Money</div>
+                    <p>Un'app AISP legge i movimenti di tutte le tue banche tramite API e li mostra in un'unica
+                        schermata. Può aggiornarsi in background fino a 4 volte al giorno senza che tu debba ripetere la
+                        SCA.</p>
+                </div>
+            </div>
+
+            <div class="ef-tech-note">
+                <span class="tn-icon">⚡</span>
+                <div>
+                    <h4>Pagamenti Istantanei (SCT Inst) — La Minaccia per Visa e Mastercard</h4>
+                    <p>La PSD2 combinata con il protocollo <strong>SEPA Instant Credit Transfer (SCT Inst)</strong>
+                        permette trasferimenti in meno di 10 secondi, 24/7/365. Un commerciante può ricevere i fondi
+                        quasi istantaneamente, riducendo le commissioni dei circuiti tradizionali e il rischio di
+                        chargeback (i bonifici istantanei sono definitivi e non stornabili). Questo è un cambio
+                        strutturale per l'intero sistema dei pagamenti.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── SECTION 5: RISKS ─── -->
+    <section id="rischi">
+        <div class="section-inner">
+            <p class="sec-tag" style="color: var(--red);">05 / Rischi Tecnologici</p>
+            <h2 class="sec-title">I Criminali<br>Cambiano Bersaglio</h2>
+            <p class="sec-subtitle">La PSD2 ha reso i sistemi informatici bancari quasi inespugnabili. I protocolli
+                crittografici come mTLS e FAPI sono pressoché inviolabili. Risultato: i criminali non attaccano più i
+                server, <strong>attaccano le persone</strong>.</p>
+
+            <div class="risk-grid">
+                <div class="risk-cards">
+
+                    <!-- Phishing 2.0 -->
+                    <div class="risk-card" onclick="toggleRisk(this)">
+                        <div class="risk-header">
+                            <div class="risk-title-row">
+                                <span class="risk-icon">🎣</span>
+                                <span class="risk-title">Phishing 2.0 — Attacchi AitM</span>
+                            </div>
+                            <span class="risk-toggle">▼</span>
+                        </div>
+                        <div class="risk-body">
+                            <p>Non più siti falsi statici. Oggi si usano <strong>proxy trasparenti
+                                    (Adversary-in-the-Middle)</strong> come EvilProxy: il server dell'attaccante si
+                                mette in mezzo tra te e la vera banca, in tempo reale.</p>
+                            <div class="attack-steps">
+                                <div class="attack-step">
+                                    <div class="as-num">1</div>
+                                    <div class="as-text"><strong>Lure:</strong> clicchi su un link che sembra la tua
+                                        banca</div>
+                                </div>
+                                <div class="attack-step">
+                                    <div class="as-num">2</div>
+                                    <div class="as-text"><strong>Proxying:</strong> il server dell'attaccante mostra il
+                                        vero sito della banca come proxy</div>
+                                </div>
+                                <div class="attack-step">
+                                    <div class="as-num">3</div>
+                                    <div class="as-text"><strong>Intercettazione SCA:</strong> inserisci credenziali e
+                                        OTP → l'attaccante li usa in tempo reale</div>
+                                </div>
+                                <div class="attack-step">
+                                    <div class="as-num">4</div>
+                                    <div class="as-text"><strong>Session Hijacking:</strong> ruba il cookie di sessione
+                                        → può operare sul conto già autenticato</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SIM Swap -->
+                    <div class="risk-card" onclick="toggleRisk(this)">
+                        <div class="risk-header">
+                            <div class="risk-title-row">
+                                <span class="risk-icon">📱</span>
+                                <span class="risk-title">SIM Swap — Rubare il Numero di Telefono</span>
+                            </div>
+                            <span class="risk-toggle">▼</span>
+                        </div>
+                        <div class="risk-body">
+                            <p>Il <strong>secondo fattore SCA tramite SMS</strong> è il più attaccabile. Rubare il
+                                numero di telefono equivale a rubare l'identità digitale dell'utente.</p>
+                            <div class="attack-steps">
+                                <div class="attack-step">
+                                    <div class="as-num">1</div>
+                                    <div class="as-text"><strong>Raccolta dati:</strong> nome, CF, data di nascita
+                                        tramite phishing o data breach</div>
+                                </div>
+                                <div class="attack-step">
+                                    <div class="as-num">2</div>
+                                    <div class="as-text"><strong>Impersonificazione:</strong> l'attaccante chiama il
+                                        gestore fingendosi la vittima — "ho perso la SIM"</div>
+                                </div>
+                                <div class="attack-step">
+                                    <div class="as-num">3</div>
+                                    <div class="as-text"><strong>Acquisizione:</strong> la vittima perde il segnale,
+                                        l'attaccante riceve tutti gli SMS OTP</div>
+                                </div>
+                                <div class="attack-step">
+                                    <div class="as-num">4</div>
+                                    <div class="as-text"><strong>Svuotamento:</strong> autorizza bonifici istantanei
+                                        prima che la vittima si accorga del disservizio</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Engineering -->
+                    <div class="risk-card" onclick="toggleRisk(this)">
+                        <div class="risk-header">
+                            <div class="risk-title-row">
+                                <span class="risk-icon">🎭</span>
+                                <span class="risk-title">Social Engineering & Deepfake Vishing</span>
+                            </div>
+                            <span class="risk-toggle">▼</span>
+                        </div>
+                        <div class="risk-body">
+                            <p>L'arte della manipolazione psicologica, potenziata dall'IA. Un truffatore ti chiama con
+                                la <strong>voce clonata (deepfake)</strong> di un funzionario bancario, ti segnala una
+                                frode fittizia e ti convince a validare tu stesso la notifica push della banca — che in
+                                realtà è un pagamento reale avviato da loro.</p>
+                            <p style="margin-top: 0.8rem;">⚠️ L'utente non bypassa la SCA — la esegue lui stesso,
+                                convinto di annullare una frode che non esiste.</p>
+                        </div>
+                    </div>
+
+                    <div class="key-message">
+                        <h4>💡 Messaggio Chiave</h4>
+                        <p>La tecnologia è <span>quasi inviolabile</span>.<br>L'anello debole è sempre l'utente.</p>
+                    </div>
+                </div>
+
+                <!-- CHART -->
+                <div class="chart-wrap">
+                    <h4>Evoluzione delle Tipologie di Frode</h4>
+                    <p>Come gli attacchi "umani" hanno superato gli hack tecnici dopo la PSD2</p>
+                    <div class="chart-container">
+                        <canvas id="riskChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ATTACK TABLE -->
+            <div class="attack-table-wrap">
+                <div class="info-box">
+                    <h4><span>📋</span> Tabella Riepilogativa — Tipologie di Attacco</h4>
+                    <div style="overflow-x: auto; margin-top: 1rem;">
+                        <table class="attack-table">
+                            <thead>
+                                <tr>
+                                    <th>Attacco</th>
+                                    <th>Meccanismo</th>
+                                    <th>Obiettivo tecnico</th>
+                                    <th>Aggira SCA?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="at-name">Phishing AitM</td>
+                                    <td class="at-mech">Reverse proxy in tempo reale</td>
+                                    <td>Furto session cookie/token già autenticato</td>
+                                    <td style="color: var(--red); font-family: 'IBM Plex Mono', monospace;">Sì (bypassa)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="at-name">SIM Swap</td>
+                                    <td class="at-mech">Ingegneria sociale su operatore telefonico</td>
+                                    <td>Intercettazione SMS-OTP</td>
+                                    <td style="color: var(--red); font-family: 'IBM Plex Mono', monospace;">Sì (prende
+                                        il controllo)</td>
+                                </tr>
+                                <tr>
+                                    <td class="at-name">Deepfake Vishing</td>
+                                    <td class="at-mech">Clonazione vocale AI</td>
+                                    <td>Indurre l'utente a fare la SCA da solo</td>
+                                    <td style="color: var(--amber); font-family: 'IBM Plex Mono', monospace;">No (la fa
+                                        fare all'utente)</td>
+                                </tr>
+                                <tr>
+                                    <td class="at-name">Credential Stuffing</td>
+                                    <td class="at-mech">Liste di password rubate + automazione</td>
+                                    <td>Accesso ad account con password riusate</td>
+                                    <td style="color: var(--cyan); font-family: 'IBM Plex Mono', monospace;">Solo se
+                                        no-SCA</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PSD3 NOTE -->
+            <div class="info-box" style="border-left: 4px solid var(--amber); margin-top: 1.5rem;">
+                <h4><span>🚀</span> Verso PSD3 — Le Lezioni Apprese</h4>
+                <p style="font-size: 0.9rem; color: var(--text-dim); line-height: 1.7;">Le vulnerabilità emerse dalla
+                    PSD2 stanno già guidando la PSD3: <strong style="color: var(--amber)">abbandono definitivo degli
+                        SMS</strong> in favore di autenticatori app-based resistenti al phishing; obbligo di condividere
+                    dati sulle frodi tra banche; implementazione del <strong style="color: var(--amber)">Confirmation of
+                        Payee</strong> — verifica che l'IBAN corrisponda davvero al nome del destinatario, prevenendo
+                    truffe basate sull'inganno visivo.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>Ricerca Scolastica — Direttiva PSD2 &nbsp;|&nbsp; <strong>Studente 2: Parte Tecnica e Tecnologica</strong>
+            &nbsp;|&nbsp; GPO — Gestione Progetto Organizzazione d'Impresa</p>
+    </footer>
+
+    <!-- ─── JAVASCRIPT ─── -->
+    <script>
+        // ── NAVBAR ACTIVE ──
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section[id]');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(s => {
+                if (window.scrollY >= s.offsetTop - 100) current = s.getAttribute('id');
+            });
+            navLinks.forEach(a => {
+                a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+            });
+        });
+
+        // ── SCA FACTORS ──
+        function toggleFactor(id) {
+            const el = document.getElementById(id);
+            const parent = el.closest('.factor-card');
+            const isOpen = el.classList.contains('show');
+            // Close all
+            document.querySelectorAll('.factor-detail').forEach(d => d.classList.remove('show'));
+            document.querySelectorAll('.factor-card').forEach(c => c.classList.remove('open'));
+            if (!isOpen) {
+                el.classList.add('show');
+                parent.classList.add('open');
+            }
+        }
+
+        // ── API TABS ──
+        function setApiTab(tab) {
+            document.querySelectorAll('.api-tab').forEach((t, i) => {
+                const tabs = ['oauth', 'aisp-pisp', 'security'];
+                t.classList.toggle('active', tabs[i] === tab);
+            });
+            document.querySelectorAll('.api-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+        }
+
+        // ── TPP MODE TOGGLE ──
+        function setTppMode(mode) {
+            const tppIcon = document.getElementById('tpp-icon');
+            const tppName = document.getElementById('tpp-name');
+            const tppRole = document.getElementById('tpp-role');
+            const tppNode = document.getElementById('node-tpp');
+            const conn2 = document.getElementById('conn2');
+            const conn2tag = document.getElementById('conn2-tag');
+            if (mode === 'aisp') {
+                tppIcon.textContent = '📊';
+                tppName.textContent = 'App Aggregatore';
+                tppRole.textContent = 'AISP — solo lettura';
+                tppNode.className = 'tpp-node highlight-aisp';
+                conn2.className = 'conn-line aisp';
+                conn2tag.className = 'conn-tag aisp';
+                conn2tag.textContent = 'API Read';
+            } else {
+                tppIcon.textContent = '💸';
+                tppName.textContent = 'Servizio Pagamento';
+                tppRole.textContent = 'PISP — inizia pagamenti';
+                tppNode.className = 'tpp-node highlight-pisp';
+                conn2.className = 'conn-line pisp';
+                conn2tag.className = 'conn-tag pisp';
+                conn2tag.textContent = 'API Write';
+            }
+        }
+
+        // ── PAYMENT FLOW ──
+        function setFlowStep(n) {
+            document.querySelectorAll('.flow-step-btn').forEach((b, i) => b.classList.toggle('active', i + 1 === n));
+            document.querySelectorAll('.flow-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('flow-' + n).classList.add('active');
+        }
+
+        // ── RISK CARDS ──
+        function toggleRisk(card) {
+            const body = card.querySelector('.risk-body');
+            const isOpen = card.classList.contains('open');
+            document.querySelectorAll('.risk-card').forEach(c => {
+                c.classList.remove('open');
+                c.querySelector('.risk-body').classList.remove('show');
+            });
+            if (!isOpen) {
+                card.classList.add('open');
+                body.classList.add('show');
+            }
+        }
+
+        // ── CHART ──
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('riskChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['2019\nPre-PSD2 SCA', '2021\nSCA attiva', '2023\nOggi'],
+                    datasets: [
+                        {
+                            label: 'Hack tecnici / Clonazione carte',
+                            data: [70, 30, 10],
+                            backgroundColor: 'rgba(120,140,180,0.5)',
+                            borderColor: 'rgba(120,140,180,0.8)',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Phishing, SIM Swap, Social Eng.',
+                            data: [30, 65, 88],
+                            backgroundColor: 'rgba(255,51,85,0.5)',
+                            borderColor: 'rgba(255,51,85,0.8)',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#7A8BA8',
+                                font: { family: 'IBM Plex Mono', size: 10 },
+                                boxWidth: 10,
+                                padding: 14
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#0D1427',
+                            borderColor: 'rgba(0,180,255,0.3)',
+                            borderWidth: 1,
+                            titleColor: '#E8EDF8',
+                            bodyColor: '#7A8BA8',
+                            cornerRadius: 8,
+                            padding: 10
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#3D4F6B', font: { family: 'IBM Plex Mono', size: 10 } },
+                            grid: { color: 'rgba(255,255,255,0.04)' }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { color: '#3D4F6B', font: { family: 'IBM Plex Mono', size: 10 }, callback: v => v + '%' },
+                            grid: { color: 'rgba(255,255,255,0.04)' }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

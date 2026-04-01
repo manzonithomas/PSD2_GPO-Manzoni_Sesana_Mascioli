@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSD2: Il Futuro dei Pagamenti Digitali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .section-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .section-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-link.active {
+            color: #0ea5e9;
+            border-bottom: 2px solid #0ea5e9;
+        }
+
+        /* ── SCA Lock ── */
+        .lock-body {
+            transition: fill 0.5s, stroke 0.5s;
+        }
+
+        .lock-shackle {
+            transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: 25% 100%;
+        }
+
+        .is-unlocked .lock-shackle {
+            transform: rotate(-50deg) translateY(-18px) translateX(4px);
+            stroke: #10b981;
+        }
+
+        .is-unlocked .lock-body {
+            fill: #d1fae5;
+            stroke: #10b981;
+        }
+
+        .is-unlocked .lock-keyhole {
+            fill: #10b981;
+        }
+
+        .sca-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.3);
+            animation: ripple-out 0.8s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-out {
+            from {
+                transform: scale(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* ── API Flow ── */
+        @keyframes flow-r {
+            0% {
+                left: -10%;
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                left: 108%;
+                opacity: 0;
+            }
+        }
+
+        @keyframes flow-l {
+            0% {
+                right: -10%;
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                right: 108%;
+                opacity: 0;
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(8px);
+            }
+        }
+
+        .api-particle-r {
+            position: absolute;
+            height: 4px;
+            width: 44px;
+            background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+            border-radius: 2px;
+            animation: flow-r 2.2s infinite linear;
+            top: -1px;
+        }
+
+        .api-particle-l {
+            position: absolute;
+            height: 4px;
+            width: 44px;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 2px;
+            animation: flow-l 2.2s infinite linear;
+            top: 7px;
+        }
+
+        /* ── Flusso decisionale ── */
+        .flow-step {
+            display: none;
+        }
+
+        .flow-step.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Simulatore verticale ── */
+        .sim-node {
+            opacity: 0;
+            transform: translateY(-16px);
+            transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.3s;
+        }
+
+        .sim-node.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .sim-connector {
+            height: 0;
+            overflow: hidden;
+            transition: height 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sim-connector.visible {
+            height: 48px;
+        }
+
+        .sim-dot-pulse {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #0ea5e9;
+            animation: dot-pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes dot-pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.5);
+                opacity: 0.5;
+            }
+        }
+
+        /* ── Minacce ── */
+        .threat-tab.active {
+            background: #0f172a;
+            color: #fff;
+        }
+
+        /* Phishing phone screen */
+        .fake-bank-screen {
+            display: none;
+        }
+
+        .fake-bank-screen.show {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* SIM swap animation */
+        @keyframes intercept {
+            0% {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            40% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+        }
+
+        .intercept-msg {
+            animation: intercept 2.5s ease infinite;
+        }
+    </style>
+</head>
+
+<body class="text-slate-900 overflow-x-hidden">
+
+    <!-- ══ NAVBAR ══ -->
+    <nav
+        class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 h-16 flex items-center px-6 justify-between shadow-sm">
+        <div class="font-extrabold text-xl tracking-tighter text-sky-600">PSD2<span
+                class="text-slate-400 font-light italic">STUDENT</span></div>
+        <div class="hidden md:flex gap-8 text-[11px] font-bold uppercase tracking-widest text-slate-500" id="nav-links">
+            <a href="#intro" class="nav-link transition-all py-2">Introduzione</a>
+            <a href="#sca" class="nav-link transition-all py-2">SCA</a>
+            <a href="#tecnica" class="nav-link transition-all py-2">Tecnologia</a>
+            <a href="#api" class="nav-link transition-all py-2">API</a>
+            <a href="#flusso" class="nav-link transition-all py-2">Flusso</a>
+            <a href="#sicurezza" class="nav-link transition-all py-2">Sicurezza</a>
+        </div>
+        <div class="bg-slate-900 text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-widest">THOMAS</div>
+    </nav>
+
+    <!-- ══ INTRO ══ -->
+    <section id="intro"
+        style="min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding-top:64px; position:relative; overflow:hidden;"
+        class="px-6">
+
+        <!-- Griglia di sfondo -->
+        <div
+            style="position:absolute;inset:0;background-image:linear-gradient(rgba(14,165,233,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,0.06) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;">
+        </div>
+        <!-- Glow blu -->
+        <div
+            style="position:absolute;top:-20%;right:-10%;width:700px;height:700px;background:radial-gradient(circle,rgba(14,165,233,0.12) 0%,transparent 70%);pointer-events:none;">
+        </div>
+        <!-- Glow verde -->
+        <div
+            style="position:absolute;bottom:-10%;left:-5%;width:500px;height:500px;background:radial-gradient(circle,rgba(16,185,129,0.08) 0%,transparent 70%);pointer-events:none;">
+        </div>
+
+        <div class="max-w-6xl mx-auto w-full relative z-10">
+
+            <!-- Badge -->
+            <div
+                class="inline-flex items-center gap-2 px-4 py-1.5 mb-8 text-[10px] font-black tracking-widest text-sky-600 bg-sky-50 rounded-full uppercase border border-sky-100 shadow-sm">
+                <span class="w-1.5 h-1.5 bg-sky-500 rounded-full animate-pulse"></span>
+                Contesto Storico — Direttiva UE 2015/2366
+            </div>
+
+            <!-- Titolo -->
+            <h1 class="text-6xl md:text-8xl lg:text-[96px] font-extrabold mb-8 tracking-tight leading-[1.0]">
+                L'Era dell'<br>
+                <span class="text-sky-600">Open Banking</span>.
+            </h1>
+
+            <!-- Testo a due colonne -->
+            <div class="grid md:grid-cols-2 gap-10 text-slate-500 leading-relaxed text-lg mb-14 max-w-4xl">
+                <p>L'entrata in vigore della <strong class="text-slate-700">PSD2</strong> ha segnato una transizione
+                    epocale, spostando il baricentro dal controllo centralizzato delle banche verso un ecosistema aperto
+                    e interoperabile. Non è solo una legge: è una rivoluzione infrastrutturale.</p>
+                <p>Il cuore della trasformazione risiede nell'apertura delle <strong class="text-slate-700">API
+                        bancarie</strong> a terze parti autorizzate e nell'obbligo della <strong
+                        class="text-slate-700">SCA</strong>, ridefinendo sicurezza e flussi transazionali a livello
+                    europeo.</p>
+            </div>
+
+            <!-- Stat cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+                <div class="rounded-2xl px-5 py-5 shadow-sm bg-white/85 border border-sky-100">
+                    <div class="text-2xl font-extrabold text-sky-600 mb-1">2018</div>
+                    <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400">Anno di entrata<br>in
+                        vigore</div>
+                </div>
+                <div class="rounded-2xl px-5 py-5 shadow-sm bg-white/85 border border-sky-100">
+                    <div class="text-2xl font-extrabold text-sky-600 mb-1">2 su 3</div>
+                    <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400">Fattori
+                        SCA<br>obbligatori</div>
+                </div>
+                <div class="rounded-2xl px-5 py-5 shadow-sm bg-white/85 border border-sky-100">
+                    <div class="text-2xl font-extrabold text-sky-600 mb-1">150+</div>
+                    <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400">Punti dati<br>3DS 2.0
+                    </div>
+                </div>
+                <div class="rounded-2xl px-5 py-5 shadow-sm bg-white/85 border border-sky-100">
+                    <div class="text-2xl font-extrabold text-emerald-600 mb-1">€30</div>
+                    <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400">Soglia esenzione<br>SCA
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll indicator -->
+            <div class="flex flex-col items-start gap-2">
+                <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">Scorri per
+                    esplorare</span>
+                <svg style="animation:bounce 1.8s ease-in-out infinite" width="20" height="20" viewBox="0 0 20 20"
+                    fill="none">
+                    <path d="M10 4v12M5 11l5 5 5-5" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ══ SCA ══ -->
+    <section id="sca" class="py-24 bg-slate-50 section-reveal">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-3xl font-extrabold mb-6 italic">Strong Customer Authentication</h2>
+                    <p class="text-slate-600 mb-8">La sicurezza "forte" si basa sulla combinazione di almeno due fattori
+                        indipendenti. Se uno viene compromesso, l'altro protegge il tuo conto. <strong>Regola del 2 su
+                            3:</strong></p>
+                    <div class="space-y-4">
+                        <div onclick="toggleSca(1)" id="sca-1"
+                            class="p-5 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:shadow-md transition-all flex items-center gap-4">
+                            <div
+                                class="w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center sca-check flex-shrink-0">
+                            </div>
+                            <div><span class="block font-bold">Conoscenza</span><span
+                                    class="text-xs text-slate-400 italic">Qualcosa che solo tu SAI (Password,
+                                    PIN)</span></div>
+                        </div>
+                        <div onclick="toggleSca(2)" id="sca-2"
+                            class="p-5 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:shadow-md transition-all flex items-center gap-4">
+                            <div
+                                class="w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center sca-check flex-shrink-0">
+                            </div>
+                            <div><span class="block font-bold">Possesso</span><span
+                                    class="text-xs text-slate-400 italic">Qualcosa che solo tu HAI (Smartphone,
+                                    Token)</span></div>
+                        </div>
+                        <div onclick="toggleSca(3)" id="sca-3"
+                            class="p-5 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:shadow-md transition-all flex items-center gap-4">
+                            <div
+                                class="w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center sca-check flex-shrink-0">
+                            </div>
+                            <div><span class="block font-bold">Inerenza</span><span
+                                    class="text-xs text-slate-400 italic">Qualcosa che solo tu SEI (Impronta,
+                                    FaceID)</span></div>
+                        </div>
+                    </div>
+                    <!-- Contatore fattori -->
+                    <div class="mt-6 flex items-center gap-3">
+                        <div class="flex gap-2" id="sca-dots">
+                            <div class="w-3 h-3 rounded-full bg-slate-200 transition-all duration-300" id="dot-1"></div>
+                            <div class="w-3 h-3 rounded-full bg-slate-200 transition-all duration-300" id="dot-2"></div>
+                            <div class="w-3 h-3 rounded-full bg-slate-200 transition-all duration-300" id="dot-3"></div>
+                        </div>
+                        <span id="sca-counter" class="text-sm font-bold text-slate-400 transition-all duration-300">0 /
+                            2 fattori richiesti</span>
+                    </div>
+                </div>
+
+                <!-- Lock animato -->
+                <div
+                    class="flex flex-col items-center justify-center p-12 bg-white rounded-[3rem] shadow-xl border border-slate-100 min-h-[400px] relative overflow-hidden">
+                    <div id="lock-container" class="mb-6 relative">
+                        <svg id="lock-svg" width="110" height="130" viewBox="0 0 100 120">
+                            <path class="lock-shackle" d="M25 45V30C25 16.2 36.2 5 50 5C63.8 5 75 16.2 75 30V45"
+                                stroke="#cbd5e1" stroke-width="10" stroke-linecap="round" fill="none" />
+                            <rect class="lock-body" x="10" y="45" width="80" height="65" rx="15" fill="#f1f5f9"
+                                stroke="#cbd5e1" stroke-width="6" />
+                            <circle class="lock-keyhole" cx="50" cy="77" r="8" fill="#cbd5e1" />
+                        </svg>
+                    </div>
+                    <div id="sca-status"
+                        class="text-center font-bold text-slate-400 uppercase tracking-widest text-sm transition-all duration-500">
+                        Transazione Bloccata</div>
+                    <div id="sca-msg" class="text-xs text-slate-400 mt-2 italic text-center px-8">Seleziona almeno 2
+                        fattori per autorizzare il pagamento.</div>
+                    <div id="sca-badge"
+                        class="mt-4 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-500 bg-slate-100 text-slate-400">
+                        ACCESSO NEGATO
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ TECNOLOGIA ══ -->
+    <section id="tecnica" class="py-24 max-w-6xl mx-auto px-6 section-reveal">
+        <h2 class="text-3xl font-extrabold mb-12 text-center tracking-tight italic">Meccanismi Tecnici Avanzati</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+
+            <!-- Dynamic Linking — stesso stile degli altri -->
+            <div class="p-8 bg-white border border-slate-100 rounded-[2rem] shadow-sm">
+                <div class="text-sky-500 font-bold mb-4 uppercase text-[10px] tracking-[0.3em]">Sicurezza Transazionale
+                </div>
+                <h3 class="text-xl font-bold mb-4">Dynamic Linking</h3>
+                <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                    Ogni codice di autorizzazione è legato indissolubilmente all'<strong>importo</strong> e al
+                    <strong>beneficiario</strong>. Se un hacker cambia il destinatario, il codice diventa nullo.
+                </p>
+                <div
+                    class="text-[10px] bg-sky-50 text-sky-500 px-3 py-1 rounded inline-block font-bold border border-sky-100">
+                    Anti-Man-in-the-Middle</div>
+            </div>
+
+            <div class="p-8 bg-white border border-slate-100 rounded-[2rem] shadow-sm">
+                <div class="text-emerald-500 font-bold mb-4 uppercase text-[10px] tracking-[0.3em]">Protocollo</div>
+                <h3 class="text-xl font-bold mb-4">3-D Secure 2.0</h3>
+                <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                    A differenza della v1.0, la 2.0 scambia oltre <strong>150 punti dati</strong> (dispositivo,
+                    posizione, abitudini) per ridurre l'attrito e aumentare la sicurezza senza noiose password statiche.
+                </p>
+                <div class="flex gap-2 items-center">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Analisi del rischio</span>
+                </div>
+            </div>
+
+            <div class="p-8 bg-white border border-slate-100 rounded-[2rem] shadow-sm">
+                <div class="text-rose-500 font-bold mb-4 uppercase text-[10px] tracking-[0.3em]">Ottimizzazione</div>
+                <h3 class="text-xl font-bold mb-4">Esenzioni SCA</h3>
+                <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                    Non sempre serve la SCA! Esistono esenzioni per <strong>piccoli importi</strong> (&lt;30€),
+                    pagamenti ricorrenti o beneficiari attendibili (Whitelisting).
+                </p>
+                <div class="text-[10px] bg-slate-100 text-slate-500 px-3 py-1 rounded inline-block font-bold">User
+                    Experience (UX)</div>
+            </div>
+
+            <div class="p-8 bg-white border border-slate-100 rounded-[2rem] shadow-sm">
+                <div class="text-indigo-500 font-bold mb-4 uppercase text-[10px] tracking-[0.3em]">Infrastruttura</div>
+                <h3 class="text-xl font-bold mb-4">Tokenizzazione & PCI-DSS</h3>
+                <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                    I dati sensibili non toccano mai il server del mercante: vengono sostituiti da
+                    <strong>Token</strong> univoci. Questo isolamento (via iframe/gateway) riduce drasticamente l'ambito
+                    di conformità <strong>PCI-DSS</strong>.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ══ API INTERATTIVA ══ -->
+    <section id="api" class="py-24 bg-slate-900 text-white section-reveal">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-extrabold mb-4 italic">Architettura API: I Ponti Digitali</h2>
+            <p class="text-slate-400 mb-10 text-sm">Seleziona un tipo di provider e poi simula la chiamata API.</p>
+
+            <!-- Tab selector -->
+            <div class="fl#apiex gap-3 mb-8 flex-wrap">
+                <button onclick="selectApiType('aisp')" id="btn-aisp"
+                    class="api-tab-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest border border-sky-500 text-sky-400 bg-sky-500/10 transition-all hover:bg-sky-500/20 active-api">
+                    AISP — Account Info
+                </button>
+                <button onclick="selectApiType('pisp')" id="btn-pisp"
+                    class="api-tab-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest border border-white/10 text-slate-400 transition-all hover:bg-white/5">
+                    PISP — Payment Init
+                </button>
+            </div>
+
+            <div
+                class="mb-8 p-4 bg-white/5 border border-white/10 rounded-2xl flex flex-wrap gap-6 text-[11px] font-mono text-slate-300">
+                <div><span class="text-sky-400">CERTIFICATI:</span> eIDAS (QWAC & QSealC)</div>
+                <div><span class="text-sky-400">TRASPORTO:</span> mTLS (Mutual TLS)</div>
+                <div><span class="text-sky-400">STANDARD:</span> FAPI (Financial-grade API)</div>
+                <div><span class="text-sky-400">SESSIONE:</span> Access Token (30-60 min) | Refresh Token (90-180gg)
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-10 items-start">
+                <!-- Pannello sinistro: flusso step-by-step -->
+                <div class="space-y-0" id="api-flow-panel">
+                    <!-- steps rendered by JS -->
+                </div>
+
+                <!-- Pannello destro: terminale JSON -->
+                <div class="bg-black/40 border border-white/10 rounded-2xl overflow-hidden">
+                    <div class="flex items-center gap-2 px-4 py-3 border-b border-white/10">
+                        <div class="w-3 h-3 rounded-full bg-rose-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+                        <span class="ml-3 text-[10px] font-mono text-slate-500 uppercase tracking-widest">API
+                            Response</span>
+                    </div>
+                    <div id="api-json-output"
+                        class="font-mono text-xs p-6 text-slate-400 min-h-[280px] leading-relaxed whitespace-pre-wrap">
+                        <span class="text-slate-600 italic">// Premi "Simula Chiamata" per vedere la risposta
+                            JSON...</span>
+                    </div>
+                    <div class="px-6 pb-5 flex gap-3">
+                        <button onclick="runApiCall()" id="api-run-btn"
+                            class="flex-1 py-3 bg-sky-600 hover:bg-sky-500 transition-all rounded-xl text-xs font-bold uppercase tracking-widest text-white">
+                            ▶ Simula Chiamata API
+                        </button>
+                        <button onclick="resetApiFlow()"
+                            class="px-4 py-3 border border-white/10 hover:bg-white/5 transition-all rounded-xl text-xs font-bold text-slate-400">
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ SIMULATORE VERTICALE ══ -->
+    <section id="flusso" class="py-24 max-w-4xl mx-auto px-6 section-reveal">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-extrabold tracking-tighter italic mb-4">Simulatore di Pagamento</h2>
+            <p class="text-slate-500">Sperimenta come la banca decide tra velocità e sicurezza.</p>
+        </div>
+
+        <div class="bg-white rounded-[2.5rem] border border-slate-200 p-8 md:p-12 shadow-2xl">
+            <!-- Selezione rischio -->
+            <div id="sim-start" class="">
+                <div class="text-center mb-10">
+                    <div class="text-5xl mb-4">🛒</div>
+                    <h3 class="text-xl font-bold mb-2">Nuovo Acquisto Online — 80€</h3>
+                    <p class="text-slate-400 text-sm mb-6">Scegli lo scenario da simulare:</p>
+                    <div class="flex justify-center gap-4 flex-wrap">
+                        <button onclick="startSim('low')"
+                            class="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-bold text-sm hover:bg-emerald-700 transition-all">
+                            Rischio BASSO → Dispositivo conosciuto
+                        </button>
+                        <button onclick="startSim('high')"
+                            class="px-6 py-3 bg-rose-600 text-white rounded-2xl font-bold text-sm hover:bg-rose-700 transition-all">
+                            Rischio ALTO → Dispositivo sconosciuto
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flusso verticale -->
+            <div id="sim-flow" class="hidden">
+                <div class="flex flex-col items-center gap-0" id="sim-nodes-container">
+                    <!-- Nodi iniettati da JS -->
+                </div>
+                <div class="text-center mt-8">
+                    <button onclick="resetSim()"
+                        class="text-xs font-bold text-slate-400 underline uppercase tracking-widest">
+                        Ricomincia simulazione
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ SICUREZZA & MINACCE ══ -->
+    <section id="sicurezza" class="py-24 bg-slate-50 section-reveal">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-extrabold mb-4 italic text-rose-600">Minacce nell'era Post-PSD2</h2>
+            <p class="text-slate-400 mb-10 text-sm">Seleziona una minaccia per vedere la simulazione interattiva.</p>
+
+            <div class="grid lg:grid-cols-[280px_1fr] gap-8">
+                <!-- Tabs sinistro -->
+                <div class="space-y-3">
+                    <div onclick="selectThreat('social')" id="tab-social"
+                        class="threat-tab active p-5 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="font-bold text-sm mb-1">📞 Social Engineering</div>
+                        <div class="text-xs text-slate-400">Il truffatore manipola la fiducia</div>
+                    </div>
+                    <div onclick="selectThreat('sim')" id="tab-sim"
+                        class="threat-tab p-5 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="font-bold text-sm mb-1">📡 SIM Swap Fraud</div>
+                        <div class="text-xs text-slate-400">Intercettazione dell'OTP via SMS</div>
+                    </div>
+                    <div onclick="selectThreat('phishing')" id="tab-phishing"
+                        class="threat-tab p-5 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="font-bold text-sm mb-1">🎣 Phishing Evoluto</div>
+                        <div class="text-xs text-slate-400">Pagina clone della tua banca</div>
+                    </div>
+                    <div onclick="selectThreat('app')" id="tab-app"
+                        class="threat-tab p-5 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="font-bold text-sm mb-1">🏦 APP Fraud</div>
+                        <div class="text-xs text-slate-400">Approvi il pagamento del truffatore</div>
+                    </div>
+                </div>
+
+                <!-- Pannello destro -->
+                <div
+                    class="bg-white rounded-2xl border border-slate-200 p-8 min-h-[460px] flex items-center justify-center">
+
+                    <!-- SOCIAL ENGINEERING -->
+                    <div id="threat-social" class="w-full">
+                        <div id="social-stage-1" class="text-center">
+                            <div class="text-4xl mb-4">📱</div>
+                            <h4 class="text-lg font-bold mb-2 text-slate-800">Stai per ricevere una telefonata…</h4>
+                            <p class="text-slate-500 text-sm mb-6">Un numero sconosciuto ti chiama dicendo di essere la
+                                banca.</p>
+                            <button onclick="socialNext(1)"
+                                class="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-700 transition-all">
+                                Rispondi alla chiamata ☎️
+                            </button>
+                        </div>
+                        <div id="social-stage-2" class="hidden">
+                            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 mb-6">
+                                <div class="flex items-start gap-3 mb-4">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-lg flex-shrink-0">
+                                        👤</div>
+                                    <div
+                                        class="bg-white border border-slate-200 rounded-2xl rounded-tl-sm p-4 text-sm text-slate-700 leading-relaxed shadow-sm">
+                                        "Salve, sono Mario Rossi del reparto sicurezza di
+                                        <strong>BancaItaliana</strong>. Abbiamo rilevato un <span
+                                            class="text-rose-600 font-bold">accesso sospetto</span> al suo conto. Per
+                                        bloccare la transazione ho bisogno del codice OTP che le arriverà per SMS tra
+                                        pochi secondi."
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3 flex-row-reverse">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-sky-500 flex items-center justify-center text-white text-lg flex-shrink-0">
+                                        😰</div>
+                                    <div
+                                        class="bg-sky-50 border border-sky-200 rounded-2xl rounded-tr-sm p-4 text-sm text-slate-700 shadow-sm">
+                                        <em>SMS ricevuto: codice OTP <strong
+                                                class="font-mono text-sky-700">847261</strong></em>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-sm text-slate-500 text-center mb-6">Cosa fai?</p>
+                            <div class="flex gap-4 justify-center">
+                                <button onclick="socialNext(2, true)"
+                                    class="px-5 py-3 bg-rose-600 text-white rounded-xl font-bold text-sm hover:bg-rose-700 transition-all">
+                                    📢 Detto il codice
+                                </button>
+                                <button onclick="socialNext(2, false)"
+                                    class="px-5 py-3 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 transition-all">
+                                    ✋ Rifiuto e riaggancio
+                                </button>
+                            </div>
+                        </div>
+                        <div id="social-stage-3-bad" class="hidden text-center">
+                            <div class="text-5xl mb-4">💸</div>
+                            <h4 class="text-xl font-bold text-rose-600 mb-3">Conto svuotato!</h4>
+                            <p class="text-slate-500 text-sm mb-4">Il truffatore ha usato il tuo OTP per autorizzare un
+                                pagamento di <strong>2.400€</strong>. Ricorda: <strong>la banca vera non chiede mai
+                                    l'OTP al telefono.</strong></p>
+                            <button onclick="socialReset()"
+                                class="text-xs font-bold text-slate-400 underline uppercase tracking-widest">Riprova</button>
+                        </div>
+                        <div id="social-stage-3-good" class="hidden text-center">
+                            <div class="text-5xl mb-4">🛡️</div>
+                            <h4 class="text-xl font-bold text-emerald-600 mb-3">Minaccia neutralizzata!</h4>
+                            <p class="text-slate-500 text-sm mb-4">Hai fatto bene. Chiama direttamente la tua banca
+                                usando il numero sul retro della carta per verificare eventuali problemi reali.</p>
+                            <button onclick="socialReset()"
+                                class="text-xs font-bold text-slate-400 underline uppercase tracking-widest">Riprova</button>
+                        </div>
+                    </div>
+
+                    <!-- SIM SWAP -->
+                    <div id="threat-sim" class="w-full hidden">
+                        <h4 class="font-bold text-slate-800 mb-2 text-lg">Come funziona il SIM Swap</h4>
+                        <p class="text-slate-500 text-sm mb-8">Il criminale ottiene un duplicato della tua SIM
+                            fingendosi te all'operatore telefonico. Da quel momento intercetta tutti i tuoi SMS, inclusi
+                            gli OTP.</p>
+
+                        <div class="relative">
+                            <!-- Timeline visiva -->
+                            <div class="flex justify-between items-end mb-4">
+                                <div class="text-center">
+                                    <div class="text-3xl mb-2">😈</div>
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase">Criminale</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl mb-2">🏢</div>
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase">Operatore</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl mb-2">📡</div>
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase">Rete SMS</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl mb-2">😟</div>
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase">Vittima</div>
+                                </div>
+                            </div>
+
+                            <!-- Step animati -->
+                            <div id="sim-steps" class="space-y-3">
+                                <div class="sim-swap-step p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm hidden"
+                                    data-step="1">
+                                    <span class="font-bold text-slate-600">Fase 1 →</span> Il criminale raccoglie i dati
+                                    personali della vittima (phishing, data breach).
+                                </div>
+                                <div class="sim-swap-step p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm hidden"
+                                    data-step="2">
+                                    <span class="font-bold text-amber-700">Fase 2 →</span> Si reca in negozio o chiama
+                                    l'operatore con documenti falsi: <em>"Ho perso la SIM, ho bisogno di un
+                                        duplicato."</em>
+                                </div>
+                                <div class="sim-swap-step p-4 bg-rose-50 border border-rose-200 rounded-xl text-sm hidden"
+                                    data-step="3">
+                                    <span class="font-bold text-rose-700">Fase 3 →</span> L'operatore attiva la nuova
+                                    SIM. <strong>La tua SIM originale si disattiva</strong> — noti solo che non hai
+                                    segnale.
+                                </div>
+                                <div class="sim-swap-step p-4 bg-rose-100 border border-rose-400 rounded-xl text-sm hidden"
+                                    data-step="4">
+                                    <span class="font-bold text-rose-800">Fase 4 →</span> La banca invia l'OTP per
+                                    autorizzare un pagamento. Il criminale riceve l'SMS sul suo telefono. Conto
+                                    acceduto.
+                                </div>
+                            </div>
+
+                            <div class="mt-6 flex gap-4 justify-center">
+                                <button onclick="simSwapNext()" id="sim-swap-btn"
+                                    class="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-700 transition-all">
+                                    Avanza simulazione ▶
+                                </button>
+                                <button onclick="simSwapReset()"
+                                    class="px-4 py-3 border border-slate-200 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-50 transition-all">
+                                    Reset
+                                </button>
+                            </div>
+
+                            <div id="sim-defense"
+                                class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-sm text-emerald-700">
+                                <strong>🛡️ Come difendersi:</strong> Abilita il PIN SIM, usa app authenticator (TOTP)
+                                invece degli SMS, e attiva gli alert di login con la tua banca.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PHISHING -->
+                    <div id="threat-phishing" class="w-full hidden">
+                        <div id="phishing-stage-1">
+                            <h4 class="font-bold text-slate-800 mb-2 text-lg">Arriva un SMS dalla "banca"…</h4>
+                            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 mb-6">
+                                <div class="flex items-start gap-3">
+                                    <div
+                                        class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-sm flex-shrink-0 font-bold">
+                                        🏦</div>
+                                    <div
+                                        class="bg-white border border-slate-200 rounded-2xl p-4 text-sm text-slate-700 leading-relaxed shadow-sm">
+                                        <span class="block text-[10px] font-bold text-slate-400 mb-1">INFO-BANCA</span>
+                                        Accesso sospetto rilevato. Verifica la tua identità entro 24h per evitare il
+                                        blocco del conto:
+                                        <br>
+                                        <span id="phishing-link" onclick="openFakeBank()"
+                                            class="text-blue-600 underline cursor-pointer font-mono text-xs mt-1 inline-block hover:text-blue-800 transition-all">
+                                            banca-secure-it.login-verify.com/it
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl mb-5">
+                                <span class="text-amber-500">⚠️</span>
+                                <p class="text-xs text-amber-700">Noti qualcosa di strano nell'URL?
+                                    <em>banca-secure-it.login-verify.com</em> — non è il dominio ufficiale della banca!
+                                </p>
+                            </div>
+                            <div class="flex gap-3 justify-center">
+                                <button onclick="openFakeBank()"
+                                    class="px-5 py-3 bg-rose-600 text-white rounded-xl font-bold text-sm hover:bg-rose-700 transition-all">
+                                    🔗 Clicca il link (pericolo!)
+                                </button>
+                                <button onclick="phishingIgnore()"
+                                    class="px-5 py-3 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 transition-all">
+                                    ✋ Ignora l'SMS
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Schermata fake bank -->
+                        <div id="phishing-stage-2" class="hidden w-full">
+                            <div class="flex justify-center">
+                                <div class="w-72 border-2 border-rose-400 rounded-2xl overflow-hidden shadow-2xl">
+                                    <!-- Fake browser bar -->
+                                    <div
+                                        class="bg-slate-100 px-3 py-2 flex items-center gap-2 border-b border-slate-200">
+                                        <div class="flex gap-1">
+                                            <div class="w-2.5 h-2.5 rounded-full bg-rose-400"></div>
+                                            <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+                                            <div class="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
+                                        </div>
+                                        <div
+                                            class="flex-1 bg-white border border-slate-300 rounded text-[9px] font-mono px-2 py-1 text-rose-600 flex items-center gap-1">
+                                            <span>⚠️</span> banca-secure-it.login-verify.com
+                                        </div>
+                                    </div>
+                                    <!-- Fake bank page -->
+                                    <div class="bg-white p-5">
+                                        <div class="flex items-center gap-2 mb-4">
+                                            <div
+                                                class="w-7 h-7 bg-sky-600 rounded-md flex items-center justify-center text-white text-xs font-bold">
+                                                BI</div>
+                                            <span class="font-bold text-sm text-slate-800">BancaItaliana</span>
+                                            <span class="text-[9px] text-slate-300 ml-auto italic">Online Banking</span>
+                                        </div>
+                                        <p class="text-xs text-slate-500 mb-3">Accedi al tuo conto</p>
+                                        <div class="space-y-2 mb-3">
+                                            <input type="text" placeholder="Codice cliente"
+                                                class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs bg-slate-50"
+                                                readonly value="MARIO.ROSSI">
+                                            <input type="password" placeholder="Password"
+                                                class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs bg-slate-50"
+                                                readonly value="••••••••">
+                                        </div>
+                                        <button onclick="phishingSubmit()"
+                                            class="w-full bg-sky-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-sky-700 transition-all">
+                                            Accedi →
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-center text-xs text-rose-500 mt-4 italic">Questa pagina è identica alla vera,
+                                ma le credenziali vengono rubate.</p>
+                        </div>
+
+                        <!-- Esito phishing submit -->
+                        <div id="phishing-stage-3" class="hidden text-center">
+                            <div class="text-5xl mb-4">💀</div>
+                            <h4 class="text-lg font-bold text-rose-600 mb-2">Credenziali rubate!</h4>
+                            <p class="text-sm text-slate-500 mb-4">Username e password sono stati inviati al server
+                                dell'hacker. Ora può accedere al tuo conto reale.</p>
+                            <button onclick="phishingReset()"
+                                class="text-xs font-bold text-slate-400 underline uppercase tracking-widest">Riprova</button>
+                        </div>
+
+                        <!-- Esito phishing ignore -->
+                        <div id="phishing-stage-4" class="hidden text-center">
+                            <div class="text-5xl mb-4">✅</div>
+                            <h4 class="text-lg font-bold text-emerald-600 mb-2">Ottima scelta!</h4>
+                            <p class="text-sm text-slate-500 mb-4">Hai riconosciuto il link sospetto. La vera banca usa
+                                sempre il suo dominio ufficiale e non ti chiede mai di cliccare link via SMS.</p>
+                            <button onclick="phishingReset()"
+                                class="text-xs font-bold text-slate-400 underline uppercase tracking-widest">Riprova</button>
+                        </div>
+                    </div>
+
+                    <!-- APP FRAUD -->
+                    <div id="threat-app" class="w-full hidden">
+                        <div id="app-stage-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h4 class="font-bold text-slate-800 text-lg">Authorized Push Payment Fraud</h4>
+                                <span
+                                    class="text-[10px] bg-rose-100 text-rose-600 font-bold px-2 py-0.5 rounded-full uppercase tracking-widest">Avanzata</span>
+                            </div>
+                            <p class="text-slate-500 text-sm mb-5">Il truffatore ha già le tue credenziali. Avvia lui
+                                una transazione dal tuo conto — poi ti contatta per farti <strong>approvare</strong> il
+                                suo pagamento, facendoti credere di stare bloccando un accesso sospetto.</p>
+                            <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 mb-4">
+                                <div class="flex items-start gap-3">
+                                    <div
+                                        class="w-9 h-9 rounded-full bg-sky-100 flex items-center justify-center text-sm flex-shrink-0">
+                                        🏦</div>
+                                    <div
+                                        class="bg-white border border-slate-200 rounded-2xl p-4 text-sm text-slate-700 leading-relaxed shadow-sm">
+                                        <span
+                                            class="block text-[10px] font-bold text-slate-400 mb-1">BANCA-ITALIANA</span>
+                                        Abbiamo rilevato un tentativo di accesso al tuo conto. Per
+                                        <strong>bloccare</strong> l'operazione, verifica la tua identità:
+                                        <br>
+                                        <span onclick="appNext(1)"
+                                            class="text-blue-600 underline cursor-pointer font-mono text-xs mt-1 inline-block hover:text-blue-800 transition-all">
+                                            bancaitaliana.it/sicurezza/verifica
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2 p-3 bg-sky-50 border border-sky-200 rounded-xl mb-5">
+                                <span class="text-sky-500 text-sm">ℹ️</span>
+                                <p class="text-xs text-sky-700">A differenza del phishing, <strong>il link porta al sito
+                                        vero della banca</strong> — nessun URL falso. Il truffatore ha già avviato la
+                                    transazione sul tuo conto: ora ha solo bisogno che <em>tu</em> la approvi.</p>
+                            </div>
+                            <div class="flex gap-3 justify-center">
+                                <button onclick="appNext(1)"
+                                    class="px-5 py-3 bg-rose-600 text-white rounded-xl font-bold text-sm hover:bg-rose-700 transition-all">🔗
+                                    Clicca il link</button>
+                                <button onclick="appIgnore()"
+                                    class="px-5 py-3 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 transition-all">📞
+                                    Chiamo la banca direttamente</button>
+                            </div>
+                        </div>
+
+                        <!-- Stage 2: pagina VERA della banca -->
+                        <div id="app-stage-2" class="hidden w-full">
+                            <div class="flex justify-center">
+                                <div class="w-72 border-2 border-emerald-400 rounded-2xl overflow-hidden shadow-2xl">
+                                    <div
+                                        class="bg-slate-100 px-3 py-2 flex items-center gap-2 border-b border-slate-200">
+                                        <div class="flex gap-1">
+                                            <div class="w-2.5 h-2.5 rounded-full bg-rose-400"></div>
+                                            <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+                                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
+                                        </div>
+                                        <div
+                                            class="flex-1 bg-white border border-slate-300 rounded text-[9px] font-mono px-2 py-1 text-emerald-700 flex items-center gap-1">
+                                            <span>🔒</span> bancaitaliana.it/sicurezza/verifica
+                                        </div>
+                                    </div>
+                                    <div class="bg-white p-5">
+                                        <div class="flex items-center gap-2 mb-3">
+                                            <div
+                                                class="w-7 h-7 bg-sky-600 rounded-md flex items-center justify-center text-white text-xs font-bold">
+                                                BI</div>
+                                            <span class="font-bold text-sm text-slate-800">BancaItaliana</span>
+                                            <span class="text-[9px] text-emerald-600 ml-auto font-bold">✓ Sito
+                                                ufficiale</span>
+                                        </div>
+                                        <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4">
+                                            <p class="text-[10px] font-bold text-amber-700 mb-1">VERIFICA OPERAZIONE</p>
+                                            <p class="text-xs text-slate-600">Stai autorizzando:</p>
+                                            <p class="text-sm font-bold text-slate-800 mt-1">€ 2.400,00</p>
+                                            <p class="text-[10px] text-slate-400 font-mono">→ IT40X0200802000000000099XX
+                                            </p>
+                                            <p class="text-[10px] text-slate-400">Destinatario: Mario Bianchi</p>
+                                        </div>
+                                        <p class="text-[10px] text-slate-400 mb-3 italic">Conferma con impronta per
+                                            <strong>"bloccare l'accesso sospetto"</strong>
+                                        </p>
+                                        <button onclick="appConfirm()"
+                                            class="w-full bg-sky-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-sky-700 transition-all">
+                                            👆 Conferma con impronta
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-center text-xs text-emerald-700 font-bold mt-3">🔒 Sito autentico,
+                                certificato valido, URL corretto.</p>
+                            <p class="text-center text-xs text-rose-500 mt-1 italic">Ma stai approvando il pagamento del
+                                truffatore.</p>
+                        </div>
+
+                        <!-- Stage 3: truffa riuscita -->
+                        <div id="app-stage-3" class="hidden text-center">
+                            <div class="text-5xl mb-4">💸</div>
+                            <h4 class="text-lg font-bold text-rose-600 mb-2">€ 2.400 trasferiti al truffatore!</h4>
+                            <p class="text-sm text-slate-500 mb-3">Hai approvato con SCA (impronta digitale) il
+                                pagamento del truffatore. Il flusso tecnico era <strong>perfettamente legittimo</strong>
+                                — la banca non può distinguerlo da una tua operazione volontaria.</p>
+                            <div
+                                class="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 text-left mb-4">
+                                <strong>Perché è diverso dal phishing?</strong> Il sito era quello vero, l'URL era
+                                corretto, la SCA era autentica. Il problema: non hai letto cosa stavi approvando. Questa
+                                truffa si chiama <strong>APP Fraud (Authorized Push Payment)</strong> ed è tra le più
+                                difficili da contrastare tecnicamente.
+                            </div>
+                            <button onclick="appReset()"
+                                class="text-xs font-bold text-slate-400 underline uppercase tracking-widest">Riprova</button>
+                        </div>
+
+                        <!-- Stage 4: esito corretto -->
+                        <div id="app-stage-4" class="hidden text-center">
+                            <div class="text-5xl mb-4">🛡️</div>
+                            <h4 class="text-lg font-bold text-emerald-600 mb-2">Minaccia sventata!</h4>
+                            <p class="text-sm text-slate-500 mb-3">Chiamando direttamente la banca con il numero sul
+                                retro della carta hai scoperto che non c'era nessun accesso sospetto — era una truffa.
+                            </p>
+                            <div
+                                class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-700 text-left mb-4">
+                                <strong>Regola d'oro:</strong> Prima di approvare qualsiasi operazione, leggi
+                                <em>importo e destinatario</em> mostrati nell'app. Se stai "bloccando" qualcosa ma vedi
+                                un pagamento in uscita a uno sconosciuto, è una truffa APP.
+                            </div>
+                            <button onclick="appReset()"
+                                class="text-xs font-bold text-slate-400 underline uppercase tracking-widest">Riprova</button>
+                        </div>
+                    </div>
+
+                </div><!-- fine pannello destra -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ CASO ITALIA ══ -->
+    <section class="py-24 max-w-6xl mx-auto px-6 section-reveal">
+        <div class="bg-sky-600 rounded-[3rem] p-12 text-white relative overflow-hidden shadow-xl">
+            <h2 class="text-3xl font-extrabold mb-8 italic">Il Caso Italia 🇮🇹</h2>
+            <div class="grid md:grid-cols-2 gap-12 relative z-10">
+                <div>
+                    <p class="text-sky-100 leading-relaxed">
+                        L'Italia ha recepito la PSD2 tramite il <strong>D.Lgs. 218/2017</strong>. Bankitalia ha
+                        monitorato una transizione fluida ma rigorosa, obbligando tutti gli istituti ad abbandonare i
+                        vecchi "codici battaglia" in favore di app bancarie sicure e token dinamici.
+                    </p>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4 bg-white/10 p-4 rounded-xl">
+                        <span class="text-2xl">⚡</span>
+                        <div>
+                            <h5 class="font-bold">Bancomat Pay</h5>
+                            <p class="text-xs text-sky-200">Integrazione API per pagamenti P2P immediati.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-white/10 p-4 rounded-xl">
+                        <span class="text-2xl">📱</span>
+                        <div>
+                            <h5 class="font-bold">CBI Globe</h5>
+                            <p class="text-xs text-sky-200">Piattaforma italiana che aggrega le API di quasi tutte le
+                                banche nazionali.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ FOOTER ══ -->
+    <footer class="bg-slate-900 py-16 text-center px-6">
+        <div class="max-w-2xl mx-auto">
+            <div class="font-extrabold text-2xl tracking-tighter text-white mb-1">PSD2<span
+                    class="text-slate-500 font-light italic">STUDENT</span></div>
+            <p class="text-[10px] uppercase tracking-[0.4em] font-bold text-slate-500 mb-5">Analisi Tecnica
+                dell'Infrastruttura PSD2</p>
+            <div class="w-12 h-[2px] bg-sky-600 mx-auto mb-5"></div>
+            <p class="text-slate-500 text-sm italic mb-6">"La tecnologia è il motore, la sicurezza è il freno: servono
+                entrambi per correre."</p>
+            <p class="text-slate-600 text-xs">Elaborato di <span class="text-sky-500 font-bold">Thomas</span>
+                &nbsp;·&nbsp; ITIS Guglielmo Marconi Dalmine &nbsp;·&nbsp; A.S. 2024/25</p>
+        </div>
+    </footer>
+
+    <script>
+        // ════════════════════════════════════
+        //  INTERSECTION OBSERVER
+        // ════════════════════════════════════
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.section-reveal').forEach(s => observer.observe(s));
+
+        // Navbar highlight
+        window.addEventListener('scroll', () => {
+            let cur = "";
+            document.querySelectorAll('section').forEach(s => {
+                if (pageYOffset >= s.offsetTop - 100) cur = s.getAttribute('id');
+            });
+            document.querySelectorAll('.nav-link').forEach(l => {
+                l.classList.remove('active');
+                if (l.getAttribute('href')?.includes(cur)) l.classList.add('active');
+            });
+        });
+
+        // ════════════════════════════════════
+        //  SCA LOCK
+        // ════════════════════════════════════
+        let scaFactors = { 1: false, 2: false, 3: false };
+
+        function toggleSca(id) {
+            scaFactors[id] = !scaFactors[id];
+            const btn = document.getElementById(`sca-${id}`);
+            const check = btn.querySelector('.sca-check');
+
+            if (scaFactors[id]) {
+                btn.classList.add('border-sky-500', 'bg-sky-50');
+                check.classList.add('bg-sky-500', 'border-sky-500');
+                check.innerHTML = '✓'; check.style.color = "white"; check.style.fontSize = "12px";
+            } else {
+                btn.classList.remove('border-sky-500', 'bg-sky-50');
+                check.classList.remove('bg-sky-500', 'border-sky-500');
+                check.innerHTML = '';
+            }
+            updateScaStatus();
+        }
+
+        function updateScaStatus() {
+            const count = Object.values(scaFactors).filter(v => v).length;
+            const lock = document.getElementById('lock-container');
+            const status = document.getElementById('sca-status');
+            const msg = document.getElementById('sca-msg');
+            const badge = document.getElementById('sca-badge');
+            const counter = document.getElementById('sca-counter');
+
+            // Dots
+            [1, 2, 3].forEach(i => {
+                const dot = document.getElementById(`dot-${i}`);
+                if (i <= count) {
+                    dot.className = `w-3 h-3 rounded-full transition-all duration-300 ${count >= 2 ? 'bg-emerald-500' : 'bg-sky-500'}`;
+                } else {
+                    dot.className = 'w-3 h-3 rounded-full bg-slate-200 transition-all duration-300';
+                }
+            });
+
+            // Testo contatore
+            if (count < 2) {
+                counter.textContent = `${count} / 2 fattori richiesti`;
+                counter.style.color = '#94a3b8';
+            } else {
+                counter.textContent = `${count} / 2 ✓ — autenticazione soddisfatta`;
+                counter.style.color = '#10b981';
+            }
+
+            // Lock
+            if (count >= 2) {
+                lock.classList.add('is-unlocked');
+                status.textContent = "Transazione Autorizzata";
+                status.style.color = "#10b981";
+                msg.textContent = "Ottimo! Hai soddisfatto il principio dei due fattori.";
+                badge.className = "mt-4 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-500 bg-emerald-100 text-emerald-700";
+                badge.textContent = "ACCESSO CONSENTITO";
+                // Ripple
+                addRipple();
+            } else {
+                lock.classList.remove('is-unlocked');
+                status.textContent = "Transazione Bloccata";
+                status.style.color = "#94a3b8";
+                msg.textContent = "Seleziona almeno 2 fattori per autorizzare il pagamento.";
+                badge.className = "mt-4 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-500 bg-slate-100 text-slate-400";
+                badge.textContent = "ACCESSO NEGATO";
+            }
+        }
+
+        function addRipple() {
+            const container = document.getElementById('lock-container');
+            const ripple = document.createElement('div');
+            ripple.className = 'sca-ripple';
+            ripple.style.cssText = 'width:60px;height:60px;top:50%;left:50%;margin-top:-30px;margin-left:-30px;';
+            container.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 900);
+        }
+
+        // ════════════════════════════════════
+        //  API INTERATTIVA
+        // ════════════════════════════════════
+        const apiConfig = {
+            aisp: {
+                label: 'AISP — Account Information',
+                color: '#0ea5e9',
+                steps: [
+                    { icon: '📱', actor: 'App Fintech (TPP)', text: 'L\'utente clicca "Connetti il tuo conto" nell\'app.' },
+                    { icon: '🔑', actor: 'Redirect OAuth2', text: 'L\'app reindirizza l\'utente alla pagina di autenticazione della banca.' },
+                    { icon: '✅', actor: 'Utente', text: 'L\'utente si autentica con SCA (es. biometria) e concede il consenso.' },
+                    { icon: '🏦', actor: 'Banca (ASPSP)', text: 'La banca rilascia un access_token OAuth2 al TPP.' },
+                    { icon: '📊', actor: 'API Call: GET /accounts', text: 'Il TPP chiama l\'API con il token per leggere il saldo e le transazioni.' },
+                ],
+                json: `{
+  "status": 200,
+  "endpoint": "GET /v1/accounts/IT60X0542811101000000123456/balances",
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9...",
+    "X-Request-ID": "a8b3c2d1-e4f5-6789-abcd"
+  },
+  "response": {
+    "account": {
+      "iban": "IT60X0542811101000000123456",
+      "currency": "EUR",
+      "owner": "Mario Rossi"
+    },
+    "balances": [
+      {
+        "balanceType": "closingBooked",
+        "balanceAmount": {
+          "currency": "EUR",
+          "amount": "3.420,55"
+        },
+        "referenceDate": "2024-11-15"
+      }
+    ]
+  }
+}`
+            },
+            pisp: {
+                label: 'PISP — Payment Initiation',
+                color: '#10b981',
+                steps: [
+                    { icon: '🛒', actor: 'Utente', text: 'L\'utente sceglie di pagare tramite bonifico bancario diretto al checkout.' },
+                    { icon: '📱', actor: 'App/Merchant (TPP)', text: 'Il merchant invia una richiesta di pagamento alla propria piattaforma PISP.' },
+                    { icon: '🔑', actor: 'Redirect OAuth2', text: 'Reindirizzamento alla banca per autenticazione SCA dell\'utente.' },
+                    { icon: '🛡️', actor: 'Dynamic Linking', text: 'La banca genera un codice legato a importo (€80) + beneficiario specifico.' },
+                    { icon: '✅', actor: 'Banca (ASPSP)', text: 'Pagamento autorizzato ed eseguito. Il merchant riceve conferma in tempo reale.' },
+                ],
+                json: `{
+  "status": 201,
+  "endpoint": "POST /v1/payments/sepa-credit-transfers",
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9...",
+    "PSU-IP-Address": "192.168.1.1",
+    "X-Request-ID": "f9e8d7c6-b5a4-3210-fedc"
+  },
+  "body_sent": {
+    "creditorName": "Scarpe & Co. SRL",
+    "creditorIban": "IT40X0200802002000000000002",
+    "instructedAmount": {
+      "currency": "EUR",
+      "amount": "80.00"
+    },
+    "remittanceInfo": "Ordine #ORD-2024-8821"
+  },
+  "response": {
+    "paymentId": "pay-3fa85f64-5717-4562-b3fc",
+    "transactionStatus": "ACCP",
+    "dynamicLinkHash": "sha256:a3f2c1...",
+    "_links": {
+      "scaRedirect": "https://banca.it/auth/sca?pid=..."
+    }
+  }
+}`
+            }
+        };
+
+        let currentApiType = 'aisp';
+        let apiFlowStep = 0;
+        let apiRunning = false;
+
+        function selectApiType(type) {
+            currentApiType = type;
+            ['aisp', 'pisp'].forEach(t => {
+                const btn = document.getElementById(`btn-${t}`);
+                if (t === type) {
+                    const c = type === 'aisp' ? 'sky' : 'emerald';
+                    btn.className = `api-tab-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest border border-${c}-500 text-${c}-400 bg-${c}-500/10 transition-all`;
+                } else {
+                    btn.className = `api-tab-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest border border-white/10 text-slate-400 transition-all hover:bg-white/5`;
+                }
+            });
+            resetApiFlow();
+            renderApiFlow();
+        }
+
+        function renderApiFlow() {
+            const cfg = apiConfig[currentApiType];
+            const panel = document.getElementById('api-flow-panel');
+            panel.innerHTML = cfg.steps.map((s, i) => `
+        <div class="api-step flex gap-4 items-start opacity-30 transition-all duration-500" id="api-step-${i}">
+            <div class="flex flex-col items-center">
+                <div class="w-9 h-9 rounded-full border-2 border-white/10 bg-white/5 flex items-center justify-center text-base flex-shrink-0">${s.icon}</div>
+                ${i < cfg.steps.length - 1 ? '<div class="w-[2px] h-10 bg-white/10 mt-1"></div>' : ''}
+            </div>
+            <div class="pb-6">
+                <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">${s.actor}</div>
+                <p class="text-sm text-slate-300">${s.text}</p>
+            </div>
+        </div>
+    `).join('');
+        }
+
+        function resetApiFlow() {
+            apiFlowStep = 0;
+            apiRunning = false;
+            document.getElementById('api-json-output').innerHTML =
+                '<span class="text-slate-600 italic">// Premi "Simula Chiamata" per vedere la risposta JSON...</span>';
+            renderApiFlow();
+        }
+
+        async function runApiCall() {
+            if (apiRunning) return;
+            apiRunning = true;
+            const btn = document.getElementById('api-run-btn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Simulazione in corso...';
+
+            const cfg = apiConfig[currentApiType];
+            const output = document.getElementById('api-json-output');
+
+            // Anima step uno alla volta
+            for (let i = 0; i < cfg.steps.length; i++) {
+                const el = document.getElementById(`api-step-${i}`);
+                if (el) {
+                    el.style.opacity = '1';
+                    el.querySelector('.w-9').style.borderColor = currentApiType === 'aisp' ? '#0ea5e9' : '#10b981';
+                }
+                output.innerHTML = `<span class="text-slate-500 italic">// Fase ${i + 1}: ${cfg.steps[i].actor}...</span>`;
+                await sleep(650);
+            }
+
+            // Mostra JSON con typewriter
+            output.innerHTML = '';
+            const json = cfg.json;
+            let idx = 0;
+            await new Promise(resolve => {
+                const interval = setInterval(() => {
+                    output.textContent += json[idx];
+                    idx++;
+                    colorizeJson(output);
+                    if (idx >= json.length) { clearInterval(interval); resolve(); }
+                }, 8);
+            });
+
+            btn.disabled = false;
+            btn.textContent = '▶ Simula Chiamata API';
+            apiRunning = false;
+        }
+
+        function colorizeJson(el) {
+            const txt = el.textContent;
+            el.innerHTML = txt
+                .replace(/"([^"]+)":/g, '<span style="color:#93c5fd">"$1"</span>:')
+                .replace(/: "([^"]+)"/g, ': <span style="color:#86efac">"$1"</span>')
+                .replace(/: (\d[\d.]*)/g, ': <span style="color:#fcd34d">$1</span>');
+        }
+
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        // Init
+        renderApiFlow();
+
+        // ════════════════════════════════════
+        //  SIMULATORE VERTICALE
+        // ════════════════════════════════════
+        const simScenarios = {
+            low: [
+                { color: 'sky', icon: '🛒', title: 'Avvio transazione', desc: 'L\'utente inizia il checkout per €80 su un e-commerce.' },
+                { color: 'sky', icon: '📡', title: '3DS 2.0: Raccolta dati', desc: 'Il protocollo 3DS 2.0 invia oltre 150 parametri alla banca: device fingerprint, IP, geolocalizzazione, storico.' },
+                { color: 'emerald', icon: '📊', title: 'Analisi del rischio', desc: 'Il motore di risk scoring assegna punteggio BASSO: dispositivo riconosciuto, comportamento coerente.' },
+                { color: 'emerald', icon: '⚡', title: 'Frictionless Flow', desc: 'Esenzione TR-Analysis applicata. Nessuna richiesta all\'utente.' },
+                { color: 'emerald', icon: '✅', title: 'Pagamento autorizzato', desc: 'Transazione approvata silenziosamente. L\'utente non ha dovuto inserire nessun codice.' },
+            ],
+            high: [
+                { color: 'sky', icon: '🛒', title: 'Avvio transazione', desc: 'L\'utente inizia il checkout per €80 da un nuovo dispositivo in una città diversa dal solito.' },
+                { color: 'sky', icon: '📡', title: '3DS 2.0: Raccolta dati', desc: 'Il protocollo 3DS 2.0 invia i parametri alla banca. Device sconosciuto, IP anomalo.' },
+                { color: 'amber', icon: '🔍', title: 'Analisi del rischio', desc: 'Il risk engine segnala anomalie: nuovo dispositivo + posizione insolita = score ALTO.' },
+                { color: 'rose', icon: '🛡️', title: 'Challenge Flow attivato', desc: 'La banca richiede una sfida SCA (challenge). L\'utente deve autenticarsi.' },
+                { color: 'rose', icon: '👆', title: 'Autenticazione biometrica', 'desc': 'L\'utente usa l\'impronta digitale (fattore Inerenza) sul proprio smartphone.' },
+                { color: 'emerald', icon: '🔗', title: 'Dynamic Linking', desc: 'La banca genera un codice univoco legato a €80 + questo specifico beneficiario.' },
+                { color: 'emerald', icon: '✅', title: 'Pagamento autorizzato', desc: 'SCA superata. Transazione autorizzata con massima sicurezza.' },
+            ]
+        };
+
+        let simCurrentStep = 0;
+        let simScenarioKey = null;
+        let simTimer = null;
+
+        function startSim(key) {
+            simScenarioKey = key;
+            simCurrentStep = 0;
+            document.getElementById('sim-start').classList.add('hidden');
+            document.getElementById('sim-flow').classList.remove('hidden');
+            buildSimNodes();
+            revealNextSimNode();
+        }
+
+        function buildSimNodes() {
+            const nodes = simScenarios[simScenarioKey];
+            const container = document.getElementById('sim-nodes-container');
+            container.innerHTML = '';
+            nodes.forEach((node, i) => {
+                const colorMap = {
+                    sky: 'border-sky-300 bg-sky-50 text-sky-700',
+                    emerald: 'border-emerald-300 bg-emerald-50 text-emerald-700',
+                    amber: 'border-amber-300 bg-amber-50 text-amber-700',
+                    rose: 'border-rose-300 bg-rose-50 text-rose-700',
+                };
+                const iconBg = {
+                    sky: 'bg-sky-100', emerald: 'bg-emerald-100',
+                    amber: 'bg-amber-100', rose: 'bg-rose-100'
+                };
+                container.innerHTML += `
+            <div class="sim-node w-full max-w-md" id="sim-node-${i}">
+                <div class="border-2 ${colorMap[node.color]} rounded-2xl p-5 flex gap-4 items-start w-full">
+                    <div class="w-10 h-10 ${iconBg[node.color]} rounded-xl flex items-center justify-center text-xl flex-shrink-0">${node.icon}</div>
+                    <div>
+                        <div class="font-bold text-sm text-slate-800 mb-1">${node.title}</div>
+                        <p class="text-xs text-slate-500 leading-relaxed">${node.desc}</p>
+                    </div>
+                </div>
+            </div>
+            ${i < nodes.length - 1 ? `<div class="sim-connector" id="sim-conn-${i}"><div class="sim-dot-pulse my-3"></div></div>` : ''}
+        `;
+            });
+        }
+
+        function revealNextSimNode() {
+            const nodes = simScenarios[simScenarioKey];
+            if (simCurrentStep > nodes.length - 1) return;
+
+            const nodeEl = document.getElementById(`sim-node-${simCurrentStep}`);
+            if (nodeEl) nodeEl.classList.add('visible');
+
+            const connEl = document.getElementById(`sim-conn-${simCurrentStep}`);
+            if (connEl) {
+                setTimeout(() => connEl.classList.add('visible'), 200);
+            }
+
+            simCurrentStep++;
+            if (simCurrentStep < nodes.length) {
+                simTimer = setTimeout(revealNextSimNode, 900);
+            }
+        }
+
+        function resetSim() {
+            clearTimeout(simTimer);
+            simScenarioKey = null;
+            simCurrentStep = 0;
+            document.getElementById('sim-start').classList.remove('hidden');
+            document.getElementById('sim-flow').classList.add('hidden');
+            document.getElementById('sim-nodes-container').innerHTML = '';
+        }
+
+        // ════════════════════════════════════
+        //  MINACCE INTERATTIVE
+        // ════════════════════════════════════
+        function selectThreat(name) {
+            ['social', 'sim', 'phishing', 'app'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.toggle('active', t === name);
+                document.getElementById(`threat-${t}`).classList.toggle('hidden', t !== name);
+            });
+        }
+        // Default
+        selectThreat('social');
+
+        // — Social Engineering —
+        function socialNext(stage, chose) {
+            document.getElementById(`social-stage-${stage}`).classList.add('hidden');
+            if (stage === 1) {
+                document.getElementById('social-stage-2').classList.remove('hidden');
+            } else {
+                const outcome = chose ? 'social-stage-3-bad' : 'social-stage-3-good';
+                document.getElementById(outcome).classList.remove('hidden');
+            }
+        }
+        function socialReset() {
+            ['social-stage-2', 'social-stage-3-bad', 'social-stage-3-good'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById('social-stage-1').classList.remove('hidden');
+        }
+
+        // — SIM Swap —
+        let simSwapStep = 0;
+        function simSwapNext() {
+            simSwapStep++;
+            const step = document.querySelector(`[data-step="${simSwapStep}"]`);
+            if (step) step.classList.remove('hidden');
+            if (simSwapStep >= 4) {
+                document.getElementById('sim-swap-btn').disabled = true;
+                document.getElementById('sim-swap-btn').textContent = 'Simulazione completata';
+                document.getElementById('sim-defense').classList.remove('hidden');
+            }
+        }
+        function simSwapReset() {
+            simSwapStep = 0;
+            document.querySelectorAll('.sim-swap-step').forEach(el => el.classList.add('hidden'));
+            document.getElementById('sim-swap-btn').disabled = false;
+            document.getElementById('sim-swap-btn').textContent = 'Avanza simulazione ▶';
+            document.getElementById('sim-defense').classList.add('hidden');
+        }
+
+        // — Phishing —
+        function openFakeBank() {
+            document.getElementById('phishing-stage-1').classList.add('hidden');
+            document.getElementById('phishing-stage-2').classList.remove('hidden');
+        }
+        function phishingSubmit() {
+            document.getElementById('phishing-stage-2').classList.add('hidden');
+            document.getElementById('phishing-stage-3').classList.remove('hidden');
+        }
+        function phishingIgnore() {
+            document.getElementById('phishing-stage-1').classList.add('hidden');
+            document.getElementById('phishing-stage-4').classList.remove('hidden');
+        }
+        // — APP Fraud —
+        function appNext(stage) {
+            document.getElementById(`app-stage-${stage}`).classList.add('hidden');
+            document.getElementById(`app-stage-${stage + 1}`).classList.remove('hidden');
+        }
+        function appConfirm() {
+            document.getElementById('app-stage-2').classList.add('hidden');
+            document.getElementById('app-stage-3').classList.remove('hidden');
+        }
+        function appIgnore() {
+            document.getElementById('app-stage-1').classList.add('hidden');
+            document.getElementById('app-stage-4').classList.remove('hidden');
+        }
+        function appReset() {
+            ['app-stage-2', 'app-stage-3', 'app-stage-4'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById('app-stage-1').classList.remove('hidden');
+        }
+
+        function phishingReset() {
+            ['phishing-stage-2', 'phishing-stage-3', 'phishing-stage-4'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById('phishing-stage-1').classList.remove('hidden');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSD2: Il Futuro dei Pagamenti Digitali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .section-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .section-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-link.active {
+            color: #0ea5e9;
+            border-bottom: 2px solid #0ea5e9;
+        }
+
+        /* SCA Lock Animation */
+        .lock-shackle {
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: 25% 100%;
+        }
+
+        .is-unlocked .lock-shackle {
+            transform: rotate(-45deg) translateY(-15px);
+            stroke: #10b981;
+        }
+
+        /* API Flow */
+        @keyframes flow {
+            0% {
+                left: -10%;
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                left: 100%;
+                opacity: 0;
+            }
+        }
+
+        .api-particle {
+            position: absolute;
+            height: 4px;
+            width: 40px;
+            background: #0ea5e9;
+            border-radius: 2px;
+            animation: flow 2s infinite linear;
+        }
+
+        /* Flusso decisionale */
+        .flow-step {
+            display: none;
+        }
+
+        .flow-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="text-slate-900 overflow-x-hidden">
+
+    <!-- NAVBAR (da 3G.html con highlight) -->
+    <nav
+        class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-bottom border-slate-200 h-16 flex items-center px-6 justify-between shadow-sm">
+        <div class="font-extrabold text-xl tracking-tighter text-sky-600">PSD2<span
+                class="text-slate-400 font-light italic">STUDENT</span></div>
+        <div class="hidden md:flex gap-8 text-[11px] font-bold uppercase tracking-widest text-slate-500" id="nav-links">
+            <a href="#intro" class="nav-link transition-all py-2">Introduzione</a>
+            <a href="#sca" class="nav-link transition-all py-2">SCA</a>
+            <a href="#tecnica" class="nav-link transition-all py-2">Tecnologia</a>
+            <a href="#api" class="nav-link transition-all py-2">API</a>
+            <a href="#flusso" class="nav-link transition-all py-2">Flusso</a>
+            <a href="#sicurezza" class="nav-link transition-all py-2">Sicurezza</a>
+        </div>
+        <div class="bg-sky-100 text-sky-700 px-3 py-1 rounded-full text-[10px] font-bold">ESAME 5° ANNO</div>
+    </nav>
+
+    <!-- INTRODUZIONE (da PDF pag 1) -->
+    <section id="intro" class="pt-32 pb-24 px-6 max-w-5xl mx-auto section-reveal">
+        <div
+            class="inline-block px-4 py-1 mb-6 text-[10px] font-black tracking-widest text-sky-600 bg-sky-50 rounded-full uppercase border border-sky-100">
+            Contesto Storico</div>
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-8 tracking-tight leading-[1.1]">L'Era dell'<span
+                class="text-sky-600">Open Banking</span>.</h1>
+        <div class="grid md:grid-cols-2 gap-12 text-slate-500 leading-relaxed text-lg">
+            <p>
+                L'entrata in vigore della <strong>PSD2</strong> ha segnato una transizione epocale, spostando il
+                baricentro dal controllo centralizzato delle banche verso un ecosistema aperto e interoperabile. Non è
+                solo una legge, ma una rivoluzione infrastrutturale.
+            </p>
+            <p>
+                Il cuore della trasformazione risiede nell'apertura delle <strong>API bancarie</strong> a terze parti
+                autorizzate e nell'obbligo della <strong>SCA</strong>, ridefinendo i criteri di sicurezza e la gestione
+                dei flussi transazionali a livello europeo.
+            </p>
+        </div>
+    </section>
+
+    <!-- SCA (da 2G.html) -->
+    <section id="sca" class="py-24 bg-slate-50 section-reveal">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-3xl font-extrabold mb-6 italic">Strong Customer Authentication</h2>
+                    <p class="text-slate-600 mb-8">
+                        La sicurezza "forte" si basa sulla combinazione di almeno due fattori indipendenti. Se uno viene
+                        compromesso, l'altro protegge il tuo conto.
+                        <strong>Regola del 2 su 3:</strong>
+                    </p>
+                    <div class="space-y-4">
+                        <div onclick="toggleSca(1)" id="sca-1"
+                            class="p-5 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:shadow-md transition-all flex items-center gap-4">
+                            <div
+                                class="w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center sca-check">
+                            </div>
+                            <div><span class="block font-bold">Conoscenza</span><span
+                                    class="text-xs text-slate-400 italic">Qualcosa che solo tu SAI (Password,
+                                    PIN)</span></div>
+                        </div>
+                        <div onclick="toggleSca(2)" id="sca-2"
+                            class="p-5 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:shadow-md transition-all flex items-center gap-4">
+                            <div
+                                class="w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center sca-check">
+                            </div>
+                            <div><span class="block font-bold">Possesso</span><span
+                                    class="text-xs text-slate-400 italic">Qualcosa che solo tu HAI (Smartphone,
+                                    Token)</span></div>
+                        </div>
+                        <div onclick="toggleSca(3)" id="sca-3"
+                            class="p-5 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:shadow-md transition-all flex items-center gap-4">
+                            <div
+                                class="w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center sca-check">
+                            </div>
+                            <div><span class="block font-bold">Inerenza</span><span
+                                    class="text-xs text-slate-400 italic">Qualcosa che solo tu SEI (Impronta,
+                                    FaceID)</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="flex flex-col items-center justify-center p-12 bg-white rounded-[3rem] shadow-xl border border-slate-100 min-h-[400px]">
+                    <div id="lock-container" class="mb-8">
+                        <svg width="100" height="120" viewBox="0 0 100 120">
+                            <path class="lock-shackle" d="M25 45V30C25 16.2 36.2 5 50 5C63.8 5 75 16.2 75 30V45"
+                                stroke="#cbd5e1" stroke-width="10" stroke-linecap="round" fill="none" />
+                            <rect x="10" y="45" width="80" height="65" rx="15" fill="#f1f5f9" stroke="#cbd5e1"
+                                stroke-width="6" />
+                            <circle cx="50" cy="77" r="8" fill="#cbd5e1" />
+                        </svg>
+                    </div>
+                    <div id="sca-status" class="text-center font-bold text-slate-400 uppercase tracking-widest text-sm">
+                        Transazione Bloccata</div>
+                    <div id="sca-msg" class="text-xs text-slate-400 mt-2 italic text-center px-8">Seleziona almeno 2
+                        fattori per autorizzare il pagamento.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TECNOLOGIA: DYNAMIC LINKING & 3DS2 (da 4C + PDF) -->
+    <section id="tecnica" class="py-24 max-w-6xl mx-auto px-6 section-reveal">
+        <h2 class="text-3xl font-extrabold mb-12 text-center tracking-tight italic">Meccanismi Tecnici Avanzati</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="p-8 bg-slate-900 text-white rounded-[2rem] shadow-2xl relative overflow-hidden">
+                <div class="text-sky-400 font-bold mb-4 uppercase text-[10px] tracking-[0.3em]">Sicurezza Transazionale
+                </div>
+                <h3 class="text-xl font-bold mb-4">Dynamic Linking</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                    Ogni codice di autorizzazione è legato indissolubilmente all'<strong>importo</strong> e al
+                    <strong>beneficiario</strong>. Se un hacker cambia il destinatario, il codice diventa nullo.
+                </p>
+                <div class="text-[10px] bg-sky-500/20 text-sky-400 px-3 py-1 rounded inline-block font-mono">
+                    Anti-Man-in-the-Middle</div>
+            </div>
+
+            <div class="p-8 bg-white border border-slate-100 rounded-[2rem] shadow-sm">
+                <div class="text-emerald-500 font-bold mb-4 uppercase text-[10px] tracking-[0.3em]">Protocollo</div>
+                <h3 class="text-xl font-bold mb-4">3-D Secure 2.0</h3>
+                <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                    A differenza della v1.0, la 2.0 scambia oltre <strong>150 punti dati</strong> (dispositivo,
+                    posizione, abitudini) per ridurre l'attrito e aumentare la sicurezza senza noiose password statiche.
+                </p>
+                <div class="flex gap-2">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Analisi del rischio</span>
+                </div>
+            </div>
+
+            <div class="p-8 bg-white border border-slate-100 rounded-[2rem] shadow-sm">
+                <div class="text-rose-500 font-bold mb-4 uppercase text-[10px] tracking-[0.3em]">Ottimizzazione</div>
+                <h3 class="text-xl font-bold mb-4">Esenzioni SCA</h3>
+                <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                    Non sempre serve la SCA! Esistono esenzioni per <strong>piccoli importi</strong> (<30€), pagamenti
+                        ricorrenti o beneficiari attendibili (Whitelisting). </p>
+                        <div class="text-[10px] bg-slate-100 text-slate-500 px-3 py-1 rounded inline-block font-bold">
+                            User Experience (UX)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API (da 1G grafica + 4C tecnica) -->
+    <section id="api" class="py-24 bg-slate-900 text-white section-reveal">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-extrabold mb-12 italic">Architettura API: I Ponti Digitali</h2>
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-6">
+                    <div
+                        class="p-6 bg-white/5 border border-white/10 rounded-2xl hover:border-sky-500 transition-all cursor-default">
+                        <h4 class="text-sky-400 font-bold mb-2 tracking-widest uppercase text-xs">AISP (Account
+                            Information)</h4>
+                        <p class="text-slate-400 text-sm italic">"Ehi banca, questo utente mi ha autorizzato a leggere
+                            il suo saldo per fargli un bilancio mensile."</p>
+                    </div>
+                    <div
+                        class="p-6 bg-white/5 border border-white/10 rounded-2xl hover:border-emerald-500 transition-all cursor-default">
+                        <h4 class="text-emerald-400 font-bold mb-2 tracking-widest uppercase text-xs">PISP (Payment
+                            Initiation)</h4>
+                        <p class="text-slate-400 text-sm italic">"Ehi banca, sposta 50€ dal conto dell'utente al negozio
+                            X. Ecco l'autorizzazione SCA."</p>
+                    </div>
+                </div>
+                <!-- Animazione Flusso API -->
+                <div
+                    class="relative bg-white/5 p-12 rounded-3xl border border-white/10 flex justify-between items-center h-64 overflow-hidden">
+                    <div class="text-center z-10">
+                        <div class="text-3xl mb-2">🏦</div>
+                        <div class="text-[10px] font-bold uppercase text-slate-500">Banca (ASPSP)</div>
+                    </div>
+                    <div class="absolute w-full flex justify-center">
+                        <div class="w-1/2 h-[2px] bg-white/10 relative">
+                            <div class="api-particle" style="animation-delay: 0s;"></div>
+                            <div class="api-particle" style="animation-delay: 1s;"></div>
+                        </div>
+                    </div>
+                    <div class="text-center z-10">
+                        <div class="text-3xl mb-2">📱</div>
+                        <div class="text-[10px] font-bold uppercase text-slate-500">Terza Parte (TPP)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FLUSSO DECISIONALE (1G + 4C) -->
+    <section id="flusso" class="py-24 max-w-4xl mx-auto px-6 section-reveal">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-extrabold tracking-tighter italic mb-4">Simulatore di Pagamento</h2>
+            <p class="text-slate-500">Sperimenta come la banca decide tra velocità e sicurezza.</p>
+        </div>
+
+        <div class="bg-white rounded-[2.5rem] border border-slate-200 p-8 md:p-12 shadow-2xl min-h-[400px]">
+            <!-- Step 1: Inizio -->
+            <div id="step-1" class="flow-step active text-center">
+                <div class="text-5xl mb-6">🛒</div>
+                <h3 class="text-2xl font-bold mb-4">Nuovo Acquisto Online</h3>
+                <p class="text-slate-500 mb-8">Stai comprando un paio di scarpe da 80€. Il sistema analizza il tuo
+                    profilo...</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="goToStep(2)"
+                        class="p-4 bg-sky-600 text-white rounded-2xl font-bold hover:bg-sky-700 transition-all">Analisi
+                        Rischio: BASSO</button>
+                    <button onclick="goToStep(3)"
+                        class="p-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-black transition-all">Analisi
+                        Rischio: ALTO</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Frictionless Flow -->
+            <div id="step-2" class="flow-step text-center">
+                <div class="text-5xl mb-6 text-emerald-500">⚡</div>
+                <h3 class="text-2xl font-bold mb-4 text-emerald-600">Frictionless Flow</h3>
+                <p class="text-slate-500 mb-6">Il sistema riconosce il tuo computer abituale e la posizione. La
+                    transazione viene approvata senza chiederti codici extra (Esenzione TR-Analysis).</p>
+                <button onclick="goToStep(1)"
+                    class="text-xs font-bold text-slate-400 underline uppercase tracking-widest">Riprova
+                    simulazione</button>
+            </div>
+
+            <!-- Step 3: Challenge Flow -->
+            <div id="step-3" class="flow-step text-center">
+                <div class="text-5xl mb-6 text-rose-500">🛡️</div>
+                <h3 class="text-2xl font-bold mb-4 text-rose-600">Challenge Flow</h3>
+                <p class="text-slate-500 mb-8">Dispositivo sconosciuto rilevato! La banca richiede una sfida
+                    (Challenge). Devi superare la SCA.</p>
+                <div class="flex justify-center gap-4">
+                    <button onclick="goToStep(4)" class="p-4 border-2 border-slate-900 rounded-2xl font-bold px-8">Usa
+                        Impronta (Biometria)</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Successo Challenge -->
+            <div id="step-4" class="flow-step text-center">
+                <div class="text-5xl mb-6 text-sky-500">✅</div>
+                <h3 class="text-2xl font-bold mb-4 text-sky-600">Pagamento Autorizzato</h3>
+                <p class="text-slate-500 mb-6">SCA superata. Grazie al 3DS 2.0 i tuoi dati sono stati protetti in tempo
+                    reale.</p>
+                <button onclick="goToStep(1)"
+                    class="text-xs font-bold text-slate-400 underline uppercase tracking-widest">Torna
+                    all'inizio</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SICUREZZA & RISCHI (5G + Extra) -->
+    <section id="sicurezza" class="py-24 bg-slate-50 section-reveal">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-extrabold mb-12 italic text-rose-600">Minacce nell'era Post-PSD2</h2>
+            <div class="grid lg:grid-cols-2 gap-16 items-start">
+                <div>
+                    <div class="space-y-6">
+                        <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-rose-500 mb-2">Social Engineering (Manipolazione)</h4>
+                            <p class="text-slate-500 text-sm">Il truffatore ti chiama fingendosi la banca. Non attacca
+                                il sistema, ma la tua fiducia per farti dettare il codice OTP.</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-rose-500 mb-2">SIM Swap Fraud</h4>
+                            <p class="text-slate-500 text-sm">Il criminale ottiene il duplicato della tua SIM. Poiché
+                                molti usano gli SMS per la SCA (possesso), può autorizzare pagamenti a tuo nome.</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-rose-500 mb-2">Phishing Evoluto</h4>
+                            <p class="text-slate-500 text-sm">Link via SMS (Smishing) che portano a pagine di login
+                                identiche a quelle della banca per rubare le credenziali (conoscenza).</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Mockup Smartphone Phishing (da 5G) -->
+                <div class="flex flex-col items-center">
+                    <div
+                        class="w-72 h-[500px] bg-slate-900 rounded-[3rem] p-3 shadow-2xl border-4 border-slate-800 relative">
+                        <div class="w-full h-full bg-white rounded-[2.5rem] overflow-hidden p-6 relative">
+                            <div class="h-5 bg-slate-900 w-1/3 mx-auto rounded-b-xl mb-4"></div>
+                            <div class="bg-slate-100 p-3 rounded-xl mb-4 border-l-4 border-sky-500">
+                                <span class="text-[9px] font-bold text-slate-400">INFO-BANCA</span>
+                                <p class="text-[10px] leading-tight mt-1">Accesso sospetto. Verifica identità per
+                                    evitare blocco conto: <span
+                                        class="text-blue-500 underline italic">banca-secure.io/login</span></p>
+                            </div>
+                            <div class="mt-40 text-center">
+                                <p class="text-[10px] text-slate-400 italic">⚠️ Attenzione: il link porta a un server
+                                    controllato da hacker (Social Engineering).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- IMPLEMENTAZIONE IN ITALIA -->
+    <section class="py-24 max-w-6xl mx-auto px-6 section-reveal">
+        <div class="bg-sky-600 rounded-[3rem] p-12 text-white relative overflow-hidden shadow-xl">
+            <h2 class="text-3xl font-extrabold mb-8 italic">Il Caso Italia 🇮🇹</h2>
+            <div class="grid md:grid-cols-2 gap-12 relative z-10">
+                <div>
+                    <p class="text-sky-100 leading-relaxed">
+                        L'Italia ha recepito la PSD2 tramite il <strong>D.Lgs. 218/2017</strong>. Bankitalia ha
+                        monitorato una transizione fluida ma rigorosa, obbligando tutti gli istituti ad abbandonare i
+                        vecchi "codici battaglia" in favore di app bancarie sicure e token dinamici.
+                    </p>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4 bg-white/10 p-4 rounded-xl">
+                        <span class="text-2xl">⚡</span>
+                        <div>
+                            <h5 class="font-bold">Bancomat Pay</h5>
+                            <p class="text-xs text-sky-200">Integrazione API per pagamenti P2P immediati.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-white/10 p-4 rounded-xl">
+                        <span class="text-2xl">📱</span>
+                        <div>
+                            <h5 class="font-bold">CBI Globe</h5>
+                            <p class="text-xs text-sky-200">Piattaforma italiana che aggrega le API di quasi tutte le
+                                banche nazionali.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-900 py-16 text-center text-slate-500 text-xs px-6">
+        <div class="max-w-2xl mx-auto">
+            <p class="mb-4 uppercase tracking-[0.4em] font-bold">Infrastruttura PSD2 - Analisi Tecnica 2024</p>
+            <p class="italic">"La tecnologia è il motore, la sicurezza è il freno: servono entrambi per correre."</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- ANIMAZIONE RIVELAZIONE (Intersection Observer) ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.section-reveal').forEach(section => {
+            observer.observe(section);
+        });
+
+        // --- HIGHLIGHT NAVBAR ---
+        window.addEventListener('scroll', () => {
+            let current = "";
+            document.querySelectorAll('section').forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // --- LOGICA SCA ---
+        let scaFactors = { 1: false, 2: false, 3: false };
+        function toggleSca(id) {
+            scaFactors[id] = !scaFactors[id];
+            const btn = document.getElementById(`sca-${id}`);
+            const check = btn.querySelector('.sca-check');
+
+            if (scaFactors[id]) {
+                btn.classList.add('border-sky-500', 'bg-sky-50');
+                check.classList.add('bg-sky-500', 'border-sky-500');
+                check.innerHTML = '✓'; check.style.color = "white";
+            } else {
+                btn.classList.remove('border-sky-500', 'bg-sky-50');
+                check.classList.remove('bg-sky-500', 'border-sky-500');
+                check.innerHTML = '';
+            }
+
+            const count = Object.values(scaFactors).filter(v => v).length;
+            const lock = document.getElementById('lock-container');
+            const status = document.getElementById('sca-status');
+            const msg = document.getElementById('sca-msg');
+
+            if (count >= 2) {
+                lock.classList.add('is-unlocked');
+                status.innerText = "Transazione Autorizzata";
+                status.style.color = "#10b981";
+                msg.innerText = "Ottimo! Hai soddisfatto il principio dei due fattori.";
+            } else {
+                lock.classList.remove('is-unlocked');
+                status.innerText = "Transazione Bloccata";
+                status.style.color = "#94a3b8";
+                msg.innerText = "Seleziona almeno 2 fattori per autorizzare il pagamento.";
+            }
+        }
+
+        // --- LOGICA FLUSSO ---
+        function goToStep(stepId) {
+            document.querySelectorAll('.flow-step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step-${stepId}`).classList.add('active');
+        }
+    </script>
+</body>
+
+</html>
