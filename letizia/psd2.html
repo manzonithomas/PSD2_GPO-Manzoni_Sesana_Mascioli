@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSD2: La Direttiva sui Servizi di Pagamento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .section-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .section-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-link {
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #475569;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: inline-block;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: #0ea5e9;
+        }
+
+        .nav-link.active {
+            color: #0ea5e9;
+            border-bottom: 2px solid #0ea5e9;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 16px;
+        }
+
+        .subsection-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-top: 32px;
+            margin-bottom: 16px;
+        }
+
+        .content-text {
+            color: #475569;
+            line-height: 1.8;
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+
+        .reference-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background-color: #e0f2fe;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            color: #0284c7;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            margin-right: 8px;
+            margin-top: 8px;
+        }
+
+        .reference-link:hover {
+            background-color: #0ea5e9;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        }
+
+        .feature-box {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+            border-left: 4px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .feature-box h4 {
+            color: #0284c7;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .feature-box p {
+            color: #475569;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin: 24px 0;
+        }
+
+        table thead {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+        }
+
+        table th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        table td {
+            padding: 14px 16px;
+            color: #475569;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.95rem;
+        }
+
+        table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        table tbody tr:hover {
+            background-color: #f0f9ff;
+        }
+
+        .grid-3-cols {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: #0ea5e9;
+            box-shadow: 0 8px 24px rgba(14, 165, 233, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .card h4 {
+            color: #0284c7;
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .card p {
+            color: #475569;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .highlight-box p {
+            color: #92400e;
+            margin: 0;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .pillar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .pillar {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .pillar:hover {
+            border-color: #0ea5e9;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
+        }
+
+        .pillar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+        }
+
+        .pillar h3 {
+            color: #0284c7;
+            font-weight: 700;
+            margin: 12px 0 12px 0;
+            font-size: 1rem;
+        }
+
+        .pillar p {
+            color: #475569;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .navbar {
+            background: white;
+            border-bottom: 2px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-content {
+            max-width: 90rem;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            height: 70px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .navbar-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .navbar-title {
+            font-weight: 800;
+            color: #0284c7;
+            font-size: 1.1rem;
+            white-space: nowrap;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .subsection-title {
+                font-size: 1.2rem;
+            }
+
+            .navbar-content {
+                gap: 16px;
+                height: auto;
+                flex-wrap: wrap;
+                padding: 12px 24px;
+            }
+
+            .navbar-title {
+                flex-basis: 100%;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            table th,
+            table td {
+                padding: 10px 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-title">📑 PSD2</div>
+            <div class="navbar-links">
+                <a href="#intro" class="nav-link active" onclick="updateNav(event)">Introduzione</a>
+                <a href="#architettura" class="nav-link" onclick="updateNav(event)">Architettura</a>
+                <a href="#attori" class="nav-link" onclick="updateNav(event)">Attori Principali</a>
+                <a href="#sicurezza" class="nav-link" onclick="updateNav(event)">Sicurezza</a>
+                <a href="#italia" class="nav-link" onclick="updateNav(event)">Italia</a>
+                <a href="#gdpr" class="nav-link" onclick="updateNav(event)">GDPR</a>
+                <a href="#futuro" class="nav-link" onclick="updateNav(event)">Futuro</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Hero -->
+    <header class="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-900 text-white">
+        <div class="max-w-6xl mx-auto px-6 py-10">
+            <h1 class="text-3xl md:text-4xl font-extrabold mb-3">PSD2</h1>
+            <p class="text-lg md:text-xl text-blue-100 font-light mb-2">La Direttiva sui Servizi di Pagamento</p>
+            <p class="text-base text-blue-200">Rivoluzione digitale, sicurezza e innovazione nel mercato europeo dei pagamenti</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-6 py-16">
+
+        <!-- SEZIONE 1: Introduzione -->
+        <section id="intro" class="section-reveal visible mb-24">
+            <h2 class="section-title">Cos'è la PSD2?</h2>
+            <p class="content-text">
+                La PSD2 (Payment Services Directive 2) è la direttiva europea che ha rivoluzionato il mercato dei pagamenti digitali. Adottata nel 2015 e entrata in vigore nel 2018, rappresenta un cambiamento paradigmatico: i dati finanziari appartengono al cliente, non alla banca. Questo principio ha aperto le porte all'<strong>Open Banking</strong>, permettendo a nuove aziende di innovare i servizi finanziari.
+            </p>
+
+            <div class="subsection-title">Perché è stata introdotta?</div>
+            <p class="content-text">
+                Prima della PSD2, il mercato europeo dei pagamenti era frammentato. Ogni Stato aveva regole diverse, le transazioni transfrontaliere erano lente e costose, e le fintech operavano in un'area grigia normativa. La PSD2 ha unificato le regole, integrato le fintech in un quadro regolamentato e stimolato la concorrenza tra banche tradizionali e nuovi operatori.
+            </p>
+
+            <div class="grid-3-cols">
+                <div class="card">
+                    <div class="card-icon">🏦</div>
+                    <h4>Apertura del Mercato</h4>
+                    <p>Condivisione dei dati tramite API e accesso per i nuovi attori fintech</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔒</div>
+                    <h4>Sicurezza Rafforzata</h4>
+                    <p>Autenticazione forte (SCA) a due fattori per proteggere i pagamenti</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">👤</div>
+                    <h4>Protezione del Consumatore</h4>
+                    <p>Riduzione della responsabilità in caso di frode e maggiore trasparenza</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <p>📌 La PSD2 ha trasformato i pagamenti digitali da privilègio esclusivo delle banche a ecosistema aperto e competitivo</p>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <a href="https://eur-lex.europa.eu/legal-content/IT/TXT/PDF/?uri=CELEX:32015L2366" class="reference-link" target="_blank">
+                    📖 Testo ufficiale Direttiva (UE) 2015/2366
+                </a>
+            </div>
+        </section>
+
+        <!-- SEZIONE 2: Architettura Normativa -->
+        <section id="architettura" class="section-reveal visible mb-24">
+            <h2 class="section-title">Come è Strutturata la PSD2</h2>
+            <p class="content-text">
+                La PSD2 non è solo una normativa, ma un'architettura complessa che coinvolge banche, fintech, autorità di vigilanza e consumatori. La sua struttura ruota attorno a tre pilastri tecnici: l'accesso ai dati, la sicurezza delle transazioni e la tracciabilità delle operazioni.
+            </p>
+
+            <div class="subsection-title">Principali Elementi Normativi</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Elemento</th>
+                        <th>Descrizione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Atto Giuridico</strong></td>
+                        <td>Direttiva (UE) 2015/2366</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data di Adozione</strong></td>
+                        <td>25 novembre 2015</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Entrata in Vigore</strong></td>
+                        <td>13 gennaio 2018</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ambito Territoriale</strong></td>
+                        <td>UE e Spazio Economico Europeo (SEE)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Valute Coperte</strong></td>
+                        <td>Tutte le valute UE e operazioni one-leg</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="subsection-title">Evoluzione: PSD1 vs PSD2</div>
+            <p class="content-text">
+                La PSD2 ha rappresentato un salto qualitativo rispetto alla PSD1 del 2007. Dove la PSD1 standardizzava i processi operativi, la PSD2 apre i dati e introduce la sicurezza contemporanea.
+            </p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aspetto</th>
+                        <th>PSD1 (2007)</th>
+                        <th>PSD2 (2015)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Open Banking</strong></td>
+                        <td>❌ Non previsto</td>
+                        <td>✅ Obbligatorio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fintech Regolate</strong></td>
+                        <td>❌ Area grigia</td>
+                        <td>✅ Formalmente autorizzate</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Autenticazione</strong></td>
+                        <td>🔑 Password semplice</td>
+                        <td>🔐 SCA (due fattori)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Franchigia Frode</strong></td>
+                        <td>150 euro</td>
+                        <td>50 euro</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Surcharge</strong></td>
+                        <td>Consentito</td>
+                        <td>Vietato su carte consumer</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- SEZIONE 3: Attori Principali -->
+        <section id="attori" class="section-reveal visible mb-24">
+            <h2 class="section-title">I Protagonisti dell'Ecosistema PSD2</h2>
+            <p class="content-text">
+                La PSD2 ha creato nuove figure professionali nel mercato finanziario. Accanto alle banche tradizionali (ASPSP), sono emersi tre nuovi tipi di operatori (TPP) autorizzati a fornire servizi innovativi.
+            </p>
+
+            <div class="subsection-title">I Tre Tipi di Fintech (TPP)</div>
+
+            <div class="grid-3-cols">
+                <div class="card">
+                    <div class="card-icon">📊</div>
+                    <h4>AISP</h4>
+                    <p><strong>Account Information Service Provider</strong> - Aggregano i dati dei tuoi conti da più banche in un'unica app, in modalità sola lettura.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💸</div>
+                    <h4>PISP</h4>
+                    <p><strong>Payment Initiation Service Provider</strong> - Iniziano pagamenti direttamente dal tuo conto verso terzi, senza usare la carta.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🏧</div>
+                    <h4>CBPII</h4>
+                    <p><strong>Card-Based Payment Instrument Issuers</strong> - Verificano la disponibilità dei fondi prima di autorizzare una transazione.</p>
+                </div>
+            </div>
+
+            <div class="subsection-title">Le Banche come ASPSP</div>
+            <div class="feature-box">
+                <h4>Account Servicing Payment Service Provider</h4>
+                <p>
+                    Le banche tradizionali hanno il ruolo di ASPSP: devono fornire interfacce API stabili e sicure affinché i TPP possano accedere ai conti dei clienti in modo non-discriminatorio. Questo significa che la banca non può offrire alle fintech servizi peggiori rispetto a quelli offerti ai propri clienti diretti.
+                </p>
+            </div>
+
+            <div class="highlight-box">
+                <p>📌 Esempio pratico: Se usi Revolut (PISP) per pagare in negozio, Revolut accede al tuo conto bancario (ASPSP) con la tua autorizzazione e inizia un pagamento SEPA istantaneo al commerciante</p>
+            </div>
+        </section>
+
+        <!-- SEZIONE 4: Sicurezza -->
+        <section id="sicurezza" class="section-reveal visible mb-24">
+            <h2 class="section-title">La Sicurezza nel Cuore della PSD2</h2>
+            <p class="content-text">
+                La Strong Customer Authentication (SCA) è il meccanismo di sicurezza più innovativo della PSD2. Richiede che ogni pagamento remoto sia autenticato con almeno due fattori indipendenti appartenenti a categorie diverse.
+            </p>
+
+            <div class="subsection-title">I Tre Fattori di Autenticazione</div>
+
+            <div class="grid-3-cols">
+                <div class="card">
+                    <div class="card-icon">🧠</div>
+                    <h4>Conoscenza</h4>
+                    <p>Qualcosa che solo tu sai: password, PIN, codici mnemonici, pattern.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📱</div>
+                    <h4>Possesso</h4>
+                    <p>Qualcosa che solo tu possiedi: smartphone, token fisico, smart card, generatore OTP.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">👆</div>
+                    <h4>Inerenza</h4>
+                    <p>Quello che sei: impronta digitale, riconoscimento facciale, riconoscimento vocale.</p>
+                </div>
+            </div>
+
+            <div class="subsection-title">Dynamic Linking: L'Innovazione Principale</div>
+            <div class="feature-box">
+                <h4>Collegamento Dinamico della Transazione</h4>
+                <p>
+                    Per i pagamenti remoti, il codice di autenticazione è univocamente legato all'importo e al beneficiario specifico. Se un attaccante tenta di modificare l'importo dopo aver intercettato il codice, il pagamento è rifiutato. Questo protegge da attacchi di tipo "man-in-the-middle".
+                </p>
+            </div>
+
+            <div class="subsection-title">Esenzioni dalla SCA (Low Risk)</div>
+            <p class="content-text">
+                La PSD2 riconosce che richiedere SCA per ogni transazione creerebbe attriti. Per questo prevede esenzioni in scenari a basso rischio:
+            </p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Descrizione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Pagamenti di basso valore</strong></td>
+                        <td>Sotto 30€, fino a 100€ cumulativi o 5 transazioni senza SCA</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Transazioni ricorrenti</strong></td>
+                        <td>Abbonamenti: solo la prima richiede SCA, le successive sono esenti</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Beneficiari fidati</strong></td>
+                        <td>Whitelist: inserire un beneficiario in lista bianca presso la banca</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Risk Analysis</strong></td>
+                        <td>Se il PSP ha tassi di frode molto bassi, può ottenere esenzioni</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="highlight-box">
+                <p>✅ Risultato: I tassi di frode globali sono rimasti bassissimi (0,01-0,04%) nonostante l'aumento massicio dei volumi di pagamento</p>
+            </div>
+
+            <div class="subsection-title">L'Evoluzione delle Minacce</div>
+            <p class="content-text">
+                Poiché superare tecnicamente l'SCA è diventato difficile, i criminali si sono spostati verso il social engineering. Attraverso "vishing" (chiamate ingannevole) o "smishing" (SMS frodi), convincono le vittime a disporre direttamente il pagamento verso conti fraudolenti. La nuova frontiera della sicurezza è quindi l'educazione finanziaria degli utenti.
+            </p>
+        </section>
+
+        <!-- SEZIONE 5: Italia -->
+        <section id="italia" class="section-reveal visible mb-24">
+            <h2 class="section-title">La PSD2 in Italia</h2>
+            <p class="content-text">
+                L'Italia ha recepito la PSD2 con il Decreto Legislativo 218/2017, che è entrato in vigore il 13 gennaio 2018. Il recepimento è stato strutturato e ha integrato i principi europei nel sistema bancario nazionale già esistente.
+            </p>
+
+            <div class="subsection-title">Le Tappe Principali</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Evento</th>
+                        <th>Data</th>
+                        <th>Significato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Entrata in vigore D.Lgs. 218/2017</strong></td>
+                        <td>13 gennaio 2018</td>
+                        <td>Applicabilità della normativa a tutti gli operatori italiani</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Registro EBA operativo</strong></td>
+                        <td>6 aprile 2019</td>
+                        <td>Registro centralizzato europeo di tutti i PSP autorizzati</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SCA obbligatoria</strong></td>
+                        <td>14 settembre 2019</td>
+                        <td>Tutti i pagamenti e-commerce richiedono autenticazione forte</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Obbligo accettazione pagamenti</strong></td>
+                        <td>30 giugno 2022</td>
+                        <td>Esercenti devono accettare pagamenti digitali (sanzioni: 30€ + 4%)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="subsection-title">Chi Vigila in Italia?</div>
+
+            <div class="grid-3-cols">
+                <div class="card">
+                    <div class="card-icon">🏛️</div>
+                    <h4>Banca d'Italia</h4>
+                    <p>Autorità principale. Autorizza PSP, IMEL e IP; emana circolari tecniche; effettua ispezioni.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">⚖️</div>
+                    <h4>AGCM (Antitrust)</h4>
+                    <p>Vigila su clausole vessatorie, trasparenza tariffaria e rispetto del divieto di surcharge.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💼</div>
+                    <h4>UIF</h4>
+                    <p>Contrasta il riciclaggio ricevendo segnalazioni di operazioni sospette dai PSP.</p>
+                </div>
+            </div>
+
+            <div class="subsection-title">Decreto Legislativo 55/2023</div>
+            <p class="content-text">
+                Le recenti modifiche normative hanno rafforzato ulteriormente l'obbligo di accettare pagamenti digitali. Per chi non accetta pagamenti con carte:
+            </p>
+
+            <div class="feature-box">
+                <h4>Sanzioni e Incentivi</h4>
+                <p>
+                    <strong>Sanzione:</strong> 30 euro fissi + 4% del valore della transazione negata<br>
+                    <strong>Incentivo:</strong> Credito d'imposta del 30% sulle commissioni per esercenti con ricavi < 400.000€<br>
+                    <strong>Tracciabilità:</strong> Collegamento POS ai registratori telematici per trasmissione automatica
+                </p>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2017-11-15;218" class="reference-link" target="_blank">
+                    📖 D.Lgs. 218/2017
+                </a>
+                <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2023-04-07;55" class="reference-link" target="_blank">
+                    📖 D.Lgs. 55/2023
+                </a>
+                <a href="https://www.bankitalia.it/" class="reference-link" target="_blank">
+                    🏦 Banca d'Italia
+                </a>
+            </div>
+        </section>
+
+        <!-- SEZIONE 6: GDPR -->
+        <section id="gdpr" class="section-reveal visible mb-24">
+            <h2 class="section-title">PSD2 e GDPR: Due Normative, Un Obiettivo</h2>
+            <p class="content-text">
+                La PSD2 e il GDPR (Regolamento UE 2016/679) coesistono e si integrano. Mentre la PSD2 riguarda l'efficienza dei pagamenti, il GDPR protegge i dati personali sensibili. Insieme, creano un ecosistema sicuro dove l'innovazione procede di pari passo con la privacy.
+            </p>
+
+            <div class="subsection-title">Come Interagiscono?</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dimensione</th>
+                        <th>PSD2</th>
+                        <th>GDPR</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Obiettivo</strong></td>
+                        <td>Efficienza e concorrenza nei pagamenti</td>
+                        <td>Protezione diritti e libertà fondamentali</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Base Legale</strong></td>
+                        <td>Contratto di pagamento (XS2A)</td>
+                        <td>Art. 6.1.b (esecuzione contratto) o Art. 6.1.a (consenso)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dati Copperti</strong></td>
+                        <td>Dati conto e credenziali di sicurezza</td>
+                        <td>Qualsiasi dato identificativo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Autorità</strong></td>
+                        <td>Banca d'Italia / EBA</td>
+                        <td>Garante Privacy / EDPB</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="subsection-title">Il Consenso: Una Questione Delicata</div>
+            <div class="feature-box">
+                <h4>Due Forme di Consenso</h4>
+                <p>
+                    Il <strong>consenso PSD2</strong> è di natura contrattuale: quando autorizzi un AISP ad accedere al tuo conto, lo fai per ricevere un servizio.<br><br>
+                    Il <strong>consenso GDPR</strong> è una base giuridica autonoma. Per i servizi di pagamento, la base legale più appropriata è l'Art. 6.1.b (necessaria all'esecuzione del contratto), non il consenso. Tuttavia, per categorie particolari di dati (es. dati che rivelano stato di salute), occorre il consenso esplicito GDPR (Art. 9.2.a).
+                </p>
+            </div>
+
+            <div class="subsection-title">Protezione dei Dati delle "Silent Parties"</div>
+            <p class="content-text">
+                Un aspetto delicato riguarda i dati dei soggetti terzi (es. beneficiari di bonifici) che appaiono nei tuoi estratti conto. Questi soggetti non hanno prestato consenso al TPP. Secondo l'EDPB (Comitato Europeo Protezione Dati):
+            </p>
+
+            <div class="feature-box">
+                <h4>Legittimo Interesse Prevalente</h4>
+                <p>
+                    Il trattamento è lecito sulla base del <strong>legittimo interesse</strong> (Art. 6.1.f GDPR). Tuttavia, i dati non possono essere usati per profilazione o marketing. Il TPP deve applicare minimizzazione e crittografia per proteggerli.
+                </p>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <a href="https://eur-lex.europa.eu/legal-content/IT/TXT/PDF/?uri=CELEX:32016R0679" class="reference-link" target="_blank">
+                    📖 GDPR (UE 2016/679)
+                </a>
+                <a href="https://edpb.ec.europa.eu/our-work-tools/our-documents/guidelines/guidelines-062020-concepts-controller-and-processor_en" class="reference-link" target="_blank">
+                    📖 Linee Guida EDPB 06/2020
+                </a>
+            </div>
+        </section>
+
+        <!-- SEZIONE 7: Futuro -->
+        <section id="futuro" class="section-reveal visible mb-24">
+            <h2 class="section-title">Il Futuro: PSD3 e Open Finance</h2>
+            <p class="content-text">
+                La PSD2 non è un punto di arrivo, ma di partenza. Nel giugno 2023, la Commissione Europea ha proposto una nuova riforma più ampia: la PSD3 (Direttiva) e il PSR (Regolamento Payment Services). Parallelamente, FiDA (Financial Data Access) estenderà l'Open Banking all'intero settore finanziario.
+            </p>
+
+            <div class="subsection-title">Cosa Porta la PSD3?</div>
+
+            <div class="grid-3-cols">
+                <div class="card">
+                    <div class="card-icon">✓</div>
+                    <h4>IBAN/Name Matching</h4>
+                    <p>Verifica che IBAN e nome beneficiario corrispondono per prevenire frodi di impersonificazione.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🛡️</div>
+                    <h4>Rimborso Spoofing</h4>
+                    <p>Diritto di rimborso per chi viene convinto da un attaccante che si spaccia per la banca.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">⚙️</div>
+                    <h4>API Migliori</h4>
+                    <p>Requisiti più stringenti per garantire che le interfacce fintech siano stabili e performanti.</p>
+                </div>
+            </div>
+
+            <div class="subsection-title">L'Orizzonte dell'Open Finance (FiDA)</div>
+            <p class="content-text">
+                Se la PSD2 ha aperto i conti correnti, FiDA aprirà i dati di <strong>assicurazioni, investimenti, fondi pensione e mutui</strong>. Questo permetterà di creare "dashboard finanziarie complete" dove l'utente vede tutto il proprio patrimonio in un'unica interfaccia e riceve consulenza personalizzata basata su una visione a 360°.
+            </p>
+
+            <div class="highlight-box">
+                <p>📌 Il GDPR rimarrà il guardiano della privacy, garantendo che i dati siano sempre sotto il controllo totale dell'utente, anche in un ecosistema finanziario più integrato</p>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=COM:2023:369:FIN" class="reference-link" target="_blank">
+                    📖 Proposta PSD3 e PSR (2023)
+                </a>
+            </div>
+        </section>
+
+        <!-- CONCLUSIONE -->
+        <section class="section-reveal visible mb-24">
+            <h2 class="section-title">Conclusione</h2>
+            <p class="content-text">
+                La PSD2 ha trasformato un settore bancario tradizionalmente conservatore in un'arena di innovazione tecnologica. Ha aperto il mercato alla concorrenza, introdotto la sicurezza contemporanea (SCA) e messo il cliente al centro della catena del valore. 
+            </p>
+
+            <p class="content-text">
+                L'integrazione con il GDPR dimostra che protezione dei dati e innovazione finanziaria non sono nemiche, ma alleate. Mentre avanziamo verso la PSD3 e l'Open Finance, il messaggio rimane chiaro: il futuro della finanza digitale europea risiede nell'equilibrio tra apertura del mercato, sicurezza robusta e controllo totale del cliente sui propri dati.
+            </p>
+
+            <div class="pillar-grid">
+                <div class="pillar">
+                    <h3>🎯 Innovazione</h3>
+                    <p>Open Banking ha creato un ecosistema dove nuove aziende innovano servizi finanziari</p>
+                </div>
+                <div class="pillar">
+                    <h3>🔐 Sicurezza</h3>
+                    <p>SCA e dynamic linking proteggono i pagamenti da attacchi sofisticati</p>
+                </div>
+                <div class="pillar">
+                    <h3>📊 Competizione</h3>
+                    <p>Fintech e banche competono su qualità e prezzo, a vantaggio del consumatore</p>
+                </div>
+                <div class="pillar">
+                    <h3>👤 Controllo</h3>
+                    <p>I dati finanziari restano di proprietà e sotto controllo del cliente</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer style="background-color: white; border-top: 2px solid #e2e8f0; margin-top: 60px; padding: 40px 0;">
+        <div class="max-w-6xl mx-auto px-6 text-center text-slate-500">
+            <p style="margin: 8px 0;">Documento informativo sulla Direttiva (UE) 2015/2366 (PSD2)</p>
+            <p style="margin: 8px 0; font-size: 0.9rem;">Ultimo aggiornamento: 2025 | Fonti: Documentazione ufficiale UE, Banca d'Italia, EDPB</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Scroll reveal effect
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section-reveal').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Navbar link update
+        function updateNav(e) {
+            e.preventDefault();
+            const target = e.target.getAttribute('href');
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            e.target.classList.add('active');
+            
+            // Scroll with offset to show title
+            const targetElement = document.querySelector(target);
+            const navbarHeight = document.querySelector('.navbar').offsetHeight;
+            const elementPosition = targetElement.offsetTop - navbarHeight - 30;
+            
+            window.scrollTo({
+                top: elementPosition,
+                behavior: 'smooth'
+            });
+        }
+
+        // Update active nav link on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const navbarHeight = document.querySelector('.navbar').offsetHeight;
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - navbarHeight - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
