@@ -1,11 +1,158 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Home - Progetto Collaborativo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        .accent-blue {
+            color: #0ea5e9;
+        }
+
+        .hero-section {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .link-arrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: gap 0.3s ease;
+        }
+
+        .link-arrow:hover {
+            gap: 12px;
+        }
+    </style>
 </head>
+
 <body>
-    
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 hero-section">
+        <!-- Hero -->
+        <div class="mb-16 text-center">
+            <h2 class="text-4xl sm:text-5xl font-bold text-slate-900 mb-6">
+                PSD2
+            </h2>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            <!-- Carta Letizia - PSD2 -->
+            <a href="./letizia/psd2.html" class="group">
+                <div class="card-hover bg-white rounded-lg p-8 h-full flex flex-col">
+                    <div class="mb-6">
+                        <div class="inline-block bg-blue-50 rounded-full p-3 mb-4">
+                            <svg class="w-6 h-6 accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold text-slate-900">PSD2</h3>
+                    </div>
+                    <p class="text-slate-600 leading-relaxed flex-grow mb-6">
+                        La Direttiva sui Servizi di Pagamento: normative, innovazioni e trasformazioni nel panorama
+                        finanziario europeo.
+                    </p>
+                    <span class="link-arrow font-semibold accent-blue">
+                        Scopri di più
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </span>
+                </div>
+            </a>
+
+            <!-- Carta Thomas - Tecnologia -->
+            <a href="./thomas/tecnologia.html" class="group">
+                <div class="card-hover bg-white rounded-lg p-8 h-full flex flex-col">
+                    <div class="mb-6">
+                        <div class="inline-block bg-blue-50 rounded-full p-3 mb-4">
+                            <svg class="w-6 h-6 accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5h.01v.01H12v-.01z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold text-slate-900">Tecnologia</h3>
+                    </div>
+                    <p class="text-slate-600 leading-relaxed flex-grow mb-6">
+                        Esplora le innovazioni tecnologiche, gli strumenti digitali e le soluzioni che trasformano il
+                        settore.
+                    </p>
+                    <span class="link-arrow font-semibold accent-blue">
+                        Scopri di più
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </span>
+                </div>
+            </a>
+
+            <!-- Carta Gigi - PSD2 Economia -->
+            <a href="./gigi/psd2_economia.html" class="group">
+                <div class="card-hover bg-white rounded-lg p-8 h-full flex flex-col">
+                    <div class="mb-6">
+                        <div class="inline-block bg-blue-50 rounded-full p-3 mb-4">
+                            <svg class="w-6 h-6 accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold text-slate-900">PSD2 Economia</h3>
+                    </div>
+                    <p class="text-slate-600 leading-relaxed flex-grow mb-6">
+                        Approfondisci gli aspetti economici della Direttiva sui Servizi di Pagamento e il suo impatto
+                        sul mercato finanziario.
+                    </p>
+                    <span class="link-arrow font-semibold accent-blue">
+                        Scopri di più
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </span>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
 </body>
+
 </html>
