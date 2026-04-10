@@ -5,163 +5,214 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PSD2 — Impatto Economico e Strategico</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+    :root {
+      --c-banche:    #0f4c81;
+      --c-banche-bg: #eff6ff;
+      --c-banche-acc:#3b82f6;
+      --c-thiel:     #5b21b6;
+      --c-thiel-bg:  #f5f3ff;
+      --c-thiel-acc: #7c3aed;
+      --c-bigtech:   #0e7490;
+      --c-bigtech-bg:#ecfeff;
+      --c-bigtech-acc:#06b6d4;
+      --c-modelli:   #065f46;
+      --c-modelli-bg:#ecfdf5;
+      --c-modelli-acc:#10b981;
+      --c-gdpr:      #92400e;
+      --c-gdpr-bg:   #fffbeb;
+      --c-gdpr-acc:  #f59e0b;
+      --c-frodi:     #7f1d1d;
+      --c-frodi-bg:  #fff1f2;
+      --c-frodi-acc: #ef4444;
+      --c-psd3:      #1e3a5f;
+      --c-psd3-bg:   #f0f9ff;
+      --c-psd3-acc:  #0ea5e9;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: #f8fafc; color: #1e293b; }
+    h1,h2,h3,h4,.font-display { font-family: 'Syne', sans-serif; }
 
-    /* ── Scroll reveal ── */
-    .section-reveal { opacity:0; transform:translateY(30px); transition:all .8s ease-out; }
-    .section-reveal.visible { opacity:1; transform:translateY(0); }
+    .sr { opacity:0; transform:translateY(24px); transition:all .7s cubic-bezier(.22,1,.36,1); }
+    .sr.vis { opacity:1; transform:translateY(0); }
 
-    /* ── Nav ── */
-    .nav-link { padding:8px 14px; border-radius:6px; text-decoration:none; color:#475569; transition:all .3s; font-weight:500; font-size:.85rem; border-bottom:2px solid transparent; white-space:nowrap; }
-    .nav-link:hover { color:#0ea5e9; }
-    .nav-link.active { color:#0ea5e9; border-bottom:2px solid #0ea5e9; }
+    .nav-link { padding:6px 12px; border-radius:6px; text-decoration:none; color:#64748b; transition:all .2s; font-weight:600; font-size:.77rem; letter-spacing:.01em; white-space:nowrap; }
+    .nav-link:hover,.nav-link.active { color:#0f172a; background:#f1f5f9; }
 
-    /* ── Typography ── */
-    .section-title { font-size:2.3rem; font-weight:800; color:#0f172a; margin-bottom:12px; }
-    .subsection-title { font-size:1.35rem; font-weight:700; color:#1e293b; margin-top:32px; margin-bottom:14px; }
-    .content-text { color:#475569; line-height:1.85; font-size:1rem; margin-bottom:16px; }
+    .sec-label { display:inline-flex; align-items:center; gap:6px; font-family:'Syne',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; border-radius:99px; padding:4px 14px; margin-bottom:14px; }
+    .sec-title { font-size:1.85rem; font-weight:800; line-height:1.2; margin-bottom:10px; }
+    .sec-lead { color:#475569; line-height:1.75; font-size:.95rem; margin-bottom:18px; max-width:680px; }
+    .sub-title { font-family:'Syne',sans-serif; font-size:1.05rem; font-weight:700; margin:26px 0 10px; color:#0f172a; }
 
-    /* ── Cards ── */
-    .card { background:white; border:2px solid #e2e8f0; border-radius:14px; padding:24px; transition:all .3s; }
-    .card:hover { border-color:#0ea5e9; box-shadow:0 8px 24px rgba(14,165,233,.15); transform:translateY(-4px); }
-    .card-icon { font-size:2.2rem; margin-bottom:10px; }
-    .card h4 { color:#0284c7; font-weight:700; margin-bottom:10px; font-size:1rem; }
-    .card p { color:#475569; line-height:1.6; font-size:.92rem; margin:0; }
+    .section-wrap { border-radius:20px; padding:40px 38px; margin-bottom:24px; }
+    @media(max-width:640px){ .section-wrap { padding:26px 18px; } }
+    .skin-banche  { background:#eff6ff; border:1.5px solid #bfdbfe; }
+    .skin-thiel   { background:#f5f3ff; border:1.5px solid #ddd6fe; }
+    .skin-bigtech { background:#ecfeff; border:1.5px solid #a5f3fc; }
+    .skin-modelli { background:#ecfdf5; border:1.5px solid #a7f3d0; }
+    .skin-gdpr    { background:#fffbeb; border:1.5px solid #fde68a; }
+    .skin-frodi   { background:#fff1f2; border:1.5px solid #fecaca; }
+    .skin-psd3    { background:#f0f9ff; border:1.5px solid #bae6fd; }
 
-    /* ── Feature box ── */
-    .feature-box { background:linear-gradient(135deg,#e0f2fe,#f0f9ff); border-left:4px solid #0ea5e9; border-radius:8px; padding:20px; margin:20px 0; }
-    .feature-box h4 { color:#0284c7; font-weight:700; margin-bottom:8px; }
-    .feature-box p { color:#475569; line-height:1.6; margin:0; }
-    .warn-box { background:linear-gradient(135deg,#fff7ed,#ffedd5); border-left:4px solid #f97316; border-radius:8px; padding:20px; margin:20px 0; }
-    .warn-box h4 { color:#c2410c; font-weight:700; margin-bottom:8px; }
-    .warn-box p { color:#7c2d12; line-height:1.6; margin:0; }
+    .sec-label.skin-banche  { background:#dbeafe; color:#1d4ed8; }
+    .sec-label.skin-thiel   { background:#ede9fe; color:#6d28d9; }
+    .sec-label.skin-bigtech { background:#cffafe; color:#0e7490; }
+    .sec-label.skin-modelli { background:#d1fae5; color:#065f46; }
+    .sec-label.skin-gdpr    { background:#fef3c7; color:#b45309; }
+    .sec-label.skin-frodi   { background:#fee2e2; color:#b91c1c; }
+    .sec-label.skin-psd3    { background:#e0f2fe; color:#0369a1; }
 
-    /* ── Table ── */
-    table { width:100%; border-collapse:collapse; background:white; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.08); margin:20px 0; }
-    table thead { background:linear-gradient(135deg,#0ea5e9,#0284c7); color:white; }
-    table th { padding:14px 16px; text-align:left; font-weight:700; font-size:.9rem; }
-    table td { padding:12px 16px; color:#475569; border-bottom:1px solid #e2e8f0; font-size:.9rem; }
+    .card { background:white; border:1.5px solid #e2e8f0; border-radius:14px; padding:20px; transition:all .25s; }
+    .card:hover { box-shadow:0 6px 20px rgba(0,0,0,.08); transform:translateY(-3px); }
+    .card-icon { font-size:1.8rem; margin-bottom:8px; }
+    .card h4 { font-family:'Syne',sans-serif; font-size:.9rem; font-weight:700; margin-bottom:7px; color:#0f172a; }
+    .card p { color:#475569; line-height:1.6; font-size:.86rem; margin:0; }
+
+    .info-box { border-radius:10px; padding:14px 18px; margin:14px 0; }
+    .info-box h4 { font-family:'Syne',sans-serif; font-weight:700; font-size:.87rem; margin-bottom:5px; }
+    .info-box p { font-size:.86rem; line-height:1.6; margin:0; }
+    .box-blue  { background:#eff6ff; border-left:4px solid #3b82f6; }
+    .box-blue h4 { color:#1d4ed8; } .box-blue p { color:#1e40af; }
+    .box-amber { background:#fffbeb; border-left:4px solid #f59e0b; }
+    .box-amber h4 { color:#b45309; } .box-amber p { color:#92400e; }
+    .box-red   { background:#fff1f2; border-left:4px solid #ef4444; }
+    .box-red h4 { color:#b91c1c; } .box-red p { color:#991b1b; }
+    .box-green { background:#ecfdf5; border-left:4px solid #10b981; }
+    .box-green h4 { color:#065f46; } .box-green p { color:#064e3b; }
+
+    table { width:100%; border-collapse:collapse; background:white; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.06); margin:16px 0; }
+    table thead { background:#0f172a; color:white; }
+    table th { padding:11px 14px; text-align:left; font-family:'Syne',sans-serif; font-size:.78rem; font-weight:700; letter-spacing:.04em; }
+    table td { padding:10px 14px; color:#475569; border-bottom:1px solid #f1f5f9; font-size:.85rem; }
     table tbody tr:last-child td { border-bottom:none; }
-    table tbody tr:hover { background:#f0f9ff; }
+    table tbody tr:hover { background:#f8fafc; }
 
-    /* ── Highlight ── */
-    .highlight-box { background:linear-gradient(135deg,#fef3c7,#fde68a); border-left:4px solid #f59e0b; border-radius:8px; padding:20px; margin:20px 0; }
-    .highlight-box p { color:#92400e; margin:0; font-weight:500; }
+    .grid-3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin:14px 0; }
+    .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin:14px 0; }
 
-    /* ── Grid ── */
-    .grid-3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; margin:20px 0; }
-    .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; margin:20px 0; }
+    /* Big Tech */
+    .bt-card { background:white; border:2px solid #e2e8f0; border-radius:16px; overflow:hidden; transition:all .25s; cursor:pointer; }
+    .bt-card:hover,.bt-card.sel { border-color:#06b6d4; box-shadow:0 6px 24px rgba(6,182,212,.13); }
+    .bt-header { padding:16px 20px 12px; display:flex; align-items:center; gap:12px; }
+    .bt-logo { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; }
+    .bt-body { display:none; padding:0 20px 16px; border-top:1px solid #f1f5f9; padding-top:14px; }
+    .bt-body.open { display:block; animation:fd .3s ease; }
+    @keyframes fd { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+    .bt-tag { display:inline-block; background:#cffafe; color:#0e7490; border-radius:20px; padding:2px 10px; font-size:.68rem; font-weight:700; letter-spacing:.02em; margin:2px; }
+    .bt-bar-wrap { background:#f1f5f9; border-radius:99px; height:6px; margin:6px 0 10px; }
+    .bt-bar { height:6px; border-radius:99px; background:linear-gradient(90deg,#06b6d4,#67e8f9); width:0; transition:width 1s cubic-bezier(.22,1,.36,1); }
 
-    /* ══ BIG TECH BATTLE ════════════════════════════════════════════════════ */
-    .bt-card { background:white; border:2px solid #e2e8f0; border-radius:16px; padding:0; overflow:hidden; transition:all .3s; cursor:pointer; }
-    .bt-card:hover { border-color:#6366f1; box-shadow:0 8px 32px rgba(99,102,241,.18); transform:translateY(-4px); }
-    .bt-card.selected { border-color:#6366f1; box-shadow:0 8px 32px rgba(99,102,241,.25); }
-    .bt-header { padding:20px 24px 14px; display:flex; align-items:center; gap:14px; }
-    .bt-logo { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.6rem; flex-shrink:0; }
-    .bt-body { padding:0 24px 20px; display:none; }
-    .bt-body.open { display:block; animation:fadeSlide .35s ease; }
-    @keyframes fadeSlide { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
-    .bt-tag { display:inline-block; background:#ede9fe; color:#6d28d9; border-radius:20px; padding:3px 12px; font-size:.75rem; font-weight:600; margin:3px 3px 3px 0; }
-    .bt-bar-wrap { background:#f1f5f9; border-radius:99px; height:8px; margin:6px 0 14px; overflow:hidden; }
-    .bt-bar { height:8px; border-radius:99px; background:linear-gradient(90deg,#6366f1,#818cf8); width:0; transition:width 1s cubic-bezier(.22,1,.36,1); }
+    /* Business Model Explorer */
+    .bm-explorer { background:white; border-radius:16px; border:1.5px solid #a7f3d0; overflow:hidden; display:grid; grid-template-columns:190px 1fr; }
+    @media(max-width:560px){ .bm-explorer { grid-template-columns:1fr; } }
+    .bm-sidebar { background:#f0fdf4; border-right:1.5px solid #a7f3d0; padding:8px; }
+    @media(max-width:560px){ .bm-sidebar { border-right:none; border-bottom:1.5px solid #a7f3d0; display:flex; gap:4px; flex-wrap:wrap; } }
+    .bm-btn { display:flex; align-items:center; gap:8px; width:100%; padding:11px 13px; border-radius:10px; border:none; background:transparent; font-family:'DM Sans',sans-serif; font-size:.87rem; font-weight:600; color:#374151; cursor:pointer; transition:all .2s; text-align:left; }
+    .bm-btn:hover { background:#dcfce7; }
+    .bm-btn.act { background:#065f46; color:white; }
+    .bm-icon { font-size:1.3rem; }
+    .bm-content { padding:24px 26px 20px; }
+    .bm-panel { display:none; }
+    .bm-panel.act { display:block; animation:fd .28s ease; }
+    .bm-title { font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:800; color:#065f46; margin-bottom:2px; }
+    .bm-sub { font-size:.8rem; color:#6b7280; margin-bottom:12px; }
+    .bm-desc { font-size:.9rem; color:#374151; line-height:1.7; margin-bottom:14px; }
+    .rev-box { background:#f0fdf4; border:1.5px solid #6ee7b7; border-radius:10px; padding:12px 15px; }
+    .rev-box h5 { font-family:'Syne',sans-serif; font-size:.75rem; font-weight:700; color:#065f46; margin-bottom:7px; letter-spacing:.05em; text-transform:uppercase; }
+    .rev-item { display:flex; align-items:flex-start; gap:7px; margin-bottom:5px; font-size:.85rem; color:#374151; line-height:1.5; }
+    .rev-item::before { content:'€'; font-weight:800; color:#10b981; flex-shrink:0; }
+    .info-pill { display:inline-flex; align-items:center; background:#ecfdf5; color:#065f46; border:1px solid #6ee7b7; border-radius:8px; padding:5px 11px; font-size:.78rem; font-weight:600; margin:3px 3px 0 0; }
+    .meter-wrap { margin:14px 0; }
+    .meter-label { font-size:.75rem; font-weight:700; color:#6b7280; display:flex; justify-content:space-between; margin-bottom:3px; }
+    .meter-track { background:#f1f5f9; border-radius:99px; height:9px; overflow:hidden; }
+    .meter-fill { height:9px; border-radius:99px; transition:width 1s cubic-bezier(.22,1,.36,1); width:0; }
 
-    /* ══ THIEL QUIZ ════════════════════════════════════════════════════════ */
-    .quiz-opt { background:white; border:2px solid #e2e8f0; border-radius:10px; padding:14px 18px; margin:8px 0; cursor:pointer; transition:all .25s; font-weight:500; color:#334155; text-align:left; width:100%; }
-    .quiz-opt:hover { border-color:#0ea5e9; background:#f0f9ff; }
+    /* Quiz */
+    .quiz-opt { background:white; border:2px solid #e2e8f0; border-radius:10px; padding:11px 15px; margin:6px 0; cursor:pointer; transition:all .2s; font-weight:500; color:#334155; text-align:left; width:100%; font-size:.88rem; }
+    .quiz-opt:hover { border-color:#7c3aed; background:#f5f3ff; }
     .quiz-opt.correct { border-color:#10b981; background:#d1fae5; color:#065f46; }
     .quiz-opt.wrong { border-color:#ef4444; background:#fee2e2; color:#991b1b; }
     .quiz-opt:disabled { cursor:default; }
-    .quiz-feedback { border-radius:10px; padding:14px 18px; margin-top:12px; font-weight:600; display:none; }
-    .quiz-feedback.show { display:block; animation:fadeSlide .3s ease; }
+    .quiz-fb { border-radius:10px; padding:11px 15px; margin-top:9px; font-weight:500; font-size:.85rem; display:none; line-height:1.6; }
+    .quiz-fb.show { display:block; animation:fd .3s ease; }
 
-    /* ══ GDPR CONFLICT TIMELINE ════════════════════════════════════════════ */
-    .timeline-item { display:flex; gap:16px; margin-bottom:0; opacity:0; transform:translateX(-20px); transition:all .5s ease; }
-    .timeline-item.show { opacity:1; transform:translateX(0); }
-    .tl-dot { width:14px; height:14px; border-radius:50%; flex-shrink:0; margin-top:5px; }
-    .tl-line { width:2px; background:#e2e8f0; flex-shrink:0; min-height:40px; margin:4px auto 0; }
+    /* GDPR */
+    .gdpr-row { display:flex; align-items:center; gap:12px; cursor:pointer; padding:12px 14px; transition:background .2s; }
+    .gdpr-row:hover { background:#fef9c3; }
+    .gdpr-body { display:none; background:white; border-radius:10px; padding:13px 15px; margin:0 14px 8px 56px; font-size:.85rem; color:#374151; line-height:1.7; border:1px solid #fde68a; }
+    .gdpr-body.open { display:block; animation:fd .3s ease; }
 
-    /* ══ FRAUD SIMULATOR ════════════════════════════════════════════════════ */
+    /* Fraud */
     .fraud-step { display:none; }
-    .fraud-step.active { display:block; animation:fadeSlide .35s ease; }
-    .choice-btn { background:white; border:2px solid #e2e8f0; border-radius:10px; padding:12px 20px; cursor:pointer; transition:all .25s; font-weight:600; font-size:.9rem; }
-    .choice-btn:hover { border-color:#0ea5e9; transform:translateY(-2px); }
-    .outcome-good { background:#d1fae5; border:2px solid #10b981; border-radius:12px; padding:20px; }
-    .outcome-bad  { background:#fee2e2; border:2px solid #ef4444; border-radius:12px; padding:20px; }
+    .fraud-step.on { display:block; animation:fd .3s ease; }
+    .choice-btn { background:white; border:2px solid #e2e8f0; border-radius:10px; padding:10px 17px; cursor:pointer; transition:all .2s; font-weight:600; font-size:.85rem; }
+    .choice-btn:hover { transform:translateY(-2px); }
+    .out-ok  { background:#d1fae5; border:2px solid #10b981; border-radius:12px; padding:16px; }
+    .out-bad { background:#fee2e2; border:2px solid #ef4444; border-radius:12px; padding:16px; }
 
-    /* ══ BUSINESS MODEL EXPLORER ════════════════════════════════════════════ */
-    .bm-tab { padding:10px 20px; border-radius:8px 8px 0 0; border:2px solid #e2e8f0; border-bottom:none; background:white; font-weight:600; font-size:.85rem; color:#64748b; cursor:pointer; transition:all .2s; }
-    .bm-tab.active { background:#0ea5e9; color:white; border-color:#0ea5e9; }
-    .bm-panel { display:none; }
-    .bm-panel.active { display:block; animation:fadeSlide .3s ease; }
+    /* Pillars */
+    .pillar-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; }
+    .pillar { background:rgba(255,255,255,.15); border-radius:14px; padding:20px; text-align:center; border:1px solid rgba(255,255,255,.25); }
+    .pillar h3 { font-family:'Syne',sans-serif; font-size:.95rem; font-weight:700; color:white; margin-bottom:7px; }
+    .pillar p { color:#bae6fd; font-size:.8rem; line-height:1.5; margin:0; }
 
-    /* ══ PROGRESS BAR COUNTER ════════════════════════════════════════════ */
-    @keyframes countUp { from{--n:0} }
-    .stat-num { font-size:2.8rem; font-weight:800; color:#0284c7; }
-
-    /* ══ Pillar grid ════════════════════════════════════════════════════════ */
-    .pillar-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:24px 0; }
-    .pillar { background:white; border-radius:14px; padding:24px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.07); }
-    .pillar h3 { font-size:1.1rem; font-weight:700; color:#0f172a; margin-bottom:10px; }
-    .pillar p { color:#475569; font-size:.9rem; line-height:1.5; margin:0; }
+    .fraud-bar { background:#93c5fd; border-radius:4px 4px 0 0; height:0; transition:height 1s ease; }
   </style>
 </head>
 <body>
 
-<!-- ══ NAVBAR ══════════════════════════════════════════════════════════════════ -->
-<nav class="navbar sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
-  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+<!-- NAV -->
+<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-100 shadow-sm">
+  <div class="max-w-5xl mx-auto px-4 py-2.5 flex items-center justify-between gap-4">
     <div class="flex items-center gap-2 flex-shrink-0">
-      <div class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">P2</div>
-      <span class="font-bold text-slate-800 text-sm hidden sm:block">PSD2 — Economia</span>
+      <div style="width:28px;height:28px;background:#0f172a;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-family:'Syne',sans-serif;font-weight:800;font-size:.75rem;">P2</div>
+      <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;color:#0f172a;" class="hidden sm:block">PSD2 — Economia</span>
     </div>
-    <div class="flex gap-1 overflow-x-auto pb-1">
-      <a href="#banche" class="nav-link" onclick="updateNav(event)">Banche</a>
-      <a href="#thiel" class="nav-link" onclick="updateNav(event)">Thiel & Fintech</a>
-      <a href="#bigtech" class="nav-link" onclick="updateNav(event)">Big Tech</a>
-      <a href="#modelli" class="nav-link" onclick="updateNav(event)">Modelli</a>
-      <a href="#gdpr" class="nav-link" onclick="updateNav(event)">GDPR</a>
-      <a href="#frodi" class="nav-link" onclick="updateNav(event)">Frodi</a>
-      <a href="#psd3" class="nav-link" onclick="updateNav(event)">PSD3</a>
+    <div class="flex gap-0.5 overflow-x-auto pb-0.5">
+      <a href="#banche"  class="nav-link" onclick="goTo(event,'#banche')">Banche</a>
+      <a href="#thiel"   class="nav-link" onclick="goTo(event,'#thiel')">Thiel</a>
+      <a href="#bigtech" class="nav-link" onclick="goTo(event,'#bigtech')">Big Tech</a>
+      <a href="#modelli" class="nav-link" onclick="goTo(event,'#modelli')">Modelli</a>
+      <a href="#gdpr"    class="nav-link" onclick="goTo(event,'#gdpr')">GDPR</a>
+      <a href="#frodi"   class="nav-link" onclick="goTo(event,'#frodi')">Frodi</a>
+      <a href="#psd3"    class="nav-link" onclick="goTo(event,'#psd3')">PSD3</a>
     </div>
   </div>
 </nav>
 
-<!-- ══ HERO ═══════════════════════════════════════════════════════════════════ -->
-<header style="background:linear-gradient(135deg,#1e3a5f 0%,#0ea5e9 100%); padding:80px 24px;">
+<!-- HERO -->
+<header style="background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 50%,#0369a1 100%);padding:68px 24px 56px;">
   <div class="max-w-4xl mx-auto text-center">
-    <div class="inline-block bg-white/20 text-white text-sm font-semibold px-4 py-2 rounded-full mb-6">📊 Gigi — Analisi Economica & Strategica</div>
-    <h1 class="text-4xl sm:text-5xl font-extrabold text-white mb-4 leading-tight">PSD2: Impatto Economico,<br>Sociale e Strategico</h1>
-    <p class="text-sky-100 text-lg max-w-2xl mx-auto leading-relaxed">Big Tech, Fintech e la filosofia di Thiel: come una direttiva europea ha rivoluzionato il denaro — e chi vuole dominarlo.</p>
-    <div class="mt-8 flex flex-wrap justify-center gap-4">
-      <div class="bg-white/20 rounded-xl px-6 py-3 text-white text-center">
-        <div class="text-2xl font-extrabold" id="stat1">0</div>
-        <div class="text-xs text-sky-200 mt-1">miliardi utenti Revolut</div>
+    <div style="display:inline-block;background:rgba(255,255,255,.1);color:#bae6fd;font-family:'Syne',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:6px 18px;border-radius:99px;margin-bottom:18px;">📊 Analisi Economica &amp; Strategica — Gigi</div>
+    <h1 style="font-family:'Syne',sans-serif;font-size:clamp(1.8rem,5vw,3rem);font-weight:800;color:white;margin-bottom:12px;line-height:1.15;">PSD2: Impatto Economico,<br>Sociale e Strategico</h1>
+    <p style="color:#bae6fd;font-size:.96rem;max-width:520px;margin:0 auto;line-height:1.7;">Big Tech, Fintech e la filosofia di Thiel: come una direttiva europea ha rivoluzionato il denaro — e chi vuole dominarlo.</p>
+    <div style="margin-top:28px;display:flex;flex-wrap:wrap;justify-content:center;gap:14px;">
+      <div style="background:rgba(255,255,255,.1);border-radius:16px;padding:14px 22px;color:white;text-align:center;backdrop-filter:blur(4px);">
+        <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;" id="stat1">0</div>
+        <div style="font-size:.72rem;color:#93c5fd;margin-top:2px;">milioni utenti Revolut</div>
       </div>
-      <div class="bg-white/20 rounded-xl px-6 py-3 text-white text-center">
-        <div class="text-2xl font-extrabold" id="stat2">0</div>
-        <div class="text-xs text-sky-200 mt-1">mln € perdite APP Fraud '22</div>
+      <div style="background:rgba(255,255,255,.1);border-radius:16px;padding:14px 22px;color:white;text-align:center;backdrop-filter:blur(4px);">
+        <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;" id="stat2">0</div>
+        <div style="font-size:.72rem;color:#93c5fd;margin-top:2px;">mln € perdite APP Fraud '22</div>
       </div>
-      <div class="bg-white/20 rounded-xl px-6 py-3 text-white text-center">
-        <div class="text-2xl font-extrabold" id="stat3">0</div>
-        <div class="text-xs text-sky-200 mt-1">miliardi $ valutazione Revolut</div>
+      <div style="background:rgba(255,255,255,.1);border-radius:16px;padding:14px 22px;color:white;text-align:center;backdrop-filter:blur(4px);">
+        <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;" id="stat3">0</div>
+        <div style="font-size:.72rem;color:#93c5fd;margin-top:2px;">miliardi $ valutazione Revolut</div>
       </div>
     </div>
   </div>
 </header>
 
-<main class="max-w-6xl mx-auto px-4 sm:px-6 py-16 space-y-24">
+<main class="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-5">
 
-<!-- ══════════════════════════════════════════════════════════════════════════
-     1. BANCHE TRADIZIONALI
-══════════════════════════════════════════════════════════════════════════ -->
-<section id="banche" class="section-reveal">
-  <h2 class="section-title">1. Impatto sulle Banche Tradizionali</h2>
-  <p class="content-text">Prima della PSD2, le banche tradizionali detenevano un vantaggio competitivo assoluto: il <strong>monopolio sui dati finanziari</strong> dei propri clienti. Il cliente era captive — legato alla propria banca per impossibilità strutturale di portare i propri dati altrove. La PSD2 ha sovvertito questo paradigma codificando in legge un principio rivoluzionario: i dati bancari appartengono al cliente, non all'istituto che li custodisce.</p>
+<!-- 1. BANCHE -->
+<section id="banche" class="section-wrap skin-banche sr">
+  <div class="sec-label skin-banche">🏦 01 — Banche Tradizionali</div>
+  <h2 class="sec-title" style="color:#0f4c81;">Impatto sulle Banche Tradizionali</h2>
+  <p class="sec-lead">Prima della PSD2 le banche detenevano il <strong>monopolio sui dati finanziari</strong> del cliente. La direttiva ha sovvertito questo paradigma: i dati appartengono al cliente, non all'istituto che li custodisce. Le banche hanno dovuto reinventarsi.</p>
 
-  <div class="subsection-title">Prima vs Dopo: una rivoluzione dei poteri</div>
+  <div class="sub-title">Prima vs Dopo: una rivoluzione dei poteri</div>
   <table>
     <thead><tr><th>Dimensione</th><th>Prima della PSD2</th><th>Dopo la PSD2</th></tr></thead>
     <tbody>
@@ -172,722 +223,560 @@
     </tbody>
   </table>
 
-  <div class="subsection-title">La risposta strategica delle banche</div>
-  <p class="content-text">Le banche non sono rimaste ferme. La risposta si è articolata su tre livelli strategici che trasformano la minaccia regolatoria in opportunità competitiva.</p>
+  <div class="sub-title">La risposta strategica delle banche</div>
   <div class="grid-3">
-    <div class="card"><div class="card-icon">⚙️</div><h4>Investimenti tecnologici</h4><p>Sviluppo di API conformi agli RTS dell'EBA, con infrastrutture di Open Banking proprietarie per non dipendere da soluzioni di terzi.</p></div>
-    <div class="card"><div class="card-icon">🤝</div><h4>Partnership Fintech</h4><p>Trasformazione dei potenziali competitor in alleati tecnologici nel modello Banking-as-a-Service (BaaS). Acquisire invece di combattere.</p></div>
-    <div class="card"><div class="card-icon">📱</div><h4>Super-app bancarie</h4><p>Ecosistemi digitali proprietari capaci di offrire aggregazione, robo-advisory e pagamenti istantanei per competere sul terreno delle Fintech.</p></div>
+    <div class="card"><div class="card-icon">⚙️</div><h4>Investimenti tecnologici</h4><p>Sviluppo di API conformi agli RTS dell'EBA e infrastrutture Open Banking proprietarie per non dipendere da soluzioni di terzi.</p></div>
+    <div class="card"><div class="card-icon">🤝</div><h4>Partnership Fintech</h4><p>Trasformazione dei potenziali competitor in alleati nel modello Banking-as-a-Service: acquisire invece di combattere.</p></div>
+    <div class="card"><div class="card-icon">📱</div><h4>Super-app bancarie</h4><p>Ecosistemi digitali con aggregazione, robo-advisory e pagamenti istantanei per competere sul terreno Fintech.</p></div>
   </div>
 
-  <div class="feature-box">
+  <div class="info-box box-blue">
     <h4>🏦 Caso studio: Intesa Sanpaolo</h4>
-    <p>Intesa Sanpaolo ha risposto alla PSD2 sviluppando un ecosistema digitale che integra servizi bancari, assicurativi e di lifestyle in un'unica piattaforma. Questa strategia di <em>"walled garden"</em> punta a rendere l'esperienza cliente così completa da ridurre l'incentivo a rivolgersi a terze parti — trasformando la compliance normativa in opportunità commerciale. È un esempio di come la disruption regolamentare possa paradossalmente rafforzare i player che reagiscono con visione strategica.</p>
+    <p>Intesa ha risposto costruendo un ecosistema che integra bancario, assicurativo e lifestyle in un'unica piattaforma — il modello <em>"walled garden"</em> punta a rendere l'esperienza così completa da ridurre l'incentivo a rivolgersi a terze parti. Un caso di come la disruption regolatoria possa paradossalmente rafforzare chi reagisce con visione strategica.</p>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════════════════════════════════════
-     2. THIEL + QUIZ
-══════════════════════════════════════════════════════════════════════════ -->
-<section id="thiel" class="section-reveal">
-  <h2 class="section-title">2. Peter Thiel, PayPal e il DNA delle Fintech</h2>
+<!-- 2. THIEL -->
+<section id="thiel" class="section-wrap skin-thiel sr">
+  <div class="sec-label skin-thiel">💡 02 — Thiel &amp; Fintech</div>
+  <h2 class="sec-title" style="color:#5b21b6;">Peter Thiel, PayPal e il DNA delle Fintech</h2>
+  <p class="sec-lead">PayPal (1998) è il precedente fondativo: non voleva migliorare il sistema bancario, voleva <em>sostituirlo</em>. La visione di Thiel — una valuta digitale globale indipendente — anticipa di vent'anni i principi poi codificati dalla PSD2.</p>
 
-  <div class="subsection-title">Il precedente storico: PayPal</div>
-  <p class="content-text">Per comprendere le Fintech moderne non si può prescindere da un episodio fondativo: la nascita di PayPal nel 1998. Fondata da Peter Thiel, Max Levchin ed Elon Musk (dopo la fusione con X.com), PayPal ha rappresentato il primo grande caso di <strong>disruption finanziaria digitale</strong> — ben prima che esistesse il termine "Fintech".</p>
-  <p class="content-text">Thiel aveva una visione radicale: creare una valuta digitale globale indipendente da governi e banche centrali. PayPal non voleva migliorare il sistema bancario esistente: voleva <em>sostituirlo</em>. Il modello operativo di PayPal ha anticipato di oltre vent'anni i principi che la PSD2 ha poi codificato in legge.</p>
-
-  <div class="subsection-title">La filosofia "Da Zero a Uno"</div>
-  <p class="content-text">Nel libro "Zero to One" (2014), Thiel articola una filosofia imprenditoriale che descrive perfettamente il modello delle Fintech PSD2. Il concetto centrale: la vera innovazione non è replicare ciò che esiste (da 1 a n) ma creare qualcosa di fondamentalmente nuovo (da 0 a 1).</p>
-
+  <div class="sub-title">La filosofia "Da Zero a Uno" applicata alle Fintech</div>
   <table>
-    <thead><tr><th>Principio Thiel</th><th>Applicazione Fintech</th><th>Esempio concreto</th></tr></thead>
+    <thead><tr><th>Principio Thiel</th><th>Applicazione Fintech</th><th>Esempio</th></tr></thead>
     <tbody>
-      <tr><td><strong>Monopolio tecnologico</strong></td><td>Dominare una nicchia prima di espandersi</td><td>Revolut: cambio valuta gratuito come nicchia globale</td></tr>
-      <tr><td><strong>Network effect</strong></td><td>Il valore cresce con gli utenti</td><td>Klarna: più merchant → più utenti → più merchant</td></tr>
-      <tr><td><strong>Da zero a uno</strong></td><td>Non ottimizzare il vecchio, crearne uno nuovo</td><td>N26: nessuna filiale, solo app mobile nativa</td></tr>
-      <tr><td><strong>Segreti nascosti</strong></td><td>Sfruttare asimmetrie informative</td><td>Fintech usano i dati PSD2 che le banche non valorizzano</td></tr>
+      <tr><td><strong>Monopolio tecnologico</strong></td><td>Dominare una nicchia prima di espandersi</td><td>Revolut: cambio valuta gratuito</td></tr>
+      <tr><td><strong>Network effect</strong></td><td>Il valore cresce con gli utenti</td><td>Klarna: più merchant → più utenti</td></tr>
+      <tr><td><strong>Da zero a uno</strong></td><td>Non ottimizzare il vecchio, crearne uno nuovo</td><td>N26: nessuna filiale, solo app nativa</td></tr>
+      <tr><td><strong>Segreti nascosti</strong></td><td>Sfruttare asimmetrie informative</td><td>Fintech usano dati PSD2 che le banche non valorizzano</td></tr>
     </tbody>
   </table>
 
-  <!-- ── THIEL QUIZ ────────────────────────────────────────────────────── -->
-  <div class="subsection-title">🧠 Quiz: sei un imprenditore alla Thiel?</div>
-  <p class="content-text">Mettiti nei panni di un founder. Tre scenari, una scelta. Scopri se pensi come Thiel.</p>
+  <div class="sub-title">🧠 Quiz: pensi come Thiel?</div>
+  <p style="font-size:.9rem;color:#475569;margin-bottom:12px;">Tre scenari imprenditoriali. Una scelta. Scopri se ragioni da founder.</p>
 
-  <div id="quiz-container" class="bg-white border-2 border-slate-200 rounded-2xl p-6">
-    <!-- Q1 -->
-    <div class="quiz-q" id="q1">
-      <div class="text-xs font-bold text-sky-600 mb-2 uppercase tracking-wide">Domanda 1 / 3</div>
-      <p class="font-bold text-slate-800 mb-4">Stai lanciando una Fintech. Come conquisti i primi utenti?</p>
+  <div style="background:white;border:2px solid #ddd6fe;border-radius:16px;padding:20px;">
+    <div id="q1" class="quiz-q">
+      <div style="font-size:.7rem;font-weight:700;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">Domanda 1 / 3</div>
+      <p style="font-weight:600;color:#1e293b;margin-bottom:10px;font-size:.92rem;">Stai lanciando una Fintech. Come conquisti i primi utenti?</p>
       <button class="quiz-opt" onclick="checkQuiz(1,'a','b')">A — Abbasso i prezzi del 20% rispetto alle banche tradizionali</button>
       <button class="quiz-opt" onclick="checkQuiz(1,'b','b')">B — Offro cambio valuta gratuito su una nicchia specifica e globale</button>
       <button class="quiz-opt" onclick="checkQuiz(1,'c','b')">C — Faccio una campagna pubblicitaria massiccia</button>
-      <div class="quiz-feedback" id="fb1"></div>
+      <div class="quiz-fb" id="fb1"></div>
     </div>
-    <!-- Q2 -->
-    <div class="quiz-q hidden" id="q2">
-      <div class="text-xs font-bold text-sky-600 mb-2 uppercase tracking-wide">Domanda 2 / 3</div>
-      <p class="font-bold text-slate-800 mb-4">Una grande banca ti offre di acquistare la tua startup per 50M€. Cosa fai?</p>
+    <div id="q2" class="quiz-q hidden">
+      <div style="font-size:.7rem;font-weight:700;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">Domanda 2 / 3</div>
+      <p style="font-weight:600;color:#1e293b;margin-bottom:10px;font-size:.92rem;">Una grande banca ti offre 50M€ per la tua startup. Cosa fai?</p>
       <button class="quiz-opt" onclick="checkQuiz(2,'a','c')">A — Accetto: è un'uscita sicura e redditizia</button>
       <button class="quiz-opt" onclick="checkQuiz(2,'b','c')">B — Tratto per salire a 80M€ e poi accetto</button>
       <button class="quiz-opt" onclick="checkQuiz(2,'c','c')">C — Rifiuto: sto costruendo un monopolio da miliardi</button>
-      <div class="quiz-feedback" id="fb2"></div>
+      <div class="quiz-fb" id="fb2"></div>
     </div>
-    <!-- Q3 -->
-    <div class="quiz-q hidden" id="q3">
-      <div class="text-xs font-bold text-sky-600 mb-2 uppercase tracking-wide">Domanda 3 / 3</div>
-      <p class="font-bold text-slate-800 mb-4">Il tuo servizio perde €2 per ogni utente. Qual è la tua mossa?</p>
+    <div id="q3" class="quiz-q hidden">
+      <div style="font-size:.7rem;font-weight:700;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">Domanda 3 / 3</div>
+      <p style="font-weight:600;color:#1e293b;margin-bottom:10px;font-size:.92rem;">Il tuo servizio perde €2 per ogni utente. Qual è la tua mossa?</p>
       <button class="quiz-opt" onclick="checkQuiz(3,'a','a')">A — Taglio i costi e trovo subito il break-even</button>
       <button class="quiz-opt" onclick="checkQuiz(3,'b','a')">B — Continuo: sto costruendo un network effect che vale miliardi</button>
       <button class="quiz-opt" onclick="checkQuiz(3,'c','a')">C — Lancio una campagna per convertire utenti in paganti subito</button>
-      <div class="quiz-feedback" id="fb3"></div>
+      <div class="quiz-fb" id="fb3"></div>
     </div>
-    <!-- Result -->
-    <div class="hidden" id="quiz-result">
-      <div class="text-center py-4">
-        <div class="text-5xl mb-3" id="quiz-emoji">🎯</div>
-        <div class="text-2xl font-extrabold text-slate-800 mb-2" id="quiz-score-label"></div>
-        <p class="text-slate-500 text-sm" id="quiz-score-desc"></p>
-        <button onclick="resetQuiz()" class="mt-4 bg-sky-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-sky-600 transition">Riprova</button>
-      </div>
+    <div id="quiz-result" class="hidden" style="text-align:center;padding:16px 0;">
+      <div style="font-size:2.8rem;margin-bottom:10px;" id="quiz-emoji">🎯</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:#1e293b;margin-bottom:6px;" id="quiz-score-label"></div>
+      <p style="color:#6b7280;font-size:.84rem;" id="quiz-score-desc"></p>
+      <button onclick="resetQuiz()" style="margin-top:12px;background:#7c3aed;color:white;padding:8px 22px;border-radius:10px;border:none;font-weight:700;cursor:pointer;font-size:.87rem;font-family:'DM Sans',sans-serif;">Riprova</button>
     </div>
   </div>
-  <div class="mt-1 text-xs text-slate-400 text-center">Le risposte "giuste" rispecchiano la logica di Thiel — non necessariamente la scelta migliore in assoluto!</div>
+  <p style="font-size:.73rem;color:#94a3b8;text-align:center;margin-top:6px;">Le risposte "giuste" rispecchiano la logica di Thiel — non necessariamente la scelta migliore in assoluto!</p>
 
-  <div class="subsection-title">La PayPal Mafia</div>
-  <p class="content-text">Un elemento spesso trascurato è il ruolo dell'ecosistema umano formatosi intorno a PayPal. I co-fondatori e i primi dipendenti hanno successivamente fondato o finanziato: <strong>LinkedIn</strong> (Reid Hoffman), <strong>YouTube</strong> (Chad Hurley, Steve Chen), <strong>Yelp, Palantir, Tesla, SpaceX</strong>. Questo fenomeno dimostra come un'azienda tecnologicamente visionaria generi un effetto moltiplicatore sull'intero ecosistema dell'innovazione.</p>
-  <div class="highlight-box">
-    <p>📌 Nel contesto europeo post-PSD2, si sta assistendo a un fenomeno analogo su scala più limitata: ex dipendenti di Revolut, N26 e Klarna stanno fondando la prossima generazione di Fintech, trasferendo know-how, cultura imprenditoriale e reti di contatti in un ciclo continuo di innovazione.</p>
+  <div class="info-box box-amber" style="margin-top:16px;">
+    <h4>📌 La PayPal Mafia e l'effetto moltiplicatore</h4>
+    <p>I co-fondatori di PayPal hanno successivamente fondato LinkedIn, YouTube, Yelp, Palantir, Tesla, SpaceX. In Europa si sta assistendo a un fenomeno analogo: ex dipendenti di Revolut, N26 e Klarna fondano la prossima generazione di Fintech.</p>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════════════════════════════════════
-     3. BIG TECH BATTLE — interattivo
-══════════════════════════════════════════════════════════════════════════ -->
-<section id="bigtech" class="section-reveal">
-  <h2 class="section-title">3. Big Tech: il Nuovo Monopolio dei Pagamenti</h2>
-  <p class="content-text">Il vero erede della visione di Thiel non sono le startup Fintech europee, ma le <strong>grandi piattaforme tecnologiche globali</strong> — Apple, Google, Meta, Amazon — che applicano esattamente la logica thieliana: dominare prima una nicchia (social, search, e-commerce), poi espandersi nei servizi finanziari come passo naturale verso il monopolio dell'ecosistema digitale dell'utente.</p>
-  <p class="content-text">Clicca su ciascuna azienda per scoprire la sua strategia di espansione finanziaria.</p>
+<!-- 3. BIG TECH -->
+<section id="bigtech" class="section-wrap skin-bigtech sr">
+  <div class="sec-label skin-bigtech">🌐 03 — Big Tech</div>
+  <h2 class="sec-title" style="color:#0e7490;">Big Tech: il Nuovo Monopolio dei Pagamenti</h2>
+  <p class="sec-lead">Il vero erede della visione di Thiel non sono le startup Fintech europee, ma Apple, Google, Meta, Amazon — che applicano la logica thieliana: dominare prima una nicchia, poi espandersi nei servizi finanziari come passo naturale verso il monopolio dell'ecosistema digitale.</p>
+  <p style="font-size:.84rem;color:#0e7490;font-weight:600;margin-bottom:14px;">👆 Clicca su ciascuna azienda per scoprire la sua strategia di espansione finanziaria.</p>
 
-  <!-- Big Tech Cards -->
-  <div class="grid-2" id="bt-grid">
-
+  <div class="grid-2">
     <div class="bt-card" id="bt-apple" onclick="toggleBT('apple')">
       <div class="bt-header">
-        <div class="bt-logo" style="background:#f1f5f9; font-size:2rem;">🍎</div>
-        <div>
-          <div class="font-bold text-slate-800">Apple</div>
-          <div class="text-xs text-slate-400">Apple Pay · Apple Card · Apple Cash</div>
-        </div>
-        <div class="ml-auto text-slate-300 text-xl transition-transform" id="arr-apple">▼</div>
+        <div class="bt-logo" style="background:#f1f5f9;">🍎</div>
+        <div style="flex:1;"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:#0f172a;">Apple</div><div style="font-size:.72rem;color:#94a3b8;">Apple Pay · Apple Card · Apple Cash</div></div>
+        <div style="color:#cbd5e1;font-size:.8rem;transition:transform .3s;" id="arr-apple">▼</div>
       </div>
       <div class="bt-body" id="body-apple">
-        <div class="mb-3">
-          <span class="bt-tag">NFC esclusivo iOS</span>
-          <span class="bt-tag">Biometria</span>
-          <span class="bt-tag">Walled garden</span>
-        </div>
-        <p class="text-sm text-slate-600 leading-relaxed mb-3">Apple non ha costruito una banca: ha reso la banca <em>irrilevante</em> nell'esperienza utente. Inserendo i pagamenti nel chip NFC dell'iPhone, chi vuole fare pagamenti contactless su iOS <strong>deve passare per Apple Pay</strong> — nessun altro player ci può accedere. Questo le ha garantito una posizione di gatekeeper nei pagamenti mobile.</p>
-        <p class="text-xs text-slate-500 mb-2 font-semibold">Dominio nel mercato pagamenti mobile:</p>
-        <div class="bt-bar-wrap"><div class="bt-bar" data-w="88" style="width:0%"></div></div>
-        <div class="warn-box mt-3">
-          <h4>⚖️ Indagine antitrust UE (2022)</h4>
-          <p class="text-sm">La Commissione Europea ha aperto un'indagine antitrust su Apple Pay, concludendosi nel 2024 con l'obbligo di aprire l'accesso NFC a competitor. Un caso esemplare di monopolio digitale smontato dalla regolazione — esattamente quello che la PSD3 vuole estendere.</p>
-        </div>
+        <div style="margin-bottom:10px;"><span class="bt-tag">NFC esclusivo iOS</span><span class="bt-tag">Biometria</span><span class="bt-tag">Walled garden</span></div>
+        <p style="font-size:.84rem;color:#374151;line-height:1.65;margin-bottom:10px;">Apple ha reso la banca <em>irrilevante</em> nell'esperienza utente: inserendo i pagamenti nel chip NFC dell'iPhone, chi vuole pagamenti contactless su iOS <strong>deve passare per Apple Pay</strong>. Pura posizione di gatekeeper.</p>
+        <p style="font-size:.72rem;color:#6b7280;font-weight:600;margin-bottom:2px;">Dominio pagamenti mobile iOS:</p>
+        <div class="bt-bar-wrap"><div class="bt-bar" data-w="88"></div></div>
+        <div class="info-box box-red" style="margin-top:8px;"><h4>⚖️ Indagine antitrust UE (2024)</h4><p>La Commissione ha concluso con l'obbligo di aprire l'accesso NFC a competitor — esattamente quello che la PSD3 vuole estendere a tutti.</p></div>
       </div>
     </div>
 
     <div class="bt-card" id="bt-google" onclick="toggleBT('google')">
       <div class="bt-header">
-        <div class="bt-logo" style="background:#fef9c3; font-size:2rem;">🔍</div>
-        <div>
-          <div class="font-bold text-slate-800">Google</div>
-          <div class="text-xs text-slate-400">Google Pay · Google Wallet · UPI India</div>
-        </div>
-        <div class="ml-auto text-slate-300 text-xl transition-transform" id="arr-google">▼</div>
+        <div class="bt-logo" style="background:#fef9c3;">🔍</div>
+        <div style="flex:1;"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:#0f172a;">Google</div><div style="font-size:.72rem;color:#94a3b8;">Google Pay · Google Wallet · UPI India</div></div>
+        <div style="color:#cbd5e1;font-size:.8rem;transition:transform .3s;" id="arr-google">▼</div>
       </div>
       <div class="bt-body" id="body-google">
-        <div class="mb-3">
-          <span class="bt-tag">Dati comportamentali</span>
-          <span class="bt-tag">Android dominance</span>
-          <span class="bt-tag">Mercati emergenti</span>
-        </div>
-        <p class="text-sm text-slate-600 leading-relaxed mb-3">Google sfrutta i dati di Search e Maps per offrire servizi finanziari contestuali. In India, con Google Pay su UPI, è diventato uno dei maggiori operatori di pagamento del paese — <strong>100+ milioni di utenti</strong> — senza essere una banca regolamentata. La strategia: entrare nei mercati emergenti dove la regolazione è meno matura.</p>
-        <p class="text-xs text-slate-500 mb-2 font-semibold">Quota mercato Google Pay in India:</p>
-        <div class="bt-bar-wrap"><div class="bt-bar" data-w="35" style="width:0%; background:linear-gradient(90deg,#4285f4,#34a853)"></div></div>
-        <div class="feature-box mt-3">
-          <h4>💡 Il segreto di Google</h4>
-          <p class="text-sm">A differenza di Apple, Google non cerca il walled garden: vuole i dati di transazione. Ogni pagamento arricchisce il profilo utente usato per la pubblicità. Il servizio di pagamento è quasi un pretesto per acquisire dati finanziari comportamentali.</p>
-        </div>
+        <div style="margin-bottom:10px;"><span class="bt-tag">Dati comportamentali</span><span class="bt-tag">Android dominance</span><span class="bt-tag">Mercati emergenti</span></div>
+        <p style="font-size:.84rem;color:#374151;line-height:1.65;margin-bottom:10px;">Google sfrutta i dati di Search e Maps per servizi finanziari contestuali. In India con Google Pay su UPI è diventato uno dei maggiori operatori — <strong>100M+ utenti</strong> — senza essere banca regolamentata.</p>
+        <p style="font-size:.72rem;color:#6b7280;font-weight:600;margin-bottom:2px;">Quota mercato Google Pay in India:</p>
+        <div class="bt-bar-wrap"><div class="bt-bar" data-w="35" style="background:linear-gradient(90deg,#4285f4,#34a853)"></div></div>
+        <div class="info-box box-blue" style="margin-top:8px;"><h4>💡 Il segreto di Google</h4><p>A differenza di Apple, Google non cerca il walled garden: vuole i dati di transazione. Il servizio di pagamento è quasi un pretesto per acquisire dati finanziari comportamentali.</p></div>
       </div>
     </div>
 
     <div class="bt-card" id="bt-meta" onclick="toggleBT('meta')">
       <div class="bt-header">
-        <div class="bt-logo" style="background:#eff6ff; font-size:2rem;">👤</div>
-        <div>
-          <div class="font-bold text-slate-800">Meta</div>
-          <div class="text-xs text-slate-400">WhatsApp Pay · Facebook Pay · Diem (†)</div>
-        </div>
-        <div class="ml-auto text-slate-300 text-xl transition-transform" id="arr-meta">▼</div>
+        <div class="bt-logo" style="background:#eff6ff;">👤</div>
+        <div style="flex:1;"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:#0f172a;">Meta</div><div style="font-size:.72rem;color:#94a3b8;">WhatsApp Pay · Facebook Pay · Diem (†)</div></div>
+        <div style="color:#cbd5e1;font-size:.8rem;transition:transform .3s;" id="arr-meta">▼</div>
       </div>
       <div class="bt-body" id="body-meta">
-        <div class="mb-3">
-          <span class="bt-tag">P2P integrato</span>
-          <span class="bt-tag">Social graph</span>
-          <span class="bt-tag">3 miliardi utenti</span>
-        </div>
-        <p class="text-sm text-slate-600 leading-relaxed mb-3">Meta ha lanciato pagamenti P2P integrati in WhatsApp in India e Brasile, sfruttando la base utenti esistente. Il progetto <strong>Libra/Diem</strong> — poi abortito per pressioni regolatorie di USA e UE — era il tentativo più ambizioso: creare una valuta digitale globale di fatto privata. Esattamente la visione originale di Thiel con PayPal, ma in scala globale da 3 miliardi di utenti.</p>
-        <div class="bt-bar-wrap"><div class="bt-bar" data-w="60" style="width:0%; background:linear-gradient(90deg,#1877f2,#42a5f5)"></div></div>
-        <p class="text-xs text-slate-400 mb-3">Utenti WhatsApp raggiungibili con WhatsApp Pay (%)</p>
-        <div class="warn-box mt-2">
-          <h4>💀 Perché Diem è fallito</h4>
-          <p class="text-sm">Governi e banche centrali si sono opposti compatti: una valuta privata gestita da Meta avrebbe eroso la sovranità monetaria. La Banca Centrale Europea ha dichiarato che "nessuna stablecoin privata deve diventare un mezzo di pagamento mainstream in Europa". Primo caso di Big Tech fermata da una coalizione regolatoria globale.</p>
-        </div>
+        <div style="margin-bottom:10px;"><span class="bt-tag">P2P integrato</span><span class="bt-tag">Social graph</span><span class="bt-tag">3 miliardi utenti</span></div>
+        <p style="font-size:.84rem;color:#374151;line-height:1.65;margin-bottom:10px;">Meta ha integrato pagamenti P2P in WhatsApp. Il progetto <strong>Libra/Diem</strong> — abortito per pressioni regolatorie — era la visione originale di Thiel con PayPal, in scala da 3 miliardi di utenti.</p>
+        <div class="bt-bar-wrap"><div class="bt-bar" data-w="60" style="background:linear-gradient(90deg,#1877f2,#42a5f5)"></div></div>
+        <p style="font-size:.7rem;color:#9ca3af;margin-bottom:8px;">Utenti WhatsApp raggiungibili con WhatsApp Pay (%)</p>
+        <div class="info-box box-red" style="margin-top:0;"><h4>💀 Perché Diem è fallito</h4><p>Governi e banche centrali si sono opposti compatti: una valuta privata Meta avrebbe eroso la sovranità monetaria. Primo caso di Big Tech fermata da una coalizione regolatoria globale.</p></div>
       </div>
     </div>
 
     <div class="bt-card" id="bt-amazon" onclick="toggleBT('amazon')">
       <div class="bt-header">
-        <div class="bt-logo" style="background:#fff7ed; font-size:2rem;">📦</div>
-        <div>
-          <div class="font-bold text-slate-800">Amazon</div>
-          <div class="text-xs text-slate-400">Amazon Pay · Amazon Lending · BNPL Affirm</div>
-        </div>
-        <div class="ml-auto text-slate-300 text-xl transition-transform" id="arr-amazon">▼</div>
+        <div class="bt-logo" style="background:#fff7ed;">📦</div>
+        <div style="flex:1;"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:#0f172a;">Amazon</div><div style="font-size:.72rem;color:#94a3b8;">Amazon Pay · Amazon Lending · BNPL Affirm</div></div>
+        <div style="color:#cbd5e1;font-size:.8rem;transition:transform .3s;" id="arr-amazon">▼</div>
       </div>
       <div class="bt-body" id="body-amazon">
-        <div class="mb-3">
-          <span class="bt-tag">Embedded Finance</span>
-          <span class="bt-tag">Dati acquisto</span>
-          <span class="bt-tag">B2B + B2C</span>
-        </div>
-        <p class="text-sm text-slate-600 leading-relaxed mb-3">Amazon è il caso più avanzato di Embedded Finance. <strong>Amazon Lending</strong> offre credito ai merchant della piattaforma sulla base dei dati di vendita — senza bisogno di garanzie tradizionali: i dati sono la garanzia. Amazon Pay è presente in migliaia di siti e-commerce. L'integrazione BNPL con Affirm aumenta la conversione senza che l'utente lasci mai l'ecosistema.</p>
-        <div class="bt-bar-wrap"><div class="bt-bar" data-w="72" style="width:0%; background:linear-gradient(90deg,#ff9900,#ffd700)"></div></div>
-        <p class="text-xs text-slate-400 mb-3">Presenza di Amazon Pay su e-commerce USA top 1000 (%)</p>
-        <div class="feature-box mt-2">
-          <h4>🔮 La visione profetica di Thiel sull'Embedded Finance</h4>
-          <p class="text-sm">Thiel aveva teorizzato che il futuro dei pagamenti non sarebbe una "super-banca digitale" ma la <em>dissoluzione della finanza come settore separato</em>. Amazon lo sta realizzando: la finanza diventa infrastruttura invisibile — non una destinazione consapevole.</p>
-        </div>
+        <div style="margin-bottom:10px;"><span class="bt-tag">Embedded Finance</span><span class="bt-tag">Dati acquisto</span><span class="bt-tag">B2B + B2C</span></div>
+        <p style="font-size:.84rem;color:#374151;line-height:1.65;margin-bottom:10px;"><strong>Amazon Lending</strong> offre credito ai merchant sulla base dei dati di vendita — senza garanzie tradizionali: i dati <em>sono</em> la garanzia. Il caso più avanzato di Embedded Finance.</p>
+        <div class="bt-bar-wrap"><div class="bt-bar" data-w="72" style="background:linear-gradient(90deg,#ff9900,#ffd700)"></div></div>
+        <p style="font-size:.7rem;color:#9ca3af;margin-bottom:8px;">Presenza Amazon Pay su e-commerce USA top 1000 (%)</p>
+        <div class="info-box box-blue" style="margin-top:0;"><h4>🔮 Thiel sull'Embedded Finance</h4><p>Il futuro dei pagamenti non è una "super-banca digitale" ma la <em>dissoluzione della finanza come settore separato</em> — infrastruttura invisibile.</p></div>
       </div>
     </div>
-
   </div>
 
-  <div class="warn-box mt-6">
+  <div class="info-box box-red" style="margin-top:12px;">
     <h4>⚠️ Il paradosso del monopolio digitale</h4>
-    <p>Thiel aveva teorizzato che il miglior business è quello che crea un monopolio mascherato da mercato competitivo. Le Big Tech lo stanno applicando ai pagamenti: Apple controlla l'accesso NFC su iOS, Google domina Android. Chi vuole accedere ai pagamenti mobile deve passare per loro — pur non essendo banche regolamentate. La PSD3 tenta di risolvere questa asimmetria.</p>
+    <p>Apple controlla l'accesso NFC su iOS, Google domina Android. Chi vuole accedere ai pagamenti mobile deve passare per loro — pur non essendo banche regolamentate. La PSD3 tenta di risolvere questa asimmetria.</p>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════════════════════════════════════
-     4. MODELLI DI BUSINESS — Tab Explorer
-══════════════════════════════════════════════════════════════════════════ -->
-<section id="modelli" class="section-reveal">
-  <h2 class="section-title">4. Modelli di Business Fintech</h2>
-  <p class="content-text">Come guadagnano concretamente le Fintech? I modelli sono diversi e spesso combinati. Esplora ciascuno per capire la meccanica economica che si nasconde dietro l'app sul tuo telefono.</p>
+<!-- 4. MODELLI -->
+<section id="modelli" class="section-wrap skin-modelli sr">
+  <div class="sec-label skin-modelli">💰 04 — Modelli di Business</div>
+  <h2 class="sec-title" style="color:#065f46;">Come Guadagnano le Fintech?</h2>
+  <p class="sec-lead">I modelli di business Fintech sono diversi e spesso combinati. Esplora ciascuno per capire la meccanica economica che si nasconde dietro l'app sul tuo telefono.</p>
 
-  <div class="flex flex-wrap gap-0 border-b-2 border-slate-200 mb-0">
-    <button class="bm-tab active" onclick="setBM('neobank')">Neobank</button>
-    <button class="bm-tab" onclick="setBM('pisp')">PISP</button>
-    <button class="bm-tab" onclick="setBM('aisp')">AISP</button>
-    <button class="bm-tab" onclick="setBM('bnpl')">BNPL</button>
-    <button class="bm-tab" onclick="setBM('baas')">BaaS</button>
+  <div class="bm-explorer">
+    <div class="bm-sidebar">
+      <button class="bm-btn act" onclick="setBM('neobank')" id="bmbtn-neobank"><span class="bm-icon">🏦</span><span>Neobank</span></button>
+      <button class="bm-btn" onclick="setBM('pisp')"    id="bmbtn-pisp">   <span class="bm-icon">💸</span><span>PISP</span></button>
+      <button class="bm-btn" onclick="setBM('aisp')"    id="bmbtn-aisp">   <span class="bm-icon">📊</span><span>AISP</span></button>
+      <button class="bm-btn" onclick="setBM('bnpl')"    id="bmbtn-bnpl">   <span class="bm-icon">🛒</span><span>BNPL</span></button>
+      <button class="bm-btn" onclick="setBM('baas')"    id="bmbtn-baas">   <span class="bm-icon">🏗️</span><span>BaaS</span></button>
+    </div>
+    <div class="bm-content">
+
+      <div class="bm-panel act" id="bm-neobank">
+        <div class="bm-title">Neobank / Challenger Bank</div>
+        <div class="bm-sub">Esempi: N26, Revolut, Bunq</div>
+        <p class="bm-desc">Conto corrente nativo digitale senza filiali né legacy tecnologica. Il costo marginale è quasi zero rispetto a una banca tradizionale, rendendo il piano base gratuito sostenibile.</p>
+        <div class="meter-wrap">
+          <div class="meter-label"><span>Dipendenza da PSD2</span><span style="color:#10b981;font-weight:800;">Alta</span></div>
+          <div class="meter-track"><div class="meter-fill" data-w="78" style="background:linear-gradient(90deg,#10b981,#6ee7b7)"></div></div>
+          <div class="meter-label" style="margin-top:8px;"><span>Profittabilità utente singolo</span><span style="color:#f59e0b;font-weight:800;">Media</span></div>
+          <div class="meter-track"><div class="meter-fill" data-w="45" style="background:linear-gradient(90deg,#f59e0b,#fde68a)"></div></div>
+        </div>
+        <div class="rev-box">
+          <h5>Come guadagna</h5>
+          <div class="rev-item">Commissioni interchange (% su ogni pagamento con carta)</div>
+          <div class="rev-item">Abbonamenti premium — es. Revolut Metal: ~13€/mese</div>
+          <div class="rev-item">Spread su valute estere e interessi su conti remunerati</div>
+          <div class="rev-item">Prestiti al consumo e credito</div>
+        </div>
+        <div style="margin-top:10px;"><span class="info-pill">📱 Modello freemium</span><span class="info-pill">🌍 Nicchia globale (Thiel)</span><span class="info-pill">🔗 Network effect</span></div>
+      </div>
+
+      <div class="bm-panel" id="bm-pisp">
+        <div class="bm-title">Payment Initiation (PISP)</div>
+        <div class="bm-sub">Esempi: Klarna, TrueLayer, Token.io</div>
+        <p class="bm-desc">Dispone pagamenti direttamente dal conto bancario <strong>senza carte di credito</strong>. Il merchant risparmia le commissioni Visa/Mastercard (1,5–3%). Strutturalmente impossibile prima della PSD2.</p>
+        <div class="meter-wrap">
+          <div class="meter-label"><span>Dipendenza da PSD2</span><span style="color:#10b981;font-weight:800;">Totale</span></div>
+          <div class="meter-track"><div class="meter-fill" data-w="95" style="background:linear-gradient(90deg,#10b981,#6ee7b7)"></div></div>
+          <div class="meter-label" style="margin-top:8px;"><span>Margine per transazione</span><span style="color:#f59e0b;font-weight:800;">Medio-basso</span></div>
+          <div class="meter-track"><div class="meter-fill" data-w="35" style="background:linear-gradient(90deg,#f59e0b,#fde68a)"></div></div>
+        </div>
+        <div class="rev-box">
+          <h5>Come guadagna</h5>
+          <div class="rev-item">Fee per transazione a merchant (inferiore alle carte)</div>
+          <div class="rev-item">Commissioni API per developer (B2B)</div>
+          <div class="rev-item">Revenue share con banche partner</div>
+        </div>
+        <div style="margin-top:10px;"><span class="info-pill">🏦 Bypassa Visa/MC</span><span class="info-pill">⚡ Pagamenti istantanei</span><span class="info-pill">🔑 Esiste grazie a PSD2</span></div>
+      </div>
+
+      <div class="bm-panel" id="bm-aisp">
+        <div class="bm-title">Account Aggregation (AISP)</div>
+        <div class="bm-sub">Esempi: Plum, Emma, Yolt</div>
+        <p class="bm-desc">Vista multi-conto unificata: l'utente vede tutti i suoi conti in un'unica app. Trasforma i dati bancari in intelligence finanziaria personale. Il GDPR rappresenta però un vincolo critico.</p>
+        <div class="meter-wrap">
+          <div class="meter-label"><span>Dipendenza da PSD2</span><span style="color:#10b981;font-weight:800;">Totale</span></div>
+          <div class="meter-track"><div class="meter-fill" data-w="90" style="background:linear-gradient(90deg,#10b981,#6ee7b7)"></div></div>
+          <div class="meter-label" style="margin-top:8px;"><span>Rischio GDPR</span><span style="color:#ef4444;font-weight:800;">Alto</span></div>
+          <div class="meter-track"><div class="meter-fill" data-w="75" style="background:linear-gradient(90deg,#ef4444,#fca5a5)"></div></div>
+        </div>
+        <div class="rev-box">
+          <h5>Come guadagna</h5>
+          <div class="rev-item">Abbonamento mensile — es. Plum: 2,99€/mese</div>
+          <div class="rev-item">Insight aggregati e anonimi venduti a istituti finanziari</div>
+          <div class="rev-item">Raccomandazione prodotti contestuale</div>
+        </div>
+        <div class="info-box box-amber" style="margin-top:10px;"><h4>⚠️ Tensione GDPR</h4><p>Il consenso deve essere specifico per finalità. Molte app raccolgono consenso generico — zona grigia che la PSD3 intende chiudere.</p></div>
+      </div>
+
+      <div class="bm-panel" id="bm-bnpl">
+        <div class="bm-title">Buy Now Pay Later (BNPL)</div>
+        <div class="bm-sub">Esempi: Klarna, Scalapay, Afterpay</div>
+        <p class="bm-desc">Credito istantaneo al checkout, spesso "senza interessi" per l'utente. Il merchant paga per aumentare le conversioni (+30%). Il BNPL acquisisce dati su ogni acquisto per costruire profili predittivi.</p>
+        <div class="meter-wrap">
+          <div class="meter-label"><span>Scala globale raggiunta</span><span style="color:#10b981;font-weight:800;">Molto alta</span></div>
+          <div class="meter-track"><div class="meter-fill" data-w="88" style="background:linear-gradient(90deg,#10b981,#6ee7b7)"></div></div>
+          <div class="meter-label" style="margin-top:8px;"><span>Pressione regolatoria crescente</span><span style="color:#ef4444;font-weight:800;">Alta</span></div>
+          <div class="meter-track"><div class="meter-fill" data-w="70" style="background:linear-gradient(90deg,#ef4444,#fca5a5)"></div></div>
+        </div>
+        <div class="rev-box">
+          <h5>Come guadagna</h5>
+          <div class="rev-item">Commissione merchant — 3–6% per transazione</div>
+          <div class="rev-item">Interessi su rate ritardate o piani più lunghi</div>
+          <div class="rev-item">Servizi premium, assicurativi e dati comportamentali</div>
+        </div>
+        <div style="margin-top:10px;"><span class="info-pill">🛍️ Klarna: 150M utenti, 45 paesi</span><span class="info-pill">📈 +30% conversione merchant</span></div>
+      </div>
+
+      <div class="bm-panel" id="bm-baas">
+        <div class="bm-title">Banking-as-a-Service (BaaS)</div>
+        <div class="bm-sub">Esempi: Solarisbank, ClearBank</div>
+        <p class="bm-desc">Infrastruttura bancaria tramite API per terzi. Qualsiasi azienda può offrire conti, carte e prestiti <strong>senza licenza bancaria propria</strong>. È la base dell'Embedded Finance di Amazon e Shopify.</p>
+        <div class="meter-wrap">
+          <div class="meter-label"><span>Scalabilità</span><span style="color:#10b981;font-weight:800;">Molto alta</span></div>
+          <div class="meter-track"><div class="meter-fill" data-w="92" style="background:linear-gradient(90deg,#10b981,#6ee7b7)"></div></div>
+          <div class="meter-label" style="margin-top:8px;"><span>Complessità regolatoria</span><span style="color:#f59e0b;font-weight:800;">Alta</span></div>
+          <div class="meter-track"><div class="meter-fill" data-w="80" style="background:linear-gradient(90deg,#f59e0b,#fde68a)"></div></div>
+        </div>
+        <div class="rev-box">
+          <h5>Come guadagna</h5>
+          <div class="rev-item">Fee per API call — pay-per-use</div>
+          <div class="rev-item">Licenza white-label mensile</div>
+          <div class="rev-item">Revenue share sui ricavi del cliente</div>
+        </div>
+        <div style="margin-top:10px;"><span class="info-pill">🏗️ Tim Money</span><span class="info-pill">🛍️ Shopify Payments</span><span class="info-pill">📦 Amazon Embedded</span></div>
+      </div>
+
+    </div>
   </div>
 
-  <div class="bg-white border-2 border-slate-200 border-t-0 rounded-b-2xl rounded-tr-2xl p-6">
-
-    <div class="bm-panel active" id="bm-neobank">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="text-3xl">🏦</span>
-        <div><div class="font-bold text-xl text-slate-800">Neobank / Challenger Bank</div><div class="text-sm text-slate-500">Esempi: N26, Revolut, Bunq</div></div>
-      </div>
-      <p class="content-text">Conto corrente nativo digitale senza filiali né legacy tecnologica. Il costo marginale è quasi zero rispetto a una banca tradizionale.</p>
-      <div class="grid-2 mt-3">
-        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-          <div class="font-bold text-emerald-700 mb-2">💰 Come guadagna</div>
-          <ul class="text-sm text-emerald-600 space-y-1">
-            <li>• Commissioni interchange (% su ogni pagamento con carta)</li>
-            <li>• Abbonamenti premium (es. Revolut Metal: ~13€/mese)</li>
-            <li>• Spread su valute estere</li>
-            <li>• Interessi su conti remunerati</li>
-            <li>• Prestiti al consumo e credito</li>
-          </ul>
-        </div>
-        <div class="bg-sky-50 border border-sky-200 rounded-xl p-4">
-          <div class="font-bold text-sky-700 mb-2">📊 Strategia freemium</div>
-          <p class="text-sm text-sky-600">Il servizio base gratuito acquisisce utenti a basso costo (via API PSD2 anziché costruire infrastrutture proprie). I tier premium portano fino al 30% del fatturato totale. Un'equazione impossibile per le banche tradizionali con costi di filiale.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="bm-panel" id="bm-pisp">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="text-3xl">💸</span>
-        <div><div class="font-bold text-xl text-slate-800">Payment Initiation (PISP)</div><div class="text-sm text-slate-500">Esempi: Klarna, TrueLayer, Token.io</div></div>
-      </div>
-      <p class="content-text">Dispone pagamenti direttamente dal conto bancario senza passare per carte di credito. Il merchant risparmia le commissioni della rete Visa/Mastercard (1,5-3%).</p>
-      <div class="grid-2 mt-3">
-        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-          <div class="font-bold text-emerald-700 mb-2">💰 Come guadagna</div>
-          <ul class="text-sm text-emerald-600 space-y-1">
-            <li>• Fee per transazione a merchant (inferiore alle carte)</li>
-            <li>• Commissioni API per developer (B2B)</li>
-            <li>• Revenue share con banche partner</li>
-          </ul>
-        </div>
-        <div class="bg-sky-50 border border-sky-200 rounded-xl p-4">
-          <div class="font-bold text-sky-700 mb-2">🔑 Vantaggio PSD2</div>
-          <p class="text-sm text-sky-600">Senza PSD2 non esisterebbero: è la direttiva che obbliga le banche ad aprire le API e permettere a terzi di disporre pagamenti. Il PISP bypassa fisicamente i circuiti carta — strutturalmente impossibile prima del 2018.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="bm-panel" id="bm-aisp">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="text-3xl">📊</span>
-        <div><div class="font-bold text-xl text-slate-800">Account Aggregation (AISP)</div><div class="text-sm text-slate-500">Esempi: Plum, Emma, Yolt</div></div>
-      </div>
-      <p class="content-text">Visualizzazione multi-conto unificata: l'utente vede tutti i suoi conti (anche di banche diverse) in un'unica app. La PSD2 obbliga le banche a condividere i dati.</p>
-      <div class="grid-2 mt-3">
-        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-          <div class="font-bold text-emerald-700 mb-2">💰 Come guadagna</div>
-          <ul class="text-sm text-emerald-600 space-y-1">
-            <li>• Abbonamento mensile utente (es. Plum: 2,99€/mese)</li>
-            <li>• Vendita di insight aggregati e anonimi a istituti finanziari</li>
-            <li>• Raccomandazione prodotti (es. "questo conto ti farebbe risparmiare X")</li>
-          </ul>
-        </div>
-        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
-          <div class="font-bold text-amber-700 mb-2">⚠️ Tensione GDPR</div>
-          <p class="text-sm text-amber-600">Gli AISP raccolgono dati bancari estremamente sensibili. Il GDPR impone che il consenso sia specifico per finalità. Molte app raccolgono consenso generico e permanente — zona grigia che la PSD3 intende regolare esplicitamente.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="bm-panel" id="bm-bnpl">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="text-3xl">🛒</span>
-        <div><div class="font-bold text-xl text-slate-800">Buy Now Pay Later (BNPL)</div><div class="text-sm text-slate-500">Esempi: Klarna, Scalapay, Afterpay</div></div>
-      </div>
-      <p class="content-text">Credito istantaneo al checkout, spesso "senza interessi" per l'utente. Il merchant paga una commissione per aumentare le conversioni.</p>
-      <div class="feature-box">
-        <h4>🟢 Caso Klarna — il BNPL come gateway ai dati</h4>
-        <p>Klarna offre "Paga in 3 rate senza interessi" aumentando le conversioni del merchant del +30%. Il merchant paga 3-5% di commissione. L'utente non paga nulla. Ma Klarna acquisisce dati su ogni acquisto, categoria, comportamento — e li usa per valutare il credito, fare upsell assicurativo e costruire profili predittivi. Nel 2023: 150 milioni di utenti in 45 paesi.</p>
-      </div>
-      <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mt-3">
-        <div class="font-bold text-emerald-700 mb-2">💰 Come guadagna</div>
-        <ul class="text-sm text-emerald-600 space-y-1">
-          <li>• Commissione merchant (3-6% per transazione)</li>
-          <li>• Interessi su rate ritardate o piani più lunghi</li>
-          <li>• Servizi premium e prodotti assicurativi</li>
-          <li>• Monetizzazione dei dati comportamentali</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="bm-panel" id="bm-baas">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="text-3xl">🏗️</span>
-        <div><div class="font-bold text-xl text-slate-800">Banking-as-a-Service (BaaS)</div><div class="text-sm text-slate-500">Esempi: Solarisbank, ClearBank</div></div>
-      </div>
-      <p class="content-text">Infrastruttura bancaria tramite API per terzi. Qualsiasi azienda può offrire servizi finanziari (conti, carte, prestiti) senza licenza bancaria propria, appoggiandosi a un BaaS provider.</p>
-      <div class="grid-2 mt-3">
-        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-          <div class="font-bold text-emerald-700 mb-2">💰 Come guadagna</div>
-          <ul class="text-sm text-emerald-600 space-y-1">
-            <li>• Fee per API call (pay-per-use)</li>
-            <li>• Licenza white-label mensile</li>
-            <li>• Quota dei ricavi del cliente (revenue share)</li>
-          </ul>
-        </div>
-        <div class="bg-sky-50 border border-sky-200 rounded-xl p-4">
-          <div class="font-bold text-sky-700 mb-2">🌐 Chi lo usa</div>
-          <p class="text-sm text-sky-600">Telecomunicazioni (Tim Money), retailer (carte co-branded), piattaforme e-commerce, app di gestione spese aziendali. Shopify Payments è costruito su BaaS. È la base dell'Embedded Finance di Amazon.</p>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Tabella comparativa -->
-  <div class="subsection-title">Revolut vs N26 — due approcci a confronto</div>
+  <div class="sub-title">Revolut vs N26 — due approcci a confronto</div>
   <table>
     <thead><tr><th></th><th>🟣 Revolut</th><th>🔵 N26</th></tr></thead>
     <tbody>
-      <tr><td><strong>Fondazione</strong></td><td>2015, Londra — Nikolay Storonsky</td><td>2013, Berlino — Valentin Stalf</td></tr>
+      <tr><td><strong>Fondazione</strong></td><td>2015, Londra</td><td>2013, Berlino</td></tr>
       <tr><td><strong>Utenti (2024)</strong></td><td>45+ milioni globali</td><td>8+ milioni in Europa</td></tr>
-      <tr><td><strong>Come guadagna</strong></td><td>Premium Metal/Gold, crypto, stock trading, BaaS</td><td>Piano Smart/You/Metal, credito al consumo</td></tr>
-      <tr><td><strong>Strategia Thiel</strong></td><td>Nicchia globale → espansione servizi</td><td>Semplicità radicale come barriera d'ingresso</td></tr>
+      <tr><td><strong>Come guadagna</strong></td><td>Premium, crypto, stock trading, BaaS</td><td>Piano Smart/You/Metal, credito</td></tr>
+      <tr><td><strong>Strategia Thiel</strong></td><td>Nicchia globale → espansione servizi</td><td>Semplicità radicale come barriera</td></tr>
       <tr><td><strong>Valutazione</strong></td><td>~45 miliardi USD (2024)</td><td>~9 miliardi USD (2021)</td></tr>
     </tbody>
   </table>
 </section>
 
-<!-- ══════════════════════════════════════════════════════════════════════════
-     5. GDPR — Timeline interattiva
-══════════════════════════════════════════════════════════════════════════ -->
-<section id="gdpr" class="section-reveal">
-  <h2 class="section-title">5. La Tensione con il GDPR</h2>
-  <p class="content-text">Il consenso al trattamento dei dati nell'ecosistema PSD2 introduce una <strong>tensione strutturale</strong> con il Regolamento GDPR (UE) 2016/679: da un lato il cliente è giuridicamente proprietario dei propri dati finanziari, dall'altro il meccanismo del consenso — spesso mediato da interfacce progettate per massimizzare l'accettazione (<em>dark patterns</em>) — rischia di trasformare la libertà di scelta in una cessione inconsapevole di informazioni finanziarie sensibili.</p>
+<!-- 5. GDPR -->
+<section id="gdpr" class="section-wrap skin-gdpr sr">
+  <div class="sec-label skin-gdpr">⚖️ 05 — GDPR</div>
+  <h2 class="sec-title" style="color:#92400e;">La Tensione con il GDPR</h2>
+  <p class="sec-lead">Il consenso al trattamento dati PSD2 introduce una <strong>tensione strutturale</strong> col GDPR: da un lato il cliente è proprietario dei suoi dati finanziari, dall'altro i meccanismi di consenso — spesso progettati come <em>dark patterns</em> — rischiano di trasformare la scelta in una cessione inconsapevole.</p>
 
   <div class="grid-2">
-    <div class="feature-box">
-      <h4>📋 PSD2 dice:</h4>
-      <p>Gli AISP possono raccogliere dati bancari su <strong>consenso del cliente</strong>. L'obiettivo è abilitare l'innovazione e la concorrenza.</p>
-    </div>
-    <div class="warn-box">
-      <h4>🔒 GDPR dice:</h4>
-      <p>Il consenso deve essere <strong>libero, specifico, informato e inequivocabile</strong>, revocabile in qualsiasi momento senza conseguenze. Un consenso "jolly" non è valido.</p>
-    </div>
+    <div class="info-box box-blue"><h4>📋 PSD2 dice:</h4><p>Gli AISP possono raccogliere dati bancari su <strong>consenso del cliente</strong>. L'obiettivo è abilitare innovazione e concorrenza.</p></div>
+    <div class="info-box box-red"><h4>🔒 GDPR dice:</h4><p>Il consenso deve essere <strong>libero, specifico, informato e inequivocabile</strong>, revocabile senza conseguenze. Un consenso "jolly" non è valido.</p></div>
   </div>
 
-  <!-- Timeline casi reali -->
-  <div class="subsection-title">📅 Casi reali — clicca per scoprire la storia</div>
-  <div class="bg-white border-2 border-slate-200 rounded-2xl p-6">
-    <div class="flex flex-col gap-2" id="gdpr-timeline">
-
-      <div class="flex items-center gap-3 cursor-pointer hover:bg-slate-50 rounded-xl p-3 transition" onclick="expandGDPR(0)">
-        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">🇫🇷</div>
-        <div class="flex-1">
-          <div class="font-bold text-slate-800 text-sm">CNIL sanziona Google — 50 milioni €</div>
-          <div class="text-xs text-slate-400">Francia, 2019</div>
-        </div>
-        <div class="text-slate-300 text-lg" id="gdpr-arr-0">▼</div>
-      </div>
-      <div class="hidden bg-red-50 rounded-xl p-4 mb-2 text-sm text-slate-600 leading-relaxed" id="gdpr-body-0">
-        La CNIL (autorità francese per la privacy) ha sanzionato Google per aver raccolto il consenso al trattamento dati in modo non trasparente durante la configurazione di Android — un processo a più step con informazioni "sparse" e difficili da trovare. <strong>Diretta implicazione per le Fintech</strong>: lo stesso schema (consenso multipagina, opt-out nascosto) usato da molte app di aggregazione PSD2 è identicamente illegittimo secondo questo precedente.
-      </div>
-
-      <div class="flex items-center gap-3 cursor-pointer hover:bg-slate-50 rounded-xl p-3 transition" onclick="expandGDPR(1)">
-        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">🇬🇧</div>
-        <div class="flex-1">
-          <div class="font-bold text-slate-800 text-sm">ICO vs Open Banking Ltd — Purpose Limitation</div>
-          <div class="text-xs text-slate-400">UK, 2021</div>
-        </div>
-        <div class="text-slate-300 text-lg" id="gdpr-arr-1">▼</div>
-      </div>
-      <div class="hidden bg-blue-50 rounded-xl p-4 mb-2 text-sm text-slate-600 leading-relaxed" id="gdpr-body-1">
-        L'ICO (Information Commissioner's Office britannico) ha indagato se le API di Open Banking consentissero una raccolta dati <strong>sproporzionata rispetto alle finalità dichiarate</strong>. Il principio GDPR di "purpose limitation" (art. 5): i dati raccolti per mostrare il saldo non possono essere riutilizzati per profilazione commerciale senza consenso separato. Molte Fintech operano in questa zona grigia.
-      </div>
-
-      <div class="flex items-center gap-3 cursor-pointer hover:bg-slate-50 rounded-xl p-3 transition" onclick="expandGDPR(2)">
-        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">🇮🇹</div>
-        <div class="flex-1">
-          <div class="font-bold text-slate-800 text-sm">Garante Privacy italiano — Dark Patterns Fintech</div>
-          <div class="text-xs text-slate-400">Italia, 2022</div>
-        </div>
-        <div class="text-slate-300 text-lg" id="gdpr-arr-2">▼</div>
-      </div>
-      <div class="hidden bg-green-50 rounded-xl p-4 mb-2 text-sm text-slate-600 leading-relaxed" id="gdpr-body-2">
-        Il Garante ha segnalato l'uso di <strong>dark patterns</strong> in diverse app finanziarie italiane: il pulsante "consenti a tutto" prominente in verde, quello di rifiuto grigio e quasi nascosto; pre-spunte già attive; consenso richiesto a schermo intero prima ancora di spiegare il servizio. Violare il GDPR con dark patterns può portare a sanzioni fino al <strong>4% del fatturato globale</strong> — per una Fintech da 1 miliardo di ricavi significa 40 milioni.
-      </div>
-
-      <div class="flex items-center gap-3 cursor-pointer hover:bg-slate-50 rounded-xl p-3 transition" onclick="expandGDPR(3)">
-        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">🇩🇪</div>
-        <div class="flex-1">
-          <div class="font-bold text-slate-800 text-sm">Caso "Silent Parties" — i dati di chi non ha acconsentito</div>
-          <div class="text-xs text-slate-400">EDPB, 2020</div>
-        </div>
-        <div class="text-slate-300 text-lg" id="gdpr-arr-3">▼</div>
-      </div>
-      <div class="hidden bg-purple-50 rounded-xl p-4 mb-2 text-sm text-slate-600 leading-relaxed" id="gdpr-body-3">
-        Quando un AISP accede al tuo estratto conto, vede anche i dati di chi ti ha bonificato o a chi hai pagato — persone che non hanno mai acconsentito. L'EDPB (Comitato Europeo Protezione Dati) ha chiarito: questi "silent parties" sono protetti dal GDPR, il TPP deve applicare <strong>minimizzazione e crittografia</strong>, e non può usare quei dati per profilazione o marketing. Spesso questa norma non viene rispettata.
-      </div>
-
+  <div class="sub-title">📅 Casi reali — clicca per scoprire la storia</div>
+  <div style="background:white;border-radius:14px;border:1.5px solid #fde68a;overflow:hidden;">
+    <div class="gdpr-row" onclick="expandGDPR(0)">
+      <div style="width:40px;height:40px;background:#fee2e2;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">🇫🇷</div>
+      <div style="flex:1;"><div style="font-weight:600;font-size:.87rem;color:#1e293b;">CNIL sanziona Google — 50 milioni €</div><div style="font-size:.72rem;color:#94a3b8;">Francia, 2019</div></div>
+      <div style="color:#94a3b8;font-size:.75rem;" id="gdpr-arr-0">▼</div>
     </div>
+    <div class="gdpr-body" id="gdpr-body-0">La CNIL ha sanzionato Google per consenso non trasparente durante la configurazione Android. <strong>Implicazione per le Fintech</strong>: lo stesso schema (consenso multipagina, opt-out nascosto) usato da molte app PSD2 è identicamente illegittimo.</div>
+
+    <div class="gdpr-row" onclick="expandGDPR(1)" style="border-top:1px solid #fef3c7;">
+      <div style="width:40px;height:40px;background:#dbeafe;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">🇬🇧</div>
+      <div style="flex:1;"><div style="font-weight:600;font-size:.87rem;color:#1e293b;">ICO vs Open Banking Ltd — Purpose Limitation</div><div style="font-size:.72rem;color:#94a3b8;">UK, 2021</div></div>
+      <div style="color:#94a3b8;font-size:.75rem;" id="gdpr-arr-1">▼</div>
+    </div>
+    <div class="gdpr-body" id="gdpr-body-1">L'ICO britannico ha indagato se le API di Open Banking consentissero raccolta dati <strong>sproporzionata rispetto alle finalità dichiarate</strong>. Principio GDPR art. 5: i dati per mostrare il saldo non possono essere riutilizzati per profilazione commerciale senza consenso separato.</div>
+
+    <div class="gdpr-row" onclick="expandGDPR(2)" style="border-top:1px solid #fef3c7;">
+      <div style="width:40px;height:40px;background:#dcfce7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">🇮🇹</div>
+      <div style="flex:1;"><div style="font-weight:600;font-size:.87rem;color:#1e293b;">Garante Privacy — Dark Patterns Fintech</div><div style="font-size:.72rem;color:#94a3b8;">Italia, 2022</div></div>
+      <div style="color:#94a3b8;font-size:.75rem;" id="gdpr-arr-2">▼</div>
+    </div>
+    <div class="gdpr-body" id="gdpr-body-2">Il Garante ha segnalato dark patterns in app finanziarie italiane: pulsante "consenti a tutto" verde prominente, rifiuto grigio nascosto, pre-spunte attive. Violazioni GDPR tramite dark patterns possono portare a sanzioni fino al <strong>4% del fatturato globale</strong>.</div>
+
+    <div class="gdpr-row" onclick="expandGDPR(3)" style="border-top:1px solid #fef3c7;">
+      <div style="width:40px;height:40px;background:#ede9fe;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">🇩🇪</div>
+      <div style="flex:1;"><div style="font-weight:600;font-size:.87rem;color:#1e293b;">Caso "Silent Parties" — dati di chi non ha acconsentito</div><div style="font-size:.72rem;color:#94a3b8;">EDPB, 2020</div></div>
+      <div style="color:#94a3b8;font-size:.75rem;" id="gdpr-arr-3">▼</div>
+    </div>
+    <div class="gdpr-body" id="gdpr-body-3">Quando un AISP accede al tuo estratto conto, vede anche i dati di chi ti ha bonificato — persone che non hanno mai acconsentito. L'EDPB ha chiarito: questi "silent parties" sono protetti dal GDPR e i loro dati non possono essere usati per profilazione.</div>
   </div>
 
-  <div class="highlight-box mt-6">
-    <p>📌 La protezione effettiva del consumatore richiede non solo regolazione tecnica ma anche educazione digitale. Il GDPR e la PSD2 non sono in contraddizione ontologica — ma richiedono un coordinamento applicativo che ad oggi manca in molti Stati membri, Italia inclusa.</p>
+  <div class="info-box box-amber" style="margin-top:14px;">
+    <h4>📌 GDPR e PSD2 non sono ontologicamente in contraddizione</h4>
+    <p>La protezione effettiva richiede non solo regolazione tecnica ma anche educazione digitale. Il coordinamento applicativo tra le due normative manca ancora in molti Stati membri, Italia inclusa.</p>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════════════════════════════════════
-     6. FRODI — Simulatore scelte
-══════════════════════════════════════════════════════════════════════════ -->
-<section id="frodi" class="section-reveal">
-  <h2 class="section-title">6. Frodi: Perché Serve la PSD3</h2>
-  <p class="content-text">La SCA (Strong Customer Authentication) introdotta dalla PSD2 ha ridotto drasticamente le frodi "tradizionali" (accesso non autorizzato al conto). Ma ha aperto la strada a frodi più sofisticate che sfruttano la componente umana — quella che nessun sistema tecnico elimina. Questi casi reali spiegano perché la PSD3 è necessaria.</p>
+<!-- 6. FRODI -->
+<section id="frodi" class="section-wrap skin-frodi sr">
+  <div class="sec-label skin-frodi">🚨 06 — Frodi</div>
+  <h2 class="sec-title" style="color:#7f1d1d;">Frodi: Perché Serve la PSD3</h2>
+  <p class="sec-lead">La SCA ha ridotto drasticamente le frodi "tradizionali". Ma ha aperto la strada a frodi più sofisticate che sfruttano la componente umana — quella che nessun sistema tecnico elimina.</p>
 
-  <!-- Stat bar -->
-  <div class="bg-white border-2 border-slate-200 rounded-2xl p-6 mb-6">
-    <div class="font-bold text-slate-800 mb-4 text-center">Perdite da frode autorizzata in Europa (EBA, 2023)</div>
-    <div class="flex items-end gap-3 justify-center h-32">
-      <div class="flex flex-col items-center gap-1">
-        <div class="text-xs text-slate-500">2019</div>
-        <div class="w-12 bg-sky-200 rounded-t-lg fraud-bar" style="height:0" data-h="40"></div>
-        <div class="text-xs font-bold text-sky-700">~600M</div>
+  <div style="background:white;border-radius:14px;padding:18px 22px 14px;border:1.5px solid #fecaca;margin-bottom:18px;">
+    <div style="font-family:'Syne',sans-serif;font-weight:700;color:#1e293b;margin-bottom:12px;font-size:.87rem;">Perdite da frode autorizzata in Europa (EBA, 2023)</div>
+    <div style="display:flex;align-items:flex-end;gap:14px;height:100px;padding:0 8px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">
+        <div class="fraud-bar" style="width:100%;" data-h="38"></div>
+        <div style="font-size:.7rem;color:#94a3b8;">2019</div>
+        <div style="font-size:.75rem;font-weight:700;color:#3b82f6;">~600M</div>
       </div>
-      <div class="flex flex-col items-center gap-1">
-        <div class="text-xs text-slate-500">2020</div>
-        <div class="w-12 bg-sky-300 rounded-t-lg fraud-bar" style="height:0" data-h="55"></div>
-        <div class="text-xs font-bold text-sky-700">~820M</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">
+        <div class="fraud-bar" style="width:100%;background:#60a5fa;" data-h="53"></div>
+        <div style="font-size:.7rem;color:#94a3b8;">2020</div>
+        <div style="font-size:.75rem;font-weight:700;color:#3b82f6;">~820M</div>
       </div>
-      <div class="flex flex-col items-center gap-1">
-        <div class="text-xs text-slate-500">2021</div>
-        <div class="w-12 bg-sky-400 rounded-t-lg fraud-bar" style="height:0" data-h="72"></div>
-        <div class="text-xs font-bold text-sky-600">~970M</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">
+        <div class="fraud-bar" style="width:100%;background:#f97316;" data-h="72"></div>
+        <div style="font-size:.7rem;color:#94a3b8;">2021</div>
+        <div style="font-size:.75rem;font-weight:700;color:#ea580c;">~970M</div>
       </div>
-      <div class="flex flex-col items-center gap-1">
-        <div class="text-xs text-slate-500">2022</div>
-        <div class="w-12 bg-orange-400 rounded-t-lg fraud-bar" style="height:0" data-h="90"></div>
-        <div class="text-xs font-bold text-orange-700">1,17B</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">
+        <div class="fraud-bar" style="width:100%;background:#ef4444;" data-h="92"></div>
+        <div style="font-size:.7rem;color:#94a3b8;">2022</div>
+        <div style="font-size:.75rem;font-weight:700;color:#dc2626;">1,17B</div>
       </div>
     </div>
-    <p class="text-xs text-slate-400 text-center mt-3">Nonostante la SCA, le perdite da frode autorizzata continuano a crescere. La tecnologia non elimina l'inganno umano.</p>
+    <p style="font-size:.72rem;color:#9ca3af;margin-top:8px;text-align:center;">Nonostante la SCA, le perdite da frode autorizzata continuano a crescere. La tecnologia non elimina l'inganno umano.</p>
   </div>
 
-  <!-- Fraud simulator -->
-  <div class="subsection-title">🎮 Simulatore: sai riconoscere la truffa?</div>
-  <p class="content-text">Stai usando la tua app Fintech. Ti arriva un messaggio. Cosa fai?</p>
+  <div class="sub-title">🎮 Simulatore: sai riconoscere la truffa?</div>
+  <p style="font-size:.88rem;color:#475569;margin-bottom:10px;">Stai usando la tua app Fintech. Ti arriva un messaggio. Cosa fai?</p>
 
-  <div class="bg-white border-2 border-slate-200 rounded-2xl p-6">
-
-    <!-- APP FRAUD -->
-    <div class="fraud-step active" id="fraud-1">
-      <div class="bg-slate-800 rounded-xl p-4 mb-4 font-mono text-sm text-green-400 leading-relaxed">
-        <div class="text-slate-400 text-xs mb-2">📱 Notifica — Revolut</div>
-        "Gentile cliente, abbiamo rilevato un accesso sospetto al suo conto. Per proteggere i suoi fondi, un nostro operatore la contatterà nei prossimi 30 secondi. NON effettui pagamenti fino alla sua chiamata."
+  <div style="background:white;border:1.5px solid #fecaca;border-radius:16px;padding:20px;">
+    <div class="fraud-step on" id="fraud-1">
+      <div style="background:#1e293b;border-radius:12px;padding:14px;margin-bottom:12px;font-size:.8rem;color:#4ade80;font-family:monospace;line-height:1.65;">
+        <div style="color:#64748b;font-size:.68rem;margin-bottom:3px;">📱 Notifica — Revolut</div>
+        "Gentile cliente, abbiamo rilevato un accesso sospetto. Un nostro operatore la contatterà nei prossimi 30 secondi. NON effettui pagamenti fino alla sua chiamata."
       </div>
-      <p class="text-slate-600 text-sm mb-4">30 secondi dopo ti chiama un numero che sul tuo telefono appare come "Revolut +39 02 3456789". La voce ti dice di spostare i fondi su un "conto di sicurezza temporaneo" mentre investigano. Cosa fai?</p>
-      <div class="flex flex-wrap gap-3">
-        <button class="choice-btn bg-red-50 border-red-200 text-red-700" onclick="fraudChoice('bad')">😰 Seguo le istruzioni — sposto i fondi</button>
-        <button class="choice-btn bg-emerald-50 border-emerald-200 text-emerald-700" onclick="fraudChoice('good')">🛑 Mi insospettisco — chiudo e richiamo io</button>
+      <p style="font-size:.85rem;color:#374151;line-height:1.65;margin-bottom:12px;">30 secondi dopo ti chiama un numero che appare come "Revolut +39 02 3456789". La voce ti dice di spostare i fondi su un "conto di sicurezza temporaneo". Cosa fai?</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        <button class="choice-btn" style="background:#fff1f2;border-color:#fecaca;color:#991b1b;" onclick="fraudChoice('bad')">😰 Seguo le istruzioni — sposto i fondi</button>
+        <button class="choice-btn" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46;" onclick="fraudChoice('good')">🛑 Mi insospettisco — chiudo e richiamo io</button>
       </div>
     </div>
-
     <div class="fraud-step" id="fraud-bad">
-      <div class="outcome-bad mb-4">
-        <div class="font-bold text-red-800 text-lg mb-2">❌ Sei vittima di APP Fraud</div>
-        <p class="text-red-700 text-sm leading-relaxed">Hai autorizzato tu stesso il pagamento — quindi tecnicamente la SCA è stata rispettata. La tua banca potrebbe non rimborsarti automaticamente. <strong>Nessuna banca o Fintech chiama chiedendo di spostare fondi.</strong> Il numero che vedi può essere falsificato (caller ID spoofing). Il "conto di sicurezza" appartiene al truffatore.</p>
-      </div>
-      <div class="feature-box">
-        <h4>📊 Il dato reale: UK 2022</h4>
-        <p class="text-sm">In UK, le perdite da APP Fraud hanno superato 485 milioni di sterline solo nel 2022. La PSD3 introduce la responsabilità condivisa banca-merchant per questi casi: le banche dovranno rimborsare le vittime e poi rivalersi sul merchant che ha ricevuto il bonifico truffaldino.</p>
-      </div>
-      <button onclick="resetFraud()" class="mt-4 bg-sky-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-sky-600 transition">🔄 Riprova</button>
+      <div class="out-bad"><div style="font-family:'Syne',sans-serif;font-weight:700;color:#991b1b;margin-bottom:7px;">❌ Sei vittima di APP Fraud</div><p style="font-size:.85rem;color:#7f1d1d;line-height:1.65;">Hai autorizzato tu stesso il pagamento — tecnicamente la SCA è stata rispettata. La banca potrebbe non rimborsarti. <strong>Nessuna banca o Fintech chiama chiedendo di spostare fondi.</strong> Il numero può essere falsificato (caller ID spoofing).</p></div>
+      <div class="info-box box-blue" style="margin-top:10px;"><h4>📊 UK 2022</h4><p>Le perdite da APP Fraud hanno superato 485 milioni di sterline. La PSD3 introduce responsabilità condivisa banca-merchant per questi casi.</p></div>
+      <button onclick="resetFraud()" style="margin-top:10px;background:#0ea5e9;color:white;padding:8px 20px;border-radius:10px;border:none;font-weight:700;cursor:pointer;font-size:.84rem;font-family:'DM Sans',sans-serif;">🔄 Riprova</button>
     </div>
-
     <div class="fraud-step" id="fraud-good">
-      <div class="outcome-good mb-4">
-        <div class="font-bold text-emerald-800 text-lg mb-2">✅ Ottima scelta — hai evitato l'APP Fraud</div>
-        <p class="text-emerald-700 text-sm leading-relaxed">Richiamando il numero ufficiale hai verificato che non c'era nessun problema. Il messaggio iniziale era un SMS spoofato. Il numero di telefono che ti ha chiamato era falsificato con caller ID spoofing — tecnologia accessibile per circa 50€/mese su servizi underground. <strong>Regola d'oro: mai spostare fondi su richiesta telefonica, anche se il numero sembra legittimo.</strong></p>
-      </div>
-      <div class="highlight-box">
-        <p>💡 La PSD3 introduce l'IBAN/Name Matching: prima di autorizzare un bonifico, la banca verifica che IBAN e nome del beneficiario corrispondano. Questo non ferma l'APP Fraud ma riduce i trasferimenti su conti falsi aperti con identità rubate.</p>
-      </div>
-      <button onclick="resetFraud()" class="mt-4 bg-sky-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-sky-600 transition">🔄 Riprova</button>
+      <div class="out-ok"><div style="font-family:'Syne',sans-serif;font-weight:700;color:#065f46;margin-bottom:7px;">✅ Hai evitato l'APP Fraud</div><p style="font-size:.85rem;color:#064e3b;line-height:1.65;">Richiamando il numero ufficiale hai verificato che non c'era nessun problema. Il messaggio era un SMS spoofato. <strong>Regola d'oro: mai spostare fondi su richiesta telefonica, anche se il numero sembra legittimo.</strong></p></div>
+      <div class="info-box box-amber" style="margin-top:10px;"><h4>💡 IBAN/Name Matching — PSD3</h4><p>Prima di autorizzare un bonifico, la banca verificherà che IBAN e nome beneficiario corrispondano — riducendo i trasferimenti su conti falsi.</p></div>
+      <button onclick="resetFraud()" style="margin-top:10px;background:#0ea5e9;color:white;padding:8px 20px;border-radius:10px;border:none;font-weight:700;cursor:pointer;font-size:.84rem;font-family:'DM Sans',sans-serif;">🔄 Riprova</button>
     </div>
-
   </div>
 
-  <!-- Altri casi -->
-  <div class="subsection-title">Altri casi reali che motivano la PSD3</div>
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-icon">📱</div>
-      <h4>Revolut Phishing (2022)</h4>
-      <p>Criminali hanno replicato l'interfaccia di Revolut con SMS fraudolenti (smishing) chiedendo la re-autenticazione tramite link falso. Migliaia di utenti hanno inserito le proprie credenziali su un sito identico a quello reale — evidenziando la vulnerabilità dell'autenticazione via SMS.</p>
-    </div>
-    <div class="card">
-      <div class="card-icon">💥</div>
-      <h4>Wirecard (2020)</h4>
-      <p>Wirecard, uno dei maggiori processori di pagamento europei e licenziatario PSD2, ha dichiarato bancarotta dopo aver <strong>falsificato 1,9 miliardi di euro di asset</strong>. Milioni di utenti di Fintech (Curve, Anna Money, Pockit) hanno visto le proprie carte bloccate istantaneamente. Ha sollevato interrogativi sulla solidità dell'infrastruttura Fintech.</p>
-    </div>
-    <div class="card">
-      <div class="card-icon">🤖</div>
-      <h4>Deepfake KYC Fraud</h4>
-      <p>Con la diffusione dell'AI generativa, sono emersi casi di deepfake audio e video usati per superare i sistemi di verifica biometrica (KYC) di alcune piattaforme BNPL — aprendo conti fraudolenti per acquisti a credito. Il problema è strutturalmente nuovo e non previsto dalla PSD2.</p>
-    </div>
-    <div class="card">
-      <div class="card-icon">🔄</div>
-      <h4>SIM Swap Attack</h4>
-      <p>Il truffatore convince l'operatore telefonico a trasferire il numero della vittima su una nuova SIM. A quel punto riceve tutti gli SMS di autenticazione (OTP) e bypassa la SCA. La PSD3 spinge verso autenticatori app-based (TOTP) invece di SMS proprio per eliminare questo vettore di attacco.</p>
-    </div>
+  <div class="sub-title">Altri casi reali che motivano la PSD3</div>
+  <div class="grid-3">
+    <div class="card"><div class="card-icon">📱</div><h4>Revolut Phishing (2022)</h4><p>Criminali hanno replicato l'interfaccia Revolut con SMS fraudolenti. Migliaia di utenti hanno inserito credenziali su un sito identico al reale — vulnerabilità dell'autenticazione via SMS.</p></div>
+    <div class="card"><div class="card-icon">💥</div><h4>Wirecard (2020)</h4><p>Uno dei maggiori processori PSD2 ha dichiarato bancarotta dopo aver falsificato 1,9 miliardi di asset. Milioni di utenti Fintech hanno visto le carte bloccate istantaneamente.</p></div>
+    <div class="card"><div class="card-icon">🔄</div><h4>SIM Swap Attack</h4><p>Il truffatore trasferisce il numero della vittima su una nuova SIM e riceve tutti gli SMS di autenticazione. La PSD3 spinge verso autenticatori app-based (TOTP) invece di SMS.</p></div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════════════════════════════════════
-     7. PSD3
-══════════════════════════════════════════════════════════════════════════ -->
-<section id="psd3" class="section-reveal">
-  <h2 class="section-title">7. PSD3 e il Nuovo Equilibrio</h2>
-  <p class="content-text">La Commissione Europea ha pubblicato nel giugno 2023 la proposta di PSD3, accompagnata dal Regolamento PSR. Le quattro aree critiche di intervento sono direttamente collegate ai casi reali documentati sopra.</p>
+<!-- 7. PSD3 -->
+<section id="psd3" class="section-wrap skin-psd3 sr">
+  <div class="sec-label skin-psd3">🔮 07 — PSD3</div>
+  <h2 class="sec-title" style="color:#1e3a5f;">PSD3 e il Nuovo Equilibrio</h2>
+  <p class="sec-lead">La Commissione Europea ha pubblicato nel giugno 2023 la proposta di PSD3, accompagnata dal Regolamento PSR. Quattro aree critiche di intervento, direttamente collegate ai casi documentati sopra.</p>
 
   <div class="grid-2">
-    <div class="card border-orange-200">
-      <div class="card-icon">🚨</div>
-      <h4>Frodi in aumento</h4>
-      <p>La SCA protegge dall'accesso non autorizzato ma non dall'inganno. La PSD3 introduce responsabilità condivisa banca-merchant per APP Fraud e IBAN/Name Matching obbligatorio. Rimborso esteso per vittime di spoofing telefonico.</p>
-    </div>
-    <div class="card border-yellow-200">
-      <div class="card-icon">⚡</div>
-      <h4>Open Banking sottosviluppato</h4>
-      <p>Molte banche hanno implementato API volutamente lente o mal documentate per scoraggiare i competitor. La PSD3 impone standard API armonizzati e obbligatori, con SLA minimi misurabili e sanzioni per non conformità.</p>
-    </div>
-    <div class="card border-purple-200">
-      <div class="card-icon">📱</div>
-      <h4>Asimmetria con le Big Tech</h4>
-      <p>Apple e Google controllano l'accesso NFC e operano parzialmente fuori dal framework PSD2. La PSD3 prevede l'obbligo di accesso aperto all'NFC per tutti i provider autorizzati — chiudendo la lacuna che favorisce i gatekeeper.</p>
-    </div>
-    <div class="card border-green-200">
-      <div class="card-icon">🔒</div>
-      <h4>Coordinamento GDPR</h4>
-      <p>La PSD3 introduce standard armonizzati per il consenso PSD2-GDPR, imponendo la separazione esplicita del consenso per finalità diverse e vietando esplicitamente i dark patterns nelle interfacce Fintech.</p>
-    </div>
+    <div class="card" style="border-color:#fde68a;"><div class="card-icon">🚨</div><h4>Frodi in aumento</h4><p>La SCA protegge dall'accesso non autorizzato ma non dall'inganno. La PSD3 introduce responsabilità condivisa banca-merchant per APP Fraud e IBAN/Name Matching obbligatorio.</p></div>
+    <div class="card" style="border-color:#a5f3fc;"><div class="card-icon">⚡</div><h4>Open Banking sottosviluppato</h4><p>Molte banche hanno implementato API volutamente lente per scoraggiare i competitor. La PSD3 impone standard armonizzati obbligatori con SLA minimi e sanzioni.</p></div>
+    <div class="card" style="border-color:#c4b5fd;"><div class="card-icon">📱</div><h4>Asimmetria con le Big Tech</h4><p>Apple e Google controllano l'accesso NFC operando parzialmente fuori dal framework PSD2. La PSD3 prevede accesso aperto all'NFC per tutti i provider autorizzati.</p></div>
+    <div class="card" style="border-color:#a7f3d0;"><div class="card-icon">🔒</div><h4>Coordinamento GDPR</h4><p>Standard armonizzati per il consenso PSD2-GDPR: separazione esplicita del consenso per finalità diverse e divieto esplicito dei dark patterns nelle interfacce Fintech.</p></div>
   </div>
 
-  <div class="highlight-box mt-6">
-    <p>📌 La sfida reale per i prossimi anni non è tra banche e Fintech — ma tra l'ecosistema europeo regolamentato e le Big Tech globali che applicano la logica del monopolio thieliano su scala planetaria. La PSD3 è il tentativo dell'Europa di garantire che questa apertura produca benefici reali per i consumatori, senza riprodurre in forma digitale gli stessi oligopoli che la direttiva voleva superare.</p>
+  <div class="info-box box-blue" style="margin-top:14px;">
+    <h4>📌 La sfida reale dei prossimi anni</h4>
+    <p>Non è tra banche e Fintech — ma tra l'ecosistema europeo regolamentato e le Big Tech globali che applicano la logica del monopolio thieliano su scala planetaria. La PSD3 è il tentativo dell'Europa di garantire che questa apertura produca benefici reali per i consumatori, senza riprodurre in forma digitale gli stessi oligopoli che la direttiva voleva superare.</p>
   </div>
 </section>
 
-<!-- ══ CONCLUSIONE ═════════════════════════════════════════════════════════ -->
-<section class="section-reveal">
-  <div style="background:linear-gradient(135deg,#1e3a5f,#0ea5e9); border-radius:20px; padding:48px 40px;">
-    <h2 class="text-3xl font-extrabold text-white mb-4 text-center">Conclusione</h2>
-    <p style="color:#bae6fd; line-height:1.85; max-width:700px; margin:0 auto 24px; text-align:center;">La PSD2 è molto più di una direttiva sui pagamenti: è la codificazione giuridica di una visione dell'economia digitale aperta e competitiva. Come PayPal non voleva migliorare il trasferimento di denaro ma reinventarlo, le Fintech nate nell'ecosistema PSD2 non ottimizzano la banca tradizionale: la ridefiniscono.</p>
-    <div class="pillar-grid" style="max-width:800px; margin:0 auto;">
-      <div class="pillar"><h3>🎯 Disruption</h3><p>Le Fintech applicano la filosofia "zero to uno" di Thiel per creare mercati prima inesistenti</p></div>
+<!-- CONCLUSIONE -->
+<section class="sr">
+  <div style="background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 55%,#0369a1 100%);border-radius:20px;padding:42px 34px;">
+    <h2 style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:white;margin-bottom:10px;text-align:center;">Conclusione</h2>
+    <p style="color:#bae6fd;line-height:1.8;max-width:620px;margin:0 auto 22px;text-align:center;font-size:.93rem;">La PSD2 è la codificazione giuridica di una visione dell'economia digitale aperta e competitiva. Come PayPal non voleva migliorare il trasferimento di denaro ma reinventarlo, le Fintech nate nell'ecosistema PSD2 non ottimizzano la banca tradizionale: la ridefiniscono.</p>
+    <div class="pillar-grid" style="max-width:740px;margin:0 auto;">
+      <div class="pillar"><h3>🎯 Disruption</h3><p>Le Fintech applicano la filosofia "zero a uno" per creare mercati prima inesistenti</p></div>
       <div class="pillar"><h3>🌐 Big Tech</h3><p>Il vero scontro è tra ecosistema europeo regolamentato e monopolisti digitali globali</p></div>
-      <div class="pillar"><h3>⚖️ GDPR</h3><p>Protezione dati e innovazione finanziaria non sono nemici ma devono coesistere con regole chiare</p></div>
-      <div class="pillar"><h3>🔮 PSD3</h3><p>La risposta europea alle lacune: NFC aperto, APP Fraud tutelato, standard API unici</p></div>
+      <div class="pillar"><h3>⚖️ GDPR</h3><p>Protezione dati e innovazione finanziaria devono coesistere con regole chiare</p></div>
+      <div class="pillar"><h3>🔮 PSD3</h3><p>NFC aperto, APP Fraud tutelato, standard API unici — la risposta europea</p></div>
     </div>
   </div>
 </section>
 
 </main>
 
-<!-- Footer -->
-<footer style="background:white; border-top:2px solid #e2e8f0; margin-top:60px; padding:40px 0;">
-  <div class="max-w-6xl mx-auto px-6 text-center text-slate-500">
-    <p style="margin:8px 0;">PSD2 — Impatto Economico, Sociale e Strategico | Gigi</p>
-    <p style="margin:8px 0; font-size:.85rem;">Fonti: Commissione Europea, EBA Payment Fraud Report 2023, Banca d'Italia, EDPB, Garante Privacy</p>
+<footer style="background:white;border-top:1px solid #f1f5f9;margin-top:36px;padding:28px 0;">
+  <div class="max-w-5xl mx-auto px-6 text-center" style="color:#94a3b8;font-size:.8rem;">
+    <p style="margin:3px 0;font-weight:600;color:#64748b;">PSD2 — Impatto Economico, Sociale e Strategico &nbsp;|&nbsp; Gigi</p>
+    <p style="margin:3px 0;">Fonti: Commissione Europea · EBA Payment Fraud Report 2023 · Banca d'Italia · EDPB · Garante Privacy</p>
   </div>
 </footer>
 
-<!-- ══ SCRIPTS ═══════════════════════════════════════════════════════════════ -->
 <script>
-// ── Scroll reveal ────────────────────────────────────────────────────────────
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-}, { threshold:0.08, rootMargin:'0px 0px -40px 0px' });
-document.querySelectorAll('.section-reveal').forEach(s => observer.observe(s));
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('vis'); obs.unobserve(e.target); } });
+}, {threshold:.06, rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.sr').forEach(s => obs.observe(s));
 
-// ── Nav ──────────────────────────────────────────────────────────────────────
-function updateNav(e) {
+// Nav
+function goTo(e, sel) {
   e.preventDefault();
-  const target = e.target.getAttribute('href');
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  e.target.classList.add('active');
-  const el = document.querySelector(target);
-  const offset = document.querySelector('.navbar').offsetHeight + 20;
-  window.scrollTo({ top: el.offsetTop - offset, behavior:'smooth' });
+  e.currentTarget.classList.add('active');
+  const el = document.querySelector(sel);
+  const nh = document.querySelector('nav').offsetHeight + 14;
+  window.scrollTo({top: el.offsetTop - nh, behavior:'smooth'});
 }
 window.addEventListener('scroll', () => {
-  const nh = document.querySelector('.navbar').offsetHeight;
+  const nh = document.querySelector('nav').offsetHeight;
   let cur = '';
   document.querySelectorAll('section[id]').forEach(s => {
-    if (pageYOffset >= s.offsetTop - nh - 80) cur = s.id;
+    if(pageYOffset >= s.offsetTop - nh - 60) cur = s.id;
   });
   document.querySelectorAll('.nav-link').forEach(l => {
     l.classList.toggle('active', l.getAttribute('href') === `#${cur}`);
   });
 });
 
-// ── Hero stats counter ────────────────────────────────────────────────────────
-function animateCount(el, target, suffix='', duration=1800) {
-  let start = 0, step = target / (duration/16);
-  const tick = () => {
-    start = Math.min(start + step, target);
-    el.textContent = (Number.isInteger(target) ? Math.floor(start) : start.toFixed(1)) + suffix;
-    if (start < target) requestAnimationFrame(tick);
+// Stats counter
+function animateCount(el, target, suffix='', dur=1800) {
+  let n=0, step=target/(dur/16);
+  const t = () => {
+    n = Math.min(n+step, target);
+    el.textContent = (Number.isInteger(target) ? Math.floor(n) : n.toFixed(1)) + suffix;
+    if(n < target) requestAnimationFrame(t);
   };
-  requestAnimationFrame(tick);
+  requestAnimationFrame(t);
 }
 setTimeout(() => {
   animateCount(document.getElementById('stat1'), 45, 'M');
   animateCount(document.getElementById('stat2'), 1170, 'M');
   animateCount(document.getElementById('stat3'), 45, 'B');
-}, 600);
+}, 500);
 
-// ── Big Tech cards ────────────────────────────────────────────────────────────
+// Big Tech
 function toggleBT(key) {
   const body = document.getElementById(`body-${key}`);
   const arr  = document.getElementById(`arr-${key}`);
   const card = document.getElementById(`bt-${key}`);
   const isOpen = body.classList.contains('open');
-  // close all
   ['apple','google','meta','amazon'].forEach(k => {
     document.getElementById(`body-${k}`).classList.remove('open');
     document.getElementById(`arr-${k}`).style.transform = '';
-    document.getElementById(`bt-${k}`).classList.remove('selected');
+    document.getElementById(`bt-${k}`).classList.remove('sel');
+    const bar = document.querySelector(`#bt-${k} .bt-bar`);
+    if(bar) bar.style.width = '0';
   });
-  if (!isOpen) {
+  if(!isOpen) {
     body.classList.add('open');
     arr.style.transform = 'rotate(180deg)';
-    card.classList.add('selected');
-    // animate bar
+    card.classList.add('sel');
     setTimeout(() => {
       const bar = card.querySelector('.bt-bar');
-      if (bar) bar.style.width = bar.dataset.w + '%';
-    }, 50);
+      if(bar) bar.style.width = bar.dataset.w + '%';
+    }, 40);
   }
 }
 
-// ── Business model tabs ───────────────────────────────────────────────────────
+// Business Model Explorer
 function setBM(key) {
-  document.querySelectorAll('.bm-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.bm-panel').forEach(p => p.classList.remove('active'));
-  document.querySelector(`[onclick="setBM('${key}')"]`).classList.add('active');
-  document.getElementById(`bm-${key}`).classList.add('active');
+  document.querySelectorAll('.bm-btn').forEach(b => b.classList.remove('act'));
+  document.querySelectorAll('.bm-panel').forEach(p => p.classList.remove('act'));
+  document.getElementById(`bmbtn-${key}`).classList.add('act');
+  document.getElementById(`bm-${key}`).classList.add('act');
+  setTimeout(() => {
+    document.querySelectorAll(`#bm-${key} .meter-fill`).forEach(m => {
+      m.style.width = m.dataset.w + '%';
+    });
+  }, 40);
 }
+setTimeout(() => {
+  document.querySelectorAll('#bm-neobank .meter-fill').forEach(m => { m.style.width = m.dataset.w + '%'; });
+}, 600);
 
-// ── Thiel Quiz ────────────────────────────────────────────────────────────────
-let quizScore = 0, quizCurrent = 1;
-const quizFeedback = {
-  1: { b: "✅ Esatto! Thiel chiama questa strategia 'nicchia globale'. Revolut ha fatto esattamente questo con il cambio valuta.", a: "❌ Competere sul prezzo è 'da 1 a n' — ottimizzi ciò che esiste. Thiel direbbe: trova una nicchia dove sei l'unico.", c: "❌ La pubblicità porta utenti temporanei. Thiel privilegia il prodotto che si diffonde da solo tramite network effects." },
-  2: { c: "✅ Risposta Thiel! Se stai costruendo un monopolio da 10 miliardi, vendere a 50M significa consegnare il valore futuro. I fondatori di Airbnb, Uber e Spotify hanno tutti rifiutato offerte simili all'inizio.", a: "❌ Thiel: 'Un'uscita a 50M è una vittoria per chi compra, non per chi vende.' Stai rinunciando a tutto il valore futuro del tuo monopolio.", b: "❌ Anche 80M è troppo poco se stai davvero costruendo qualcosa di fondamentalmente nuovo. Il problema non è il prezzo, è vendere in questa fase." },
-  3: { a: "✅ Risposta Thiel! Perdere denaro su ogni utente mentre costruisci un network effect è razionale — ma solo se il network effect è reale e misurabile. Thiel: 'PayPal perdeva su ogni transazione per anni.'", a: "✅ Esatto secondo Thiel!", b: "⚠️ Quasi! Continuare a perdere può avere senso, ma Thiel enfatizza che devi sapere quando smettere. Senza un piano verso la profittabilità sei semplicemente bruciare cassa.", c: "❌ Spingere verso la monetizzazione prematura può rallentare la crescita del network effect — l'asset più prezioso di una Fintech in fase early." }
+// Quiz
+let quizScore = 0;
+const qFb = {
+  1: { b:"✅ Esatto! Thiel chiama questa strategia 'nicchia globale'. Revolut ha fatto esattamente questo col cambio valuta.", a:"❌ Competere sul prezzo è 'da 1 a n': ottimizzi ciò che esiste. Thiel: trova una nicchia dove sei l'unico.", c:"❌ La pubblicità porta utenti temporanei. Thiel privilegia il prodotto che si diffonde da solo tramite network effect." },
+  2: { c:"✅ Risposta Thiel! Se stai costruendo un monopolio da miliardi, vendere a 50M significa cedere tutto il valore futuro.", a:"❌ Thiel: 'Un'uscita a 50M è una vittoria per chi compra, non per chi vende.'", b:"❌ Anche 80M è troppo poco. Il problema non è il prezzo, è vendere in questa fase." },
+  3: { a:"✅ Risposta Thiel! Perdere su ogni utente mentre costruisci un network effect è razionale — se il network effect è reale. 'PayPal perdeva su ogni transazione per anni.'", b:"⚠️ Quasi! Continuare può aver senso, ma Thiel enfatizza: devi sapere quando smettere. Senza un piano verso la profittabilità stai solo bruciando cassa.", c:"❌ Monetizzazione prematura può rallentare il network effect — l'asset più prezioso di una Fintech early." }
 };
 function checkQuiz(q, chosen, correct) {
   const opts = document.querySelectorAll(`#q${q} .quiz-opt`);
   opts.forEach(o => o.disabled = true);
   const letters = ['a','b','c'];
   opts.forEach((o,i) => {
-    if (letters[i] === correct) o.classList.add('correct');
-    else if (letters[i] === chosen && chosen !== correct) o.classList.add('wrong');
+    if(letters[i]===correct) o.classList.add('correct');
+    else if(letters[i]===chosen && chosen!==correct) o.classList.add('wrong');
   });
-  if (chosen === correct) quizScore++;
+  if(chosen===correct) quizScore++;
   const fb = document.getElementById(`fb${q}`);
-  fb.textContent = quizFeedback[q][chosen];
+  fb.textContent = qFb[q][chosen];
   fb.style.background = chosen===correct ? '#d1fae5' : '#fee2e2';
   fb.style.color = chosen===correct ? '#065f46' : '#991b1b';
-  fb.style.borderRadius = '8px';
-  fb.style.padding = '12px 16px';
   fb.classList.add('show');
   setTimeout(() => {
-    if (q < 3) {
-      document.getElementById(`q${q}`).classList.add('hidden');
-      document.getElementById(`q${q+1}`).classList.remove('hidden');
-    } else {
-      document.getElementById(`q${q}`).classList.add('hidden');
-      showQuizResult();
-    }
+    document.getElementById(`q${q}`).classList.add('hidden');
+    if(q<3) document.getElementById(`q${q+1}`).classList.remove('hidden');
+    else showResult();
   }, 2200);
 }
-function showQuizResult() {
+function showResult() {
   const r = document.getElementById('quiz-result');
   r.classList.remove('hidden');
-  const emojis = ['😅','🤔','🎯'];
-  const labels = ['Hai ancora da imparare da Thiel!','Ci sei quasi — istinto imprenditoriale in crescita!','Pensi come Thiel — sei pronto a fondare la prossima Fintech!'];
-  const descs = ['Rileggi "Zero to One" e riprova.','Due su tre non è male. Lavora sulla visione a lungo termine.','Attenzione: il monopolio va costruito eticamente, non solo strategicamente.'];
-  document.getElementById('quiz-emoji').textContent = emojis[quizScore-1] || '😅';
+  const emojis=['😅','🤔','🎯'], labels=['Hai ancora da imparare da Thiel!','Istinto imprenditoriale in crescita!','Pensi come Thiel — pronto per la prossima Fintech!'], descs=['Rileggi "Zero to One" e riprova.','Due su tre. Lavora sulla visione a lungo termine.','Attenzione: il monopolio va costruito eticamente, non solo strategicamente.'];
+  document.getElementById('quiz-emoji').textContent = emojis[quizScore-1]||'😅';
   document.getElementById('quiz-score-label').textContent = `${quizScore}/3 — ${labels[quizScore-1]||labels[0]}`;
   document.getElementById('quiz-score-desc').textContent = descs[quizScore-1]||descs[0];
 }
 function resetQuiz() {
-  quizScore=0; quizCurrent=1;
+  quizScore=0;
   for(let i=1;i<=3;i++){
     const q=document.getElementById(`q${i}`);
     q.classList.toggle('hidden',i!==1);
@@ -897,40 +786,43 @@ function resetQuiz() {
   document.getElementById('quiz-result').classList.add('hidden');
 }
 
-// ── GDPR timeline ─────────────────────────────────────────────────────────────
+// GDPR accordion
 function expandGDPR(i) {
   const body = document.getElementById(`gdpr-body-${i}`);
   const arr  = document.getElementById(`gdpr-arr-${i}`);
-  const isOpen = !body.classList.contains('hidden');
-  body.classList.toggle('hidden', isOpen);
-  arr.textContent = isOpen ? '▼' : '▲';
+  const isOpen = body.classList.contains('open');
+  for(let j=0;j<4;j++){
+    document.getElementById(`gdpr-body-${j}`).classList.remove('open');
+    document.getElementById(`gdpr-arr-${j}`).textContent='▼';
+  }
+  if(!isOpen){ body.classList.add('open'); arr.textContent='▲'; }
 }
 
-// ── Fraud simulator ───────────────────────────────────────────────────────────
-function fraudChoice(result) {
-  document.getElementById('fraud-1').classList.remove('active');
-  document.getElementById(`fraud-${result}`).classList.add('active');
+// Fraud simulator
+function fraudChoice(res) {
+  document.getElementById('fraud-1').classList.remove('on');
+  document.getElementById(`fraud-${res}`).classList.add('on');
 }
 function resetFraud() {
-  ['fraud-bad','fraud-good'].forEach(id => document.getElementById(id).classList.remove('active'));
-  document.getElementById('fraud-1').classList.add('active');
+  document.getElementById('fraud-bad').classList.remove('on');
+  document.getElementById('fraud-good').classList.remove('on');
+  document.getElementById('fraud-1').classList.add('on');
 }
 
-// ── Fraud bars animate on scroll ──────────────────────────────────────────────
+// Fraud bars
 const barObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
-    if (e.isIntersecting) {
+    if(e.isIntersecting){
       e.target.querySelectorAll('.fraud-bar').forEach(b => {
-        setTimeout(() => { b.style.transition='height 1s ease'; b.style.height = b.dataset.h + 'px'; }, 200);
+        setTimeout(()=>{ b.style.height = b.dataset.h+'px'; }, 150);
       });
       barObs.unobserve(e.target);
     }
   });
-}, { threshold:0.3 });
-const fraudSection = document.querySelector('#frodi');
-if (fraudSection) barObs.observe(fraudSection);
-
-// ── BT bar on open (already handled in toggleBT) ─────────────────────────────
+}, {threshold:.25});
+const fraudSec = document.querySelector('#frodi');
+if(fraudSec) barObs.observe(fraudSec);
 </script>
 </body>
 </html>
+
